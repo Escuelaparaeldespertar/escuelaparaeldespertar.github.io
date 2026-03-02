@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblioteca Virtual</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5efe4;
+    --warm-brown: #8b6340;
+    --dark-brown: #3e2712;
+    --gold: #c9a84c;
+    --gold-light: #e8c97e;
+    --ink: #1a110a;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:linear-gradient(180deg,#2a1a0a 0%,#1a0f05 100%); font-family:'EB Garamond',serif; color:var(--cream); min-height:100vh; overflow-x:hidden; }
+
+  @keyframes glow { from{text-shadow:0 0 10px rgba(201,168,76,0.3);} to{text-shadow:0 0 25px rgba(201,168,76,0.7),0 0 50px rgba(201,168,76,0.3);} }
+  @keyframes float-up { 0%{transform:translateY(100vh);opacity:0;} 10%{opacity:0.5;} 90%{opacity:0.2;} 100%{transform:translateY(-20px) translateX(20px);opacity:0;} }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+  @keyframes slideInRight { from{opacity:0;transform:translateX(60px);} to{opacity:1;transform:translateX(0);} }
+  @keyframes slideOutLeft { from{opacity:1;transform:translateX(0);} to{opacity:0;transform:translateX(-60px);} }
+  @keyframes slideInLeft { from{opacity:0;transform:translateX(-60px);} to{opacity:1;transform:translateX(0);} }
+  @keyframes floatPanel { from{transform:translateY(0)} to{transform:translateY(-6px)} }
+  @keyframes card-in { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+  /* LOTO MÓVIL */
+  @media(max-width:600px) {
+    #lotusBg img {
+      width: 90% !important;
+      margin-left: 0 !important;
+      opacity: 0.07 !important;
+    }
+  }
+
+  /* PARTICLES */
+  #particles { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:hidden; }
+  .particle { position:absolute; width:2px; height:2px; background:var(--gold-light); border-radius:50%; opacity:0; animation:float-up linear infinite; }
+
+  /* MUSIC PANEL */
+  #panelMusica {
+    position:fixed; bottom:20px; left:0;
+    width:240px;
+    display:flex; flex-direction:row; align-items:center; justify-content:center; gap:8px;
+    background:linear-gradient(145deg,#2a1a0a,#1a0f05);
+    border:1px solid rgba(201,168,76,0.3);
+    border-left:none; border-bottom:none;
+    padding:10px 16px; border-radius:0 10px 0 0;
+    box-shadow:0 4px 18px rgba(0,0,0,0.5);
+    z-index:1000;
+  }
+  .music-label { font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px; color:rgba(201,168,76,0.45); text-transform:uppercase; }
+  #inicioMusica { padding:6px 12px; font-size:10px; background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; border:none; border-radius:7px; cursor:pointer; font-family:'Cinzel',serif; letter-spacing:1px; box-shadow:0 3px 10px rgba(201,168,76,0.3); transition:transform 0.2s; }
+  #inicioMusica:hover { transform:scale(1.05); }
+  #botonMusica { width:28px; height:28px; border-radius:50%; background:rgba(201,168,76,0.12); color:var(--gold-light); border:1px solid rgba(201,168,76,0.3); font-size:14px; display:none; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s; }
+  #botonMusica:hover { background:rgba(201,168,76,0.25); }
+  #volumenControl { display:none; width:80px; accent-color:var(--gold); }
+
+  /* ═══════════════════════════════════
+     LAYOUT PRINCIPAL — dos paneles
+  ═══════════════════════════════════ */
+  .app {
+    position:relative; z-index:1;
+    display:flex; min-height:100vh;
+    overflow:hidden;
+  }
+
+  /* ── PANEL IZQUIERDO: Categorías ── */
+  .panel-cats {
+    width:100%; flex-shrink:0;
+    display:flex; flex-direction:column; align-items:center;
+    min-height:100vh; padding-bottom:80px;
+    transition:transform 0.5s cubic-bezier(0.77,0,0.18,1), opacity 0.4s ease;
+    will-change:transform,opacity;
+  }
+  .panel-cats.slide-out {
+    transform:translateX(-100%);
+    opacity:0;
+    pointer-events:none;
+    position:absolute; top:0; left:0; width:100%;
+  }
+
+  /* Cabecera */
+  .app-header {
+    width:100%; display:flex; flex-direction:column; align-items:center;
+    padding:44px 24px 30px;
+    border-bottom:1px solid rgba(201,168,76,0.15);
+    animation:fadeIn 0.8s ease 0.1s both;
+  }
+  .app-logo {
+    width:150px; height:150px; border-radius:50%; object-fit:cover;
+    border:2px solid rgba(201,168,76,0.5);
+    box-shadow:0 0 40px rgba(201,168,76,0.2);
+    margin-bottom:18px; cursor:pointer;
+    transition:transform 0.3s, box-shadow 0.3s;
+  }
+  .app-logo:hover { transform:scale(1.04); box-shadow:0 0 55px rgba(201,168,76,0.35); }
+  .app-ornament { font-size:20px; color:var(--gold); margin-bottom:10px; animation:glow 3s ease-in-out infinite alternate; }
+  .app-title { font-family:'Cinzel',serif; font-size:14px; letter-spacing:5px; color:var(--gold); text-transform:uppercase; line-height:1.8; text-align:center; }
+  .app-quote { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:rgba(201,168,76,0.45); margin-top:10px; text-align:center; }
+
+  /* Grid de categorías */
+  .cats-label {
+    font-family:'Cinzel',serif; font-size:10px; letter-spacing:4px;
+    color:var(--gold); text-transform:uppercase;
+    text-shadow:0 0 12px rgba(201,168,76,0.6), 0 0 28px rgba(201,168,76,0.3);
+    width:100%; padding:24px 28px 10px;
+    animation:fadeIn 0.8s ease 0.3s both, glow 3s ease-in-out infinite alternate;
+  }
+  .cats-grid {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:12px; padding:0 20px 20px; width:100%;
+    animation:fadeIn 0.8s ease 0.4s both;
+  }
+
+  /* Tablet: 3 columnas */
+  @media(min-width:600px) {
+    .cats-grid { grid-template-columns:1fr 1fr 1fr; max-width:700px; margin:0 auto; padding:0 28px 28px; }
+    .app-header { padding:50px 40px 36px; }
+    .app-logo { width:170px; height:170px; }
+    .app-title { font-size:15px; }
+  }
+
+  /* Desktop: logo sidebar izquierdo, categorías a la derecha */
+  @media(min-width:900px) {
+    .panel-cats { flex-direction:row; align-items:flex-start; padding-bottom:0; }
+    .app-header {
+      width:240px; min-width:240px; flex-shrink:0;
+      flex-direction:column; align-items:center;
+      min-height:100vh; padding:50px 24px 40px;
+      border-bottom:none; border-right:1px solid rgba(201,168,76,0.15);
+      position:sticky; top:0; height:100vh; justify-content:center;
+    }
+    .app-logo { width:130px; height:130px; margin-bottom:20px; }
+    .app-title { font-size:11px; letter-spacing:4px; }
+    .cats-right { flex:1; display:flex; flex-direction:column; padding:40px 36px 60px; overflow-y:auto; }
+    .cats-label { padding:0 0 14px; width:auto; }
+    .cats-grid { grid-template-columns:repeat(4,1fr); max-width:none; margin:0; padding:0; gap:14px; }
+  }
+  @media(min-width:1200px) {
+    .app-header { width:280px; min-width:280px; }
+    .cats-grid { grid-template-columns:repeat(5,1fr); }
+  }
+
+  .cat-card {
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(201,168,76,0.15);
+    border-radius:14px; padding:20px 14px;
+    cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    transition:all 0.25s ease;
+    animation:fadeIn 0.6s ease both;
+  }
+  .cat-card:hover { background:rgba(201,168,76,0.1); border-color:rgba(201,168,76,0.45); transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+  .cat-card:active { transform:scale(0.96); }
+  .cat-icon { font-size:30px; }
+  .cat-name { font-family:'Cinzel',serif; font-size:9px; letter-spacing:1px; color:rgba(245,239,228,0.75); text-transform:uppercase; text-align:center; line-height:1.5; }
+
+  /* ── PANEL DERECHO: Libros ── */
+  .panel-books {
+    position:fixed; inset:0;
+    display:flex; flex-direction:column;
+    background:linear-gradient(180deg,#2a1a0a 0%,#1a0f05 100%);
+    z-index:10;
+    transform:translateX(100%);
+    opacity:0;
+    transition:transform 0.5s cubic-bezier(0.77,0,0.18,1), opacity 0.4s ease;
+    will-change:transform,opacity;
+    overflow-y:auto;
+    padding-bottom:80px;
+  }
+  .panel-books.slide-in {
+    transform:translateX(0);
+    opacity:1;
+  }
+
+  /* Fondo loto sutil */
+  .books-loto {
+    position:fixed; inset:0;
+    background-image:url('Fondo/Loto.png');
+    background-size:cover; background-position:center;
+    opacity:0.07; pointer-events:none; z-index:0;
+  }
+
+  /* Cabecera panel libros */
+  .books-header {
+    position:sticky; top:0; z-index:5;
+    display:flex; align-items:center; gap:16px;
+    padding:18px 24px;
+    background:rgba(42,26,10,0.96);
+    border-bottom:1px solid rgba(201,168,76,0.2);
+    backdrop-filter:blur(10px);
+  }
+  .back-logo {
+    width:46px; height:46px; border-radius:50%; object-fit:cover;
+    border:1px solid rgba(201,168,76,0.4);
+    cursor:pointer; flex-shrink:0;
+    transition:transform 0.3s, box-shadow 0.3s;
+  }
+  .back-logo:hover { transform:scale(1.08); box-shadow:0 0 20px rgba(201,168,76,0.3); }
+  .books-header-info { flex:1; }
+  .books-cat-name {
+    font-family:'Cinzel',serif; font-size:11px; letter-spacing:3px;
+    color:var(--gold); text-transform:uppercase;
+  }
+  .books-count { font-size:12px; color:rgba(201,168,76,0.45); margin-top:2px; font-style:italic; }
+  .back-btn {
+    padding:8px 16px; background:rgba(201,168,76,0.1);
+    border:1px solid rgba(201,168,76,0.3); border-radius:8px;
+    color:var(--gold-light); font-family:'Cinzel',serif; font-size:10px;
+    letter-spacing:2px; cursor:pointer; transition:all 0.2s; white-space:nowrap;
+  }
+  .back-btn:hover { background:rgba(201,168,76,0.2); }
+
+  /* Grid de libros */
+  .books-inner {
+    position:relative; z-index:1;
+    display:grid; grid-template-columns:repeat(2,1fr);
+    gap:16px; padding:24px 20px;
+  }
+  @media(min-width:500px) { .books-inner { grid-template-columns:repeat(3,1fr); } }
+  @media(min-width:768px) { .books-inner { grid-template-columns:repeat(4,1fr); max-width:960px; margin:0 auto; padding:30px 28px; gap:20px; } }
+  @media(min-width:1100px) { .books-inner { grid-template-columns:repeat(5,1fr); max-width:1200px; } }
+
+  .book-card {
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(201,168,76,0.15);
+    border-radius:10px; overflow:hidden; cursor:pointer;
+    transition:all 0.3s ease;
+    animation:card-in 0.5s ease both;
+  }
+  .book-card:hover { transform:translateY(-5px); box-shadow:0 12px 32px rgba(0,0,0,0.5); border-color:rgba(201,168,76,0.4); }
+  .book-cover-wrap { width:100%; padding-top:130%; position:relative; overflow:hidden; background:linear-gradient(135deg,#3a2510,#2a1a0a); }
+  .book-cover-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+  .book-card:hover .book-cover-wrap img { transform:scale(1.06); }
+  .book-cover-placeholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:40px; opacity:0.3; }
+  .book-info { padding:12px 12px 10px; }
+  .book-title { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:13px; color:var(--gold-light); line-height:1.3; margin-bottom:3px; }
+  .book-author { font-size:11px; color:rgba(201,168,76,0.5); font-style:italic; margin-bottom:10px; }
+  .book-btn {
+    display:block; width:100%; padding:8px;
+    background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(139,99,64,0.2));
+    color:var(--gold-light); border:1px solid rgba(201,168,76,0.3);
+    border-radius:5px; cursor:pointer; font-family:'Cinzel',serif;
+    font-size:9px; letter-spacing:2px; text-transform:uppercase;
+    transition:all 0.3s; text-decoration:none; text-align:center;
+  }
+  .book-btn:hover { background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; border-color:transparent; }
+
+  /* Mensaje vacío */
+  .empty-msg {
+    grid-column:1/-1; text-align:center; padding:60px 20px;
+    font-family:'Cormorant Garamond',serif; font-style:italic;
+    font-size:18px; color:rgba(201,168,76,0.4); line-height:1.8;
+  }
+
+  /* Panel música móvil */
+  #panelMusicaMobile {
+    position:fixed; bottom:0; left:0; right:0;
+    display:flex; flex-direction:row; justify-content:center; align-items:center;
+    gap:14px; padding:12px 16px;
+    background:linear-gradient(145deg,#2a1a0a,#1a0f05);
+    border-top:1px solid rgba(201,168,76,0.2);
+    border-radius:14px 14px 0 0;
+    z-index:1100;
+  }
+  .music-label-m { font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:rgba(201,168,76,0.45); text-transform:uppercase; }
+  #inicioMusicaM { padding:8px 16px; font-size:12px; background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; border:none; border-radius:8px; cursor:pointer; font-family:'Cinzel',serif; letter-spacing:1px; }
+  #botonMusicaM { width:36px; height:36px; border-radius:50%; background:rgba(201,168,76,0.12); color:var(--gold-light); border:1px solid rgba(201,168,76,0.3); font-size:18px; display:none; align-items:center; justify-content:center; cursor:pointer; }
+  #volumenM { display:none; width:90px; accent-color:var(--gold); }
+
+  /* Ocultar panel desktop en móvil */
+  @media(max-width:600px) {
+    #panelMusica { display:none !important; }
+  }
+  @media(min-width:601px) {
+    #panelMusicaMobile { display:none !important; }
+  }
+
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background:#1a0f05; }
+  ::-webkit-scrollbar-thumb { background:rgba(201,168,76,0.3); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<audio id="musicaFondo" loop>
+  <source src="Audio/Musica_fondo.mp3" type="audio/mpeg">
+</audio>
+
+<div id="particles"></div>
+<!-- LOTUS BACKGROUND IMAGE -->
+<div id="lotusBg" style="
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  display:flex; align-items:center; justify-content:center;
+">
+  <img src="Fondo/LotoN.png" style="
+    width:52%; max-width:650px;
+    opacity:0.10;
+    mix-blend-mode:screen;
+    filter:brightness(1.2) contrast(1.1);
+    margin-left:18%;
+  "/>
+</div>
+
+<!-- PANEL MÚSICA DESKTOP -->
+<div id="panelMusica">
+  <div class="music-label">♪ Ambiente</div>
+  <button id="inicioMusica" onclick="iniciarMusica()">🎵 ¡Escúchame!</button>
+  <button id="botonMusica" onclick="toggleAudio()">🔊</button>
+  <input type="range" id="volumenControl" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
+</div>
+
+<!-- PANEL MÚSICA MÓVIL -->
+<div id="panelMusicaMobile">
+  <div class="music-label-m">♪ Ambiente</div>
+  <button id="inicioMusicaM" onclick="iniciarMusica()">🎵 ¡Escúchame!</button>
+  <button id="botonMusicaM" onclick="toggleAudio()">🔊</button>
+  <input type="range" id="volumenM" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
+</div>
+
+<div class="app">
+
+  <!-- ══ PANEL CATEGORÍAS ══ -->
+  <div class="panel-cats" id="panelCats">
+
+    <div class="app-header">
+      <img class="app-logo" src="Fondo/Escuela.png" alt="Logo" onclick="volverInicio()" onerror="this.style.display='none'">
+      <div class="app-ornament">✦</div>
+      <div class="app-title">Biblioteca<br>Virtual</div>
+      <div class="app-quote">Un refugio para el alma que busca</div>
+    </div>
+
+    <div class="cats-right">
+    <div class="cats-label">✦ &nbsp; Colecciones</div>
+
+    <div class="cats-grid">
+      <div class="cat-card" onclick="abrirCategoria('Barbara Ann Brenan','🌺')" style="animation-delay:0.05s"><span class="cat-icon">🌺</span><span class="cat-name">Barbara Ann Brenan</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Biodescodificación','🧬')" style="animation-delay:0.08s"><span class="cat-icon">🧬</span><span class="cat-name">Biodescodificación</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Budismo','🌿')" style="animation-delay:0.11s"><span class="cat-icon">🌿</span><span class="cat-name">Budismo</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Carolyne Myss','🌸')" style="animation-delay:0.14s"><span class="cat-icon">🌸</span><span class="cat-name">Carolyne Myss</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Constelaciones Familiares','🫧')" style="animation-delay:0.17s"><span class="cat-icon">🫧</span><span class="cat-name">Constelaciones Familiares</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Cristaloterapia','💎')" style="animation-delay:0.20s"><span class="cat-icon">💎</span><span class="cat-name">Cristaloterapia</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Filosofía y Religión','🕊️')" style="animation-delay:0.23s"><span class="cat-icon">🕊️</span><span class="cat-name">Filosofía y Religión</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Geometría Sagrada','🌀')" style="animation-delay:0.26s"><span class="cat-icon">🌀</span><span class="cat-name">Geometría Sagrada</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Kabbalah','🔮')" style="animation-delay:0.29s"><span class="cat-icon">🔮</span><span class="cat-name">Kabbalah</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Ken Wilber','🌊')" style="animation-delay:0.32s"><span class="cat-icon">🌊</span><span class="cat-name">Ken Wilber</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Kryon','✨')" style="animation-delay:0.35s"><span class="cat-icon">✨</span><span class="cat-name">Kryon</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Libros Raros','📜')" style="animation-delay:0.38s"><span class="cat-icon">📜</span><span class="cat-name">Libros Raros</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Lopsamg Rampa','🏔️')" style="animation-delay:0.41s"><span class="cat-icon">🏔️</span><span class="cat-name">Lopsamg Rampa</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Nevile Goddard','🌙')" style="animation-delay:0.44s"><span class="cat-icon">🌙</span><span class="cat-name">Nevile Goddard</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Nikola Tesla','⚡')" style="animation-delay:0.47s"><span class="cat-icon">⚡</span><span class="cat-name">Nikola Tesla</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Teosofía','🌌')" style="animation-delay:0.50s"><span class="cat-icon">🌌</span><span class="cat-name">Teosofía</span></div>
+      <div class="cat-card" onclick="abrirCategoria('Triguerinho','🌟')" style="animation-delay:0.53s"><span class="cat-icon">🌟</span><span class="cat-name">Triguerinho</span></div>
+    </div>
+    </div><!-- /cats-right -->
+
+  </div>
+
+  <!-- ══ PANEL LIBROS ══ -->
+  <div class="panel-books" id="panelBooks">
+    <div class="books-loto"></div>
+    <div class="books-header">
+      <img class="back-logo" src="Fondo/Escuela.png" alt="Inicio" onclick="volverInicio()" onerror="this.style.display='none'">
+      <div class="books-header-info">
+        <div class="books-cat-name" id="booksCatName"></div>
+        <div class="books-count" id="booksCount"></div>
+      </div>
+      <button class="back-btn" onclick="volverInicio()">← Volver</button>
+    </div>
+    <div class="books-inner" id="booksInner"></div>
+  </div>
+
+</div>
+
+<script>
+  // ══════════════════════
+  // DATOS DE LIBROS
+  // ══════════════════════
+  const libros = [
+    { categoria:'Ken Wilber', titulo:'Gracia y Coraje', autor:'Ken Wilber', imagen:'Libros/gracia_y_coraje.jpg', url:'https://e.pcloud.link/publink/show?code=XZQJ43ZuB9j90ho1L8VgXowljU6d5xgRe1y' },
+    // Agrega más libros aquí:
+    // { categoria:'Budismo', titulo:'Título', autor:'Autor', imagen:'Libros/imagen.jpg', url:'URL' },
+  ];
+
+  // ══════════════════════
+  // NAVEGACIÓN
+  // ══════════════════════
+  const panelCats  = document.getElementById('panelCats');
+  const panelBooks = document.getElementById('panelBooks');
+
+  function abrirCategoria(cat, icon) {
+    const filtrados = libros.filter(l => l.categoria === cat);
+
+    document.getElementById('booksCatName').textContent = icon + '  ' + cat;
+    document.getElementById('booksCount').textContent   = filtrados.length > 0
+      ? filtrados.length + (filtrados.length === 1 ? ' libro' : ' libros')
+      : 'Próximamente';
+
+    const grid = document.getElementById('booksInner');
+    if (filtrados.length === 0) {
+      grid.innerHTML = `<div class="empty-msg">Próximamente libros<br>en esta colección ✦</div>`;
+    } else {
+      grid.innerHTML = filtrados.map((l, i) => `
+        <div class="book-card" style="animation-delay:${i * 0.07}s">
+          <div class="book-cover-wrap">
+            <img src="${l.imagen}" alt="${l.titulo}" onerror="this.style.display='none'">
+            <div class="book-cover-placeholder">📚</div>
+          </div>
+          <div class="book-info">
+            <div class="book-title">${l.titulo}</div>
+            <div class="book-author">${l.autor}</div>
+            <a class="book-btn" href="${l.url}" target="_blank">Abrir libro</a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    panelCats.classList.add('slide-out');
+    panelBooks.classList.add('slide-in');
+    panelBooks.scrollTop = 0;
+  }
+
+  function volverInicio() {
+    panelBooks.classList.remove('slide-in');
+    panelCats.classList.remove('slide-out');
+    window.scrollTo(0,0);
+  }
+
+  // ══════════════════════
+  // PARTÍCULAS
+  // ══════════════════════
+  const cont = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${Math.random()*100}%;animation-duration:${8+Math.random()*15}s;animation-delay:${Math.random()*10}s;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;`;
+    cont.appendChild(p);
+  }
+
+  // ══════════════════════
+  // MÚSICA
+  // ══════════════════════
+  const audio = document.getElementById('musicaFondo');
+  audio.volume = 0.5;
+  function iniciarMusica() {
+    audio.play();
+    ['inicioMusica','inicioMusicaM'].forEach(id => document.getElementById(id).style.display = 'none');
+    document.getElementById('botonMusica').style.display   = 'flex';
+    document.getElementById('botonMusicaM').style.display  = 'flex';
+    document.getElementById('volumenControl').style.display = 'block';
+    document.getElementById('volumenM').style.display       = 'block';
+  }
+  function toggleAudio() {
+    const playing = !audio.paused;
+    playing ? audio.pause() : audio.play();
+    ['botonMusica','botonMusicaM'].forEach(id => document.getElementById(id).textContent = playing ? '🔈' : '🔊');
+  }
+  function cambiarVolumen() {
+    const isMobile = window.innerWidth <= 600;
+    audio.volume = document.getElementById(isMobile ? 'volumenM' : 'volumenControl').value;
+  }
+</script>
+</body>
+</html>
