@@ -9,14 +9,16 @@
 </head>
 <body>
 
+<!-- MUSICA -->
 <audio id="musicaFondo" loop>
   <source src="Audio/Musica_fondo.mp3" type="audio/mpeg">
 </audio>
 
+<!-- PARTICULAS Y FONDO -->
 <div id="particles"></div>
 <div id="lotusBg"><img src="Fondo/LotoN.png" /></div>
 
-<!-- PANEL MÚSICA DESKTOP -->
+<!-- PANEL MUSICA DESKTOP -->
 <div id="panelMusica">
   <div class="music-label">♪ Ambiente</div>
   <button id="inicioMusica" onclick="iniciarMusica()">🎵 ¡Escúchame!</button>
@@ -24,7 +26,7 @@
   <input type="range" id="volumenControl" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
 </div>
 
-<!-- PANEL MÚSICA MÓVIL -->
+<!-- PANEL MUSICA MÓVIL -->
 <div id="panelMusicaMobile">
   <div class="music-label-m">♪ Ambiente</div>
   <button id="inicioMusicaM" onclick="iniciarMusica()">🎵 ¡Escúchame!</button>
@@ -33,7 +35,8 @@
 </div>
 
 <div class="app">
-  <!-- PANEL CATEGORÍAS -->
+
+  <!-- PANEL CATEGORIAS -->
   <div class="panel-cats" id="panelCats">
     <div class="cats-header">
       <h2>📚 Categorías</h2>
@@ -43,7 +46,6 @@
 
   <!-- PANEL LIBROS -->
   <div class="panel-books" id="panelBooks">
-    <div class="books-loto"></div>
     <div class="books-header">
       <img class="back-logo" src="Fondo/Escuela.png" alt="Inicio" onclick="volverInicio()">
       <div class="books-header-info">
@@ -54,11 +56,13 @@
     </div>
     <div class="books-inner" id="booksInner"></div>
   </div>
+
 </div>
 
+<!-- JS -->
 <script src="js/libros.js"></script>
 <script>
-  // GENERAR CATEGORÍAS AUTOMÁTICAMENTE
+  // GENERAR CATEGORIAS AUTOMATICAMENTE
   const catsGrid = document.getElementById('catsGrid');
   const categoriasUnicas = [...new Set(libros.map(l => l.categoria))];
 
