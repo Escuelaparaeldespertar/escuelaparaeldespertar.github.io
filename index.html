@@ -393,18 +393,19 @@
   // ══════════════════════
   const libros = [
     { categoria:'Ken Wilber', titulo:'Gracia y Coraje', autor:'Ken Wilber', imagen:'Libros/gracia_y_coraje.jpg', url:'https://e.pcloud.link/publink/show?code=XZQJ43ZuB9j90ho1L8VgXowljU6d5xgRe1y' },
-    { categoria:'Barbara Ann Brenan', titulo:'Manos que Curan', autor:'Barbara Ann Brennan', imagen:'Libros/Manosquecuran.jpg', url:'Libros/Manos-que-curan-Barbara-Ann-Brennan.pdf' },
-    { categoria:'Barbara Ann Brenan', titulo:'Hágase la Luz', autor:'Barbara Ann Brennan', imagen:'Libros/Manosquecuran_2.jpg', url:'Libros/Hágase-la-Luz-Barbara-Ann-Brennan.pdf' },
+    { categoria:'Barbara Ann Brenan', titulo:'Manos que Curan', autor:'Barbara Ann Brennan', imagen:'Libros/Manosquecuran.jpg', url:'' },
+    { categoria:'Barbara Ann Brenan', titulo:'Hágase la Luz', autor:'Barbara Ann Brennan', imagen:'Libros/Manosquecuran_2.jpg', url:'' },
     { categoria:'Biodescodificación', titulo:'La Descodificación Biológica de las Enfermedades', autor:'Enric Corbera', imagen:'Libros/Biodescodificacion.jpg', url:'' },
     { categoria:'Biodescodificación', titulo:'Causas Emocionales de las Enfermedades', autor:'Jacques Martel', imagen:'Libros/Causasdolencias.jpg', url:'', imgPosition:'right' },
-    { categoria:'Budismo', titulo:'El Libro Tibetano de los Muertos', autor:'Timothy Leary', imagen:'Libros/librotibetanomuertos.jpg', url:'Libros/Libro_Tibetano_de_los_Muertos.pdf' },
-    { categoria:'Budismo', titulo:'Budismo Esotérico', autor:'Alfred Percy Sinnett', imagen:'Libros/Budismoesoterico.jpg', url:'Libros/Sinnett - Budismo Esoterico.pdf', imgPosition:'top' },
-    { categoria:'Carolyne Myss', titulo:'Anatomía del Espíritu', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Anatomía_espiritu.jpg', url:'Libros/Anatomía-del-espiritu-Caroline-Myss.pdf' },
-    { categoria:'Cristaloterapia', titulo:'La Biblia de los Cristales', autor:'Judy Hall', imagen:'Libros/Bibliacristales.png', url:'', imgContain:true },    { categoria:'Carolyne Myss', titulo:'Arquetipos', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Arquetipos.jpg', url:'Libros/Arquetipos Caroline Myss.pdf' },
-    { categoria:'Carolyne Myss', titulo:'El Contrato Sagrado', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Contratosagrado.png', url:'Libros/El-contrato-sagrado-Caroline-Myss.pdf' },
-    { categoria:'Carolyne Myss', titulo:'Desafiar la Gravedad', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Desafiargravedad.jpg', url:'Libros/Desafiar-la-gravedad Carolyne Myss.pdf' },
-    { categoria:'Carolyne Myss', titulo:'La Medicina de la Energía', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Medicinadelaenergia.jpg', url:'Libros/caroline_myss_la_medicina_de_la_energia.pdf' },
-    { categoria:'Carolyne Myss', titulo:'El Poder Invisible en Acción', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Myss_Caroline_El_Poder_Invisible.jpg', url:'Libros/86211433-Myss-Caroline-El-Poder-Invisible-en-Accion.pdf' },
+    { categoria:'Budismo', titulo:'El Libro Tibetano de los Muertos', autor:'Timothy Leary', imagen:'Libros/librotibetanomuertos.jpg', url:'' },
+    { categoria:'Budismo', titulo:'Budismo Esotérico', autor:'Alfred Percy Sinnett', imagen:'Libros/Budismoesoterico.jpg', url:'', imgPosition:'top' },
+    { categoria:'Carolyne Myss', titulo:'Anatomía del Espíritu', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Anatomía_espiritu.jpg', url:'' },
+    { categoria:'Carolyne Myss', titulo:'Arquetipos', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Arquetipos.jpg', url:'' },
+    { categoria:'Carolyne Myss', titulo:'El Contrato Sagrado', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Contratosagrado.png', url:'' },
+    { categoria:'Carolyne Myss', titulo:'Desafiar la Gravedad', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Desafiargravedad.jpg', url:'' },
+    { categoria:'Carolyne Myss', titulo:'La Medicina de la Energía', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Medicinadelaenergia.jpg', url:'' },
+    { categoria:'Carolyne Myss', titulo:'El Poder Invisible en Acción', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Myss_Caroline_El_Poder_Invisible.jpg', url:'' },
+    { categoria:'Cristaloterapia', titulo:'La Biblia de los Cristales', autor:'Judy Hall', imagen:'Libros/Bibliacristales.png', url:'', imgContain:true },
   ];
 
   // ══════════════════════
@@ -429,7 +430,7 @@
         <div class="book-card" style="animation-delay:${i * 0.07}s">
           <div class="book-cover-wrap" style="${l.imgHeight ? 'padding-top:'+l.imgHeight : ''}">
             <img src="${l.imagen}" alt="${l.titulo}" style="${l.imgPosition ? 'object-position:'+l.imgPosition+';' : ''}${l.imgContain ? 'object-fit:contain;background:#1a0f05;' : ''}" onerror="this.style.display='none'">
-            <div class="book-cover-placeholder">📚</div>
+            <div class="book-cover-placeholder"></div>
           </div>
           <div class="book-info">
             <div class="book-title">${l.titulo}</div>
