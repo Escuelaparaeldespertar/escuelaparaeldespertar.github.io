@@ -395,6 +395,8 @@
     { categoria:'Ken Wilber', titulo:'Gracia y Coraje', autor:'Ken Wilber', imagen:'Libros/gracia_y_coraje.jpg', url:'https://e.pcloud.link/publink/show?code=XZQJ43ZuB9j90ho1L8VgXowljU6d5xgRe1y' },
     { categoria:'Barbara Ann Brenan', titulo:'Manos que Curan', autor:'Barbara Ann Brennan', imagen:'Libros/Manosquecuran.jpg', url:'Libros/Manos-que-curan-Barbara-Ann-Brennan.pdf' },
     { categoria:'Barbara Ann Brenan', titulo:'Hágase la Luz', autor:'Barbara Ann Brennan', imagen:'Libros/Manosquecuran_2.jpg', url:'Libros/Hágase-la-Luz-Barbara-Ann-Brennan.pdf' },
+    { categoria:'Biodescodificación', titulo:'Descodificación Biológica de las Enfermedades', autor:'Jacques Martel', imagen:'Libros/Biodescodificacion.jpg', url:'' },
+    { categoria:'Biodescodificación', titulo:'Causas Emocionales de las Enfermedades', autor:'Jacques Martel', imagen:'Libros/Causasdolencias.jpg', url:'' },
   ];
 
   // ══════════════════════
@@ -424,7 +426,10 @@
           <div class="book-info">
             <div class="book-title">${l.titulo}</div>
             <div class="book-author">${l.autor}</div>
-            <a class="book-btn" href="${l.url}" target="_blank">Abrir libro</a>
+            ${l.url 
+              ? `<a class="book-btn" href="${l.url}" target="_blank">Abrir libro</a>`
+              : `<span class="book-btn" style="opacity:0.4;cursor:default;">Próximamente</span>`
+            }
           </div>
         </div>
       `).join('');
