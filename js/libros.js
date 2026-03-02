@@ -29,16 +29,25 @@ const libros = [
 ];
 
 // ══════════════════════
-// PANEL CATEGORÍAS Y LIBROS
+// GENERAR CATEGORÍAS AUTOMÁTICAMENTE
 // ══════════════════════
 const panelCats  = document.getElementById('panelCats');
 const panelBooks = document.getElementById('panelBooks');
 
-// Función para abrir categoría
-function abrirCategoria(cat) {
+function generarCategorias() {
+  const categoriasUnicas = [...new Set(libros.map(l => l.categoria))];
+  panelCats.innerHTML = categoriasUnicas.map(cat => `
+    <div class="cat-card" onclick="abrirCategoria('${cat}', '📚')">${cat}</div>
+  `).join('');
+}
+
+// ══════════════════════
+// ABRIR CATEGORÍA Y MOSTRAR LIBROS
+// ══════════════════════
+function abrirCategoria(cat, icon) {
   const filtrados = libros.filter(l => l.categoria === cat);
 
-  document.getElementById('booksCatName').textContent = cat;
+  document.getElementById('booksCatName').textContent = icon + '  ' + cat;
   document.getElementById('booksCount').textContent = filtrados.length > 0
     ? filtrados.length + (filtrados.length === 1 ? ' libro' : ' libros')
     : 'Próximamente';
@@ -48,15 +57,18 @@ function abrirCategoria(cat) {
     grid.innerHTML = `<div class="empty-msg">Próximamente libros<br>en esta colección ✦</div>`;
   } else {
     grid.innerHTML = filtrados.map((l, i) => `
-      <div class="book-card" style="animation-delay:${i*0.07}s">
-        <div class="book-cover-wrap" style="${l.imgHeight?'padding-top:'+l.imgHeight:''}">
-          <img src="${l.imagen}" alt="${l.titulo}" style="${l.imgPosition?'object-position:'+l.imgPosition+';':''}${l.imgContain?'object-fit:contain;background:#1a0f05;':''}" onerror="this.style.display='none'">
+      <div class="book-card" style="animation-delay:${i * 0.07}s">
+        <div class="book-cover-wrap" style="${l.imgHeight ? 'padding-top:'+l.imgHeight : ''}">
+          <img src="${l.imagen}" alt="${l.titulo}" style="${l.imgPosition ? 'object-position:'+l.imgPosition+';' : ''}${l.imgContain ? 'object-fit:contain;background:#1a0f05;' : ''}" onerror="this.style.display='none'">
           <div class="book-cover-placeholder"></div>
         </div>
         <div class="book-info">
           <div class="book-title">${l.titulo}</div>
           <div class="book-author">${l.autor}</div>
-          ${l.url? `<a class="book-btn" href="${l.url}" target="_blank">Abrir libro</a>` : `<span class="book-btn" style="opacity:0.4;cursor:default;">Próximamente</span>`}
+          ${l.url 
+            ? `<a class="book-btn" href="${l.url}" target="_blank">Abrir libro</a>`
+            : `<span class="book-btn" style="opacity:0.4;cursor:default;">Próximamente</span>`
+          }
         </div>
       </div>
     `).join('');
@@ -67,7 +79,9 @@ function abrirCategoria(cat) {
   panelBooks.scrollTop = 0;
 }
 
-// Volver al inicio
+// ══════════════════════
+// VOLVER A INICIO
+// ══════════════════════
 function volverInicio() {
   panelBooks.classList.remove('slide-in');
   panelCats.classList.remove('slide-out');
@@ -75,27 +89,12 @@ function volverInicio() {
 }
 
 // ══════════════════════
-// GENERAR BOTONES DE CATEGORÍAS AUTOMÁTICOS
-// ══════════════════════
-function generarCategorias() {
-  const categorias = [...new Set(libros.map(l => l.categoria))];
-  panelCats.innerHTML = categorias.map(cat => `
-    <div class="cat-card" onclick="abrirCategoria('${cat}')">
-      ${cat}
-    </div>
-  `).join('');
-}
-
-// Llamar al inicio
-generarCategorias();
-
-// ══════════════════════
 // PARTÍCULAS
 // ══════════════════════
 const cont = document.getElementById('particles');
-for (let i=0; i<30; i++){
+for (let i = 0; i < 30; i++) {
   const p = document.createElement('div');
-  p.className='particle';
+  p.className = 'particle';
   p.style.cssText = `left:${Math.random()*100}%;animation-duration:${8+Math.random()*15}s;animation-delay:${Math.random()*10}s;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;`;
   cont.appendChild(p);
 }
@@ -105,21 +104,25 @@ for (let i=0; i<30; i++){
 // ══════════════════════
 const audio = document.getElementById('musicaFondo');
 audio.volume = 0.5;
-
-function iniciarMusica(){
+function iniciarMusica() {
   audio.play();
-  ['inicioMusica','inicioMusicaM'].forEach(id=>document.getElementById(id).style.display='none');
-  ['botonMusica','botonMusicaM'].forEach(id=>document.getElementById(id).style.display='flex');
-  ['volumenControl','volumenM'].forEach(id=>document.getElementById(id).style.display='block');
+  ['inicioMusica','inicioMusicaM'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('botonMusica').style.display   = 'flex';
+  document.getElementById('botonMusicaM').style.display  = 'flex';
+  document.getElementById('volumenControl').style.display = 'block';
+  document.getElementById('volumenM').style.display       = 'block';
 }
-
-function toggleAudio(){
+function toggleAudio() {
   const playing = !audio.paused;
   playing ? audio.pause() : audio.play();
-  ['botonMusica','botonMusicaM'].forEach(id=>document.getElementById(id).textContent = playing?'🔈':'🔊');
+  ['botonMusica','botonMusicaM'].forEach(id => document.getElementById(id).textContent = playing ? '🔈' : '🔊');
+}
+function cambiarVolumen() {
+  const isMobile = window.innerWidth <= 600;
+  audio.volume = document.getElementById(isMobile ? 'volumenM' : 'volumenControl').value;
 }
 
-function cambiarVolumen(){
-  const isMobile = window.innerWidth <= 600;
-  audio.volume = document.getElementById(isMobile?'volumenM':'volumenControl').value;
-}
+// ══════════════════════
+// INICIALIZAR CATEGORÍAS AL CARGAR
+// ══════════════════════
+window.addEventListener('DOMContentLoaded', generarCategorias);
