@@ -129,9 +129,20 @@
     .app-header {
       width:240px; min-width:240px; flex-shrink:0;
       flex-direction:column; align-items:center;
-      min-height:100vh; padding:50px 24px 40px;
+      min-height:100vh; padding:50px 24px 100px;
       border-bottom:none; border-right:1px solid rgba(201,168,76,0.15);
       position:sticky; top:0; height:100vh; justify-content:center;
+    }
+    /* Línea izquierda que llega hasta el fondo */
+    .panel-cats::before {
+      content:'';
+      position:fixed;
+      left:240px;
+      top:0; bottom:0;
+      width:1px;
+      background:rgba(201,168,76,0.15);
+      z-index:2;
+      pointer-events:none;
     }
     .app-logo { width:130px; height:130px; margin-bottom:20px; }
     .app-title { font-size:11px; letter-spacing:4px; }
@@ -142,6 +153,7 @@
   @media(min-width:1200px) {
     .app-header { width:280px; min-width:280px; }
     .cats-grid { grid-template-columns:repeat(5,1fr); }
+    .panel-cats::before { left:280px; }
   }
 
   .cat-card {
@@ -381,8 +393,8 @@
   // ══════════════════════
   const libros = [
     { categoria:'Ken Wilber', titulo:'Gracia y Coraje', autor:'Ken Wilber', imagen:'Libros/gracia_y_coraje.jpg', url:'https://e.pcloud.link/publink/show?code=XZQJ43ZuB9j90ho1L8VgXowljU6d5xgRe1y' },
-    // Agrega más libros aquí:
-    // { categoria:'Budismo', titulo:'Título', autor:'Autor', imagen:'Libros/imagen.jpg', url:'URL' },
+    { categoria:'Barbara Ann Brenan', titulo:'Manos que Curan', autor:'Barbara Ann Brennan', imagen:'Libros/Manosquecuran.jpg', url:'Libros/Manos-que-curan-Barbara-Ann-Brennan.pdf' },
+    { categoria:'Barbara Ann Brenan', titulo:'Hágase la Luz', autor:'Barbara Ann Brennan', imagen:'Libros/Manosquecuran_2.jpg', url:'Libros/Hágase-la-Luz-Barbara-Ann-Brennan.pdf' },
   ];
 
   // ══════════════════════
