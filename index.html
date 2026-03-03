@@ -424,7 +424,17 @@
   const panelCats  = document.getElementById('panelCats');
   const panelBooks = document.getElementById('panelBooks');
 
+  // Detectar botón retroceder del navegador
+  window.addEventListener('popstate', function(e) {
+    if (panelBooks.classList.contains('slide-in')) {
+      panelBooks.classList.remove('slide-in');
+      panelCats.classList.remove('slide-out');
+      window.scrollTo(0,0);
+    }
+  });
+
   function abrirCategoria(cat, icon) {
+    history.pushState({ cat, icon }, '', '');
     const filtrados = libros.filter(l => l.categoria === cat);
 
     document.getElementById('booksCatName').textContent = icon + '  ' + cat;
