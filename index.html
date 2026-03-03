@@ -20,36 +20,22 @@
   @keyframes glow { from{text-shadow:0 0 10px rgba(201,168,76,0.3);} to{text-shadow:0 0 25px rgba(201,168,76,0.7),0 0 50px rgba(201,168,76,0.3);} }
   @keyframes float-up { 0%{transform:translateY(100vh);opacity:0;} 10%{opacity:0.5;} 90%{opacity:0.2;} 100%{transform:translateY(-20px) translateX(20px);opacity:0;} }
   @keyframes fadeIn { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
-  @keyframes slideInRight { from{opacity:0;transform:translateX(60px);} to{opacity:1;transform:translateX(0);} }
-  @keyframes slideOutLeft { from{opacity:1;transform:translateX(0);} to{opacity:0;transform:translateX(-60px);} }
-  @keyframes slideInLeft { from{opacity:0;transform:translateX(-60px);} to{opacity:1;transform:translateX(0);} }
-  @keyframes floatPanel { from{transform:translateY(0)} to{transform:translateY(-6px)} }
   @keyframes card-in { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 
-  /* LOTO MÓVIL */
   @media(max-width:600px) {
-    #lotusBg img {
-      width: 90% !important;
-      margin-left: 0 !important;
-      opacity: 0.07 !important;
-    }
+    #lotusBg img { width:90% !important; margin-left:0 !important; opacity:0.07 !important; }
   }
 
-  /* PARTICLES */
   #particles { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:hidden; }
   .particle { position:absolute; width:2px; height:2px; background:var(--gold-light); border-radius:50%; opacity:0; animation:float-up linear infinite; }
 
-  /* MUSIC PANEL */
   #panelMusica {
-    position:fixed; bottom:20px; left:0;
-    width:240px;
+    position:fixed; bottom:20px; left:0; width:240px;
     display:flex; flex-direction:row; align-items:center; justify-content:center; gap:8px;
     background:linear-gradient(145deg,#2a1a0a,#1a0f05);
-    border:1px solid rgba(201,168,76,0.3);
-    border-left:none; border-bottom:none;
+    border:1px solid rgba(201,168,76,0.3); border-left:none; border-bottom:none;
     padding:10px 16px; border-radius:0 10px 0 0;
-    box-shadow:0 4px 18px rgba(0,0,0,0.5);
-    z-index:1000;
+    box-shadow:0 4px 18px rgba(0,0,0,0.5); z-index:1000;
   }
   .music-label { font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px; color:rgba(201,168,76,0.45); text-transform:uppercase; }
   #inicioMusica { padding:6px 12px; font-size:10px; background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; border:none; border-radius:7px; cursor:pointer; font-family:'Cinzel',serif; letter-spacing:1px; box-shadow:0 3px 10px rgba(201,168,76,0.3); transition:transform 0.2s; }
@@ -58,16 +44,8 @@
   #botonMusica:hover { background:rgba(201,168,76,0.25); }
   #volumenControl { display:none; width:80px; accent-color:var(--gold); }
 
-  /* ═══════════════════════════════════
-     LAYOUT PRINCIPAL — dos paneles
-  ═══════════════════════════════════ */
-  .app {
-    position:relative; z-index:1;
-    display:flex; min-height:100vh;
-    overflow:hidden;
-  }
+  .app { position:relative; z-index:1; display:flex; min-height:100vh; overflow:hidden; }
 
-  /* ── PANEL IZQUIERDO: Categorías ── */
   .panel-cats {
     width:100%; flex-shrink:0;
     display:flex; flex-direction:column; align-items:center;
@@ -76,36 +54,28 @@
     will-change:transform,opacity;
   }
   .panel-cats.slide-out {
-    transform:translateX(-100%);
-    opacity:0;
-    pointer-events:none;
-    position:absolute; top:0; left:0; width:100%;
+    transform:translateX(-100%); opacity:0;
+    pointer-events:none; position:absolute; top:0; left:0; width:100%;
   }
 
-  /* Cabecera */
   .app-header {
     width:100%; display:flex; flex-direction:column; align-items:center;
-    padding:44px 24px 30px;
-    border-bottom:1px solid rgba(201,168,76,0.15);
+    padding:44px 24px 30px; border-bottom:1px solid rgba(201,168,76,0.15);
     animation:fadeIn 0.8s ease 0.1s both;
   }
   .app-logo {
     width:180px; height:180px; border-radius:50%; object-fit:cover;
-    border:2px solid rgba(201,168,76,0.5);
-    box-shadow:0 0 40px rgba(201,168,76,0.2);
-    margin-bottom:18px; cursor:pointer;
-    transition:transform 0.3s, box-shadow 0.3s;
+    border:2px solid rgba(201,168,76,0.5); box-shadow:0 0 40px rgba(201,168,76,0.2);
+    margin-bottom:18px; cursor:pointer; transition:transform 0.3s, box-shadow 0.3s;
   }
   .app-logo:hover { transform:scale(1.04); box-shadow:0 0 55px rgba(201,168,76,0.35); }
   .app-ornament { font-size:20px; color:var(--gold); margin-bottom:10px; animation:glow 3s ease-in-out infinite alternate; }
   .app-title { font-family:'Cinzel',serif; font-size:14px; letter-spacing:5px; color:var(--gold); text-transform:uppercase; line-height:1.8; text-align:center; }
   .app-quote { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:14px; color:rgba(201,168,76,0.45); margin-top:10px; text-align:center; }
 
-  /* Grid de categorías */
   .cats-label {
-    font-family:'Cinzel',serif; font-size:10px; letter-spacing:4px;
-    color:var(--gold); text-transform:uppercase;
-    text-shadow:0 0 12px rgba(201,168,76,0.6), 0 0 28px rgba(201,168,76,0.3);
+    font-family:'Cinzel',serif; font-size:10px; letter-spacing:4px; color:var(--gold);
+    text-transform:uppercase; text-shadow:0 0 12px rgba(201,168,76,0.6),0 0 28px rgba(201,168,76,0.3);
     width:100%; padding:24px 28px 10px;
     animation:fadeIn 0.8s ease 0.3s both, glow 3s ease-in-out infinite alternate;
   }
@@ -115,7 +85,6 @@
     animation:fadeIn 0.8s ease 0.4s both;
   }
 
-  /* Tablet: 3 columnas */
   @media(min-width:600px) {
     .cats-grid { grid-template-columns:1fr 1fr 1fr; max-width:700px; margin:0 auto; padding:0 28px 28px; }
     .app-header { padding:50px 40px 36px; }
@@ -123,7 +92,6 @@
     .app-title { font-size:15px; }
   }
 
-  /* Desktop: logo sidebar izquierdo, categorías a la derecha */
   @media(min-width:900px) {
     .panel-cats { flex-direction:row; align-items:flex-start; padding-bottom:0; }
     .app-header {
@@ -131,21 +99,13 @@
       flex-direction:column; align-items:center;
       min-height:100vh; padding:50px 24px 100px;
       border-bottom:none; border-right:1px solid rgba(201,168,76,0.15);
-      position:sticky; top:0; height:100vh; justify-content:center;
-      display:flex;
+      position:sticky; top:0; height:100vh; justify-content:center; display:flex;
     }
-    /* Línea izquierda que llega hasta el fondo */
     .panel-cats::before {
-      content:'';
-      position:fixed;
-      left:240px;
-      top:0; bottom:0;
-      width:1px;
-      background:rgba(201,168,76,0.15);
-      z-index:2;
-      pointer-events:none;
+      content:''; position:fixed; left:240px; top:0; bottom:0;
+      width:1px; background:rgba(201,168,76,0.15); z-index:2; pointer-events:none;
     }
-    .app-logo { width:160px; height:160px; margin-bottom:20px; }
+    .app-logo { width:180px; height:180px; margin-bottom:20px; }
     .app-title { font-size:11px; letter-spacing:4px; }
     .cats-right { flex:1; display:flex; flex-direction:column; padding:40px 36px 60px; overflow-y:auto; }
     .cats-label { padding:0 0 14px; width:auto; }
@@ -158,67 +118,45 @@
   }
 
   .cat-card {
-    background:rgba(255,255,255,0.04);
-    border:1px solid rgba(201,168,76,0.15);
-    border-radius:14px; padding:20px 14px;
-    cursor:pointer;
+    background:rgba(255,255,255,0.04); border:1px solid rgba(201,168,76,0.15);
+    border-radius:14px; padding:20px 14px; cursor:pointer;
     display:flex; flex-direction:column; align-items:center; gap:10px;
-    transition:all 0.25s ease;
-    animation:fadeIn 0.6s ease both;
+    transition:all 0.25s ease; animation:fadeIn 0.6s ease both;
   }
   .cat-card:hover { background:rgba(201,168,76,0.1); border-color:rgba(201,168,76,0.45); transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
   .cat-card:active { transform:scale(0.96); }
   .cat-icon { font-size:30px; }
   .cat-name { font-family:'Cinzel',serif; font-size:9px; letter-spacing:1px; color:rgba(245,239,228,0.75); text-transform:uppercase; text-align:center; line-height:1.5; }
 
-  /* ── PANEL DERECHO: Libros ── */
   .panel-books {
-    position:fixed; inset:0;
-    display:flex; flex-direction:column;
+    position:fixed; inset:0; display:flex; flex-direction:column;
     background:linear-gradient(180deg,#2a1a0a 0%,#1a0f05 100%);
-    z-index:10;
-    transform:translateX(100%);
-    opacity:0;
+    z-index:10; transform:translateX(100%); opacity:0;
     transition:transform 0.5s cubic-bezier(0.77,0,0.18,1), opacity 0.4s ease;
-    will-change:transform,opacity;
-    overflow-y:auto;
-    padding-bottom:80px;
+    will-change:transform,opacity; overflow-y:auto; padding-bottom:80px;
   }
-  .panel-books.slide-in {
-    transform:translateX(0);
-    opacity:1;
-  }
+  .panel-books.slide-in { transform:translateX(0); opacity:1; }
 
-  /* Fondo loto sutil */
   .books-loto {
-    position:fixed; inset:0;
-    background-image:url('Fondo/Loto.png');
+    position:fixed; inset:0; background-image:url('Fondo/Loto.png');
     background-size:cover; background-position:center;
     opacity:0.07; pointer-events:none; z-index:0;
   }
 
-  /* Cabecera panel libros */
   .books-header {
     position:sticky; top:0; z-index:5;
-    display:flex; align-items:center; gap:16px;
-    padding:18px 24px;
-    background:rgba(42,26,10,0.96);
-    border-bottom:1px solid rgba(201,168,76,0.2);
+    display:flex; align-items:center; gap:16px; padding:18px 24px;
+    background:rgba(42,26,10,0.96); border-bottom:1px solid rgba(201,168,76,0.2);
     backdrop-filter:blur(10px);
   }
   .back-logo {
     width:130px; height:130px; border-radius:50%; object-fit:cover;
-    border:2px solid rgba(201,168,76,0.5);
-    cursor:pointer; flex-shrink:0;
-    transition:transform 0.3s, box-shadow 0.3s;
-    box-shadow:0 0 30px rgba(201,168,76,0.2);
+    border:2px solid rgba(201,168,76,0.5); cursor:pointer; flex-shrink:0;
+    transition:transform 0.3s, box-shadow 0.3s; box-shadow:0 0 30px rgba(201,168,76,0.2);
   }
   .back-logo:hover { transform:scale(1.08); box-shadow:0 0 20px rgba(201,168,76,0.3); }
   .books-header-info { flex:1; }
-  .books-cat-name {
-    font-family:'Cinzel',serif; font-size:11px; letter-spacing:3px;
-    color:var(--gold); text-transform:uppercase;
-  }
+  .books-cat-name { font-family:'Cinzel',serif; font-size:11px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; }
   .books-count { font-size:12px; color:rgba(201,168,76,0.45); margin-top:2px; font-style:italic; }
   .back-btn {
     padding:8px 16px; background:rgba(201,168,76,0.1);
@@ -228,40 +166,32 @@
   }
   .back-btn:hover { background:rgba(201,168,76,0.2); }
 
-  /* Grid de libros */
   .books-inner {
     position:relative; z-index:1;
     display:grid; grid-template-columns:repeat(2,1fr);
     gap:16px; padding:24px 20px;
   }
   @media(min-width:500px) { .books-inner { grid-template-columns:repeat(3,1fr); } }
-  @media(min-width:768px) { .books-inner { grid-template-columns:repeat(5,1fr); max-width:960px; margin:0 auto; padding:30px 28px; gap:16px; } }
-  @media(min-width:1100px) { .books-inner { grid-template-columns:repeat(6,1fr); max-width:1200px; } }
+  @media(min-width:768px) { .books-inner { grid-template-columns:repeat(4,1fr); max-width:960px; margin:0 auto; padding:30px 28px; gap:20px; } }
+  @media(min-width:1100px) { .books-inner { grid-template-columns:repeat(5,1fr); max-width:1200px; } }
 
   .book-card {
-    background:rgba(255,255,255,0.05);
-    border:1px solid rgba(201,168,76,0.15);
+    background:rgba(255,255,255,0.05); border:1px solid rgba(201,168,76,0.15);
     border-radius:10px; overflow:hidden; cursor:pointer;
-    transition:all 0.3s ease;
-    animation:card-in 0.5s ease both;
+    transition:all 0.3s ease; animation:card-in 0.5s ease both;
     max-width:220px; margin:0 auto; width:100%;
     display:flex; flex-direction:column;
   }
-  .book-info {
-    padding:12px 12px 10px;
-    display:flex; flex-direction:column; flex:1;
-  }
-  .book-author { font-size:11px; color:rgba(201,168,76,0.5); font-style:italic; margin-bottom:auto; padding-bottom:10px; }
   .book-card:hover { transform:translateY(-5px); box-shadow:0 12px 32px rgba(0,0,0,0.5); border-color:rgba(201,168,76,0.4); }
   .book-cover-wrap { width:100%; padding-top:130%; position:relative; overflow:hidden; background:linear-gradient(135deg,#3a2510,#2a1a0a); }
   .book-cover-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
   .book-card:hover .book-cover-wrap img { transform:scale(1.06); }
   .book-cover-placeholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:40px; opacity:0.3; }
-  .book-info { padding:8px 8px 7px; }
-  .book-title { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:11px; color:var(--gold-light); line-height:1.3; margin-bottom:2px; }
-  .book-author { font-size:10px; color:rgba(201,168,76,0.5); font-style:italic; margin-bottom:7px; }
+  .book-info { padding:12px 12px 10px; display:flex; flex-direction:column; flex:1; }
+  .book-title { font-family:'Cormorant Garamond',serif; font-weight:600; font-size:13px; color:var(--gold-light); line-height:1.3; margin-bottom:3px; }
+  .book-author { font-size:11px; color:rgba(201,168,76,0.5); font-style:italic; margin-bottom:auto; padding-bottom:10px; }
   .book-btn {
-    display:block; width:100%; padding:6px;
+    display:block; width:100%; padding:5px;
     background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(139,99,64,0.2));
     color:var(--gold-light); border:1px solid rgba(201,168,76,0.3);
     border-radius:5px; cursor:pointer; font-family:'Cinzel',serif;
@@ -270,35 +200,26 @@
   }
   .book-btn:hover { background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; border-color:transparent; }
 
-  /* Mensaje vacío */
   .empty-msg {
     grid-column:1/-1; text-align:center; padding:60px 20px;
     font-family:'Cormorant Garamond',serif; font-style:italic;
     font-size:18px; color:rgba(201,168,76,0.4); line-height:1.8;
   }
 
-  /* Panel música móvil */
   #panelMusicaMobile {
     position:fixed; bottom:0; left:0; right:0;
     display:flex; flex-direction:row; justify-content:center; align-items:center;
     gap:14px; padding:12px 16px;
     background:linear-gradient(145deg,#2a1a0a,#1a0f05);
-    border-top:1px solid rgba(201,168,76,0.2);
-    border-radius:14px 14px 0 0;
-    z-index:1100;
+    border-top:1px solid rgba(201,168,76,0.2); border-radius:14px 14px 0 0; z-index:1100;
   }
   .music-label-m { font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:rgba(201,168,76,0.45); text-transform:uppercase; }
   #inicioMusicaM { padding:8px 16px; font-size:12px; background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; border:none; border-radius:8px; cursor:pointer; font-family:'Cinzel',serif; letter-spacing:1px; }
   #botonMusicaM { width:36px; height:36px; border-radius:50%; background:rgba(201,168,76,0.12); color:var(--gold-light); border:1px solid rgba(201,168,76,0.3); font-size:18px; display:none; align-items:center; justify-content:center; cursor:pointer; }
   #volumenM { display:none; width:90px; accent-color:var(--gold); }
 
-  /* Ocultar panel desktop en móvil */
-  @media(max-width:600px) {
-    #panelMusica { display:none !important; }
-  }
-  @media(min-width:601px) {
-    #panelMusicaMobile { display:none !important; }
-  }
+  @media(max-width:600px) { #panelMusica { display:none !important; } }
+  @media(min-width:601px) { #panelMusicaMobile { display:none !important; } }
 
   ::-webkit-scrollbar { width:6px; }
   ::-webkit-scrollbar-track { background:#1a0f05; }
@@ -312,21 +233,10 @@
 </audio>
 
 <div id="particles"></div>
-<!-- LOTUS BACKGROUND IMAGE -->
-<div id="lotusBg" style="
-  position:fixed; inset:0; z-index:0; pointer-events:none;
-  display:flex; align-items:center; justify-content:center;
-">
-  <img src="Fondo/LotoN.png" style="
-    width:52%; max-width:650px;
-    opacity:0.10;
-    mix-blend-mode:screen;
-    filter:brightness(1.2) contrast(1.1);
-    margin-left:18%;
-  "/>
+<div id="lotusBg" style="position:fixed;inset:0;z-index:0;pointer-events:none;display:flex;align-items:center;justify-content:center;">
+  <img src="Fondo/LotoN.png" style="width:52%;max-width:650px;opacity:0.10;mix-blend-mode:screen;filter:brightness(1.2) contrast(1.1);margin-left:18%;"/>
 </div>
 
-<!-- PANEL MÚSICA DESKTOP -->
 <div id="panelMusica">
   <div class="music-label">♪ Ambiente</div>
   <button id="inicioMusica" onclick="iniciarMusica()">🎵 ¡Escúchame!</button>
@@ -334,7 +244,6 @@
   <input type="range" id="volumenControl" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
 </div>
 
-<!-- PANEL MÚSICA MÓVIL -->
 <div id="panelMusicaMobile">
   <div class="music-label-m">♪ Ambiente</div>
   <button id="inicioMusicaM" onclick="iniciarMusica()">🎵 ¡Escúchame!</button>
@@ -344,43 +253,37 @@
 
 <div class="app">
 
-  <!-- ══ PANEL CATEGORÍAS ══ -->
   <div class="panel-cats" id="panelCats">
-
     <div class="app-header">
       <img class="app-logo" src="Fondo/Escuela.png" alt="Logo" onclick="volverInicio()" onerror="this.style.display='none'">
       <div class="app-ornament">✦</div>
       <div class="app-title">Biblioteca<br>Virtual</div>
       <div class="app-quote">Un refugio para el alma que busca</div>
     </div>
-
     <div class="cats-right">
-    <div class="cats-label">✦ &nbsp; Colecciones</div>
-
-    <div class="cats-grid">
-      <div class="cat-card" onclick="abrirCategoria('Barbara Ann Brenan','🌺')" style="animation-delay:0.05s"><span class="cat-icon">🌺</span><span class="cat-name">Barbara Ann Brenan</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Biodescodificación','🧬')" style="animation-delay:0.08s"><span class="cat-icon">🧬</span><span class="cat-name">Biodescodificación</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Budismo','🌿')" style="animation-delay:0.11s"><span class="cat-icon">🌿</span><span class="cat-name">Budismo</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Carolyne Myss','🌸')" style="animation-delay:0.14s"><span class="cat-icon">🌸</span><span class="cat-name">Carolyne Myss</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Constelaciones Familiares','🫧')" style="animation-delay:0.17s"><span class="cat-icon">🫧</span><span class="cat-name">Constelaciones Familiares</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Cristaloterapia','💎')" style="animation-delay:0.20s"><span class="cat-icon">💎</span><span class="cat-name">Cristaloterapia</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Filosofía y Religión','🕊️')" style="animation-delay:0.23s"><span class="cat-icon">🕊️</span><span class="cat-name">Filosofía y Religión</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Geometría Sagrada','🌀')" style="animation-delay:0.26s"><span class="cat-icon">🌀</span><span class="cat-name">Geometría Sagrada</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Kabbalah','🔮')" style="animation-delay:0.29s"><span class="cat-icon">🔮</span><span class="cat-name">Kabbalah</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Ken Wilber','🌊')" style="animation-delay:0.32s"><span class="cat-icon">🌊</span><span class="cat-name">Ken Wilber</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Kryon','✨')" style="animation-delay:0.35s"><span class="cat-icon">✨</span><span class="cat-name">Kryon</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Libros Raros','📜')" style="animation-delay:0.38s"><span class="cat-icon">📜</span><span class="cat-name">Libros Raros</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Lopsamg Rampa','🏔️')" style="animation-delay:0.41s"><span class="cat-icon">🏔️</span><span class="cat-name">Lopsamg Rampa</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Nevile Goddard','🌙')" style="animation-delay:0.44s"><span class="cat-icon">🌙</span><span class="cat-name">Nevile Goddard</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Nikola Tesla','⚡')" style="animation-delay:0.47s"><span class="cat-icon">⚡</span><span class="cat-name">Nikola Tesla</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Teosofía','🌌')" style="animation-delay:0.50s"><span class="cat-icon">🌌</span><span class="cat-name">Teosofía</span></div>
-      <div class="cat-card" onclick="abrirCategoria('Triguerinho','🌟')" style="animation-delay:0.53s"><span class="cat-icon">🌟</span><span class="cat-name">Triguerinho</span></div>
+      <div class="cats-label">✦ &nbsp; Colecciones</div>
+      <div class="cats-grid">
+        <div class="cat-card" onclick="abrirCategoria('Barbara Ann Brenan','🌺')" style="animation-delay:0.05s"><span class="cat-icon">🌺</span><span class="cat-name">Barbara Ann Brenan</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Biodescodificación','🧬')" style="animation-delay:0.08s"><span class="cat-icon">🧬</span><span class="cat-name">Biodescodificación</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Budismo','🌿')" style="animation-delay:0.11s"><span class="cat-icon">🌿</span><span class="cat-name">Budismo</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Carolyne Myss','🌸')" style="animation-delay:0.14s"><span class="cat-icon">🌸</span><span class="cat-name">Carolyne Myss</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Constelaciones Familiares','🫧')" style="animation-delay:0.17s"><span class="cat-icon">🫧</span><span class="cat-name">Constelaciones Familiares</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Cristaloterapia','💎')" style="animation-delay:0.20s"><span class="cat-icon">💎</span><span class="cat-name">Cristaloterapia</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Filosofía y Religión','🕊️')" style="animation-delay:0.23s"><span class="cat-icon">🕊️</span><span class="cat-name">Filosofía y Religión</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Geometría Sagrada','🌀')" style="animation-delay:0.26s"><span class="cat-icon">🌀</span><span class="cat-name">Geometría Sagrada</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Kabbalah','🔮')" style="animation-delay:0.29s"><span class="cat-icon">🔮</span><span class="cat-name">Kabbalah</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Ken Wilber','🌊')" style="animation-delay:0.32s"><span class="cat-icon">🌊</span><span class="cat-name">Ken Wilber</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Kryon','✨')" style="animation-delay:0.35s"><span class="cat-icon">✨</span><span class="cat-name">Kryon</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Libros Raros','📜')" style="animation-delay:0.38s"><span class="cat-icon">📜</span><span class="cat-name">Libros Raros</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Lopsamg Rampa','🏔️')" style="animation-delay:0.41s"><span class="cat-icon">🏔️</span><span class="cat-name">Lopsamg Rampa</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Nevile Goddard','🌙')" style="animation-delay:0.44s"><span class="cat-icon">🌙</span><span class="cat-name">Nevile Goddard</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Nikola Tesla','⚡')" style="animation-delay:0.47s"><span class="cat-icon">⚡</span><span class="cat-name">Nikola Tesla</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Teosofía','🌌')" style="animation-delay:0.50s"><span class="cat-icon">🌌</span><span class="cat-name">Teosofía</span></div>
+        <div class="cat-card" onclick="abrirCategoria('Triguerinho','🌟')" style="animation-delay:0.53s"><span class="cat-icon">🌟</span><span class="cat-name">Triguerinho</span></div>
+      </div>
     </div>
-    </div><!-- /cats-right -->
-
   </div>
 
-  <!-- ══ PANEL LIBROS ══ -->
   <div class="panel-books" id="panelBooks">
     <div class="books-loto"></div>
     <div class="books-header">
@@ -397,42 +300,45 @@
 </div>
 
 <script>
-  // ══════════════════════
-  // DATOS DE LIBROS
-  // ══════════════════════
   const libros = [
+    // Ken Wilber
     { categoria:'Ken Wilber', titulo:'Gracia y Coraje', autor:'Ken Wilber', imagen:'Libros/gracia_y_coraje.jpg', url:'https://e.pcloud.link/publink/show?code=XZQJ43ZuB9j90ho1L8VgXowljU6d5xgRe1y' },
+    // Barbara Ann Brenan
     { categoria:'Barbara Ann Brenan', titulo:'Manos que Curan', autor:'Barbara Ann Brennan', imagen:'Libros/Manosquecuran.jpg', url:'https://u.pcloud.link/publink/show?code=XZHoTd5ZnvPkuvbNRmSjzcFpLaoGbyQ0EkU7' },
     { categoria:'Barbara Ann Brenan', titulo:'Hágase la Luz', autor:'Barbara Ann Brennan', imagen:'Libros/Manosquecuran_2.jpg', url:'https://u.pcloud.link/publink/show?code=XZHUTd5Zl1IadvWmNWLSD2lm7h8zQbtyRRRk' },
+    // Biodescodificación
     { categoria:'Biodescodificación', titulo:'La Descodificación Biológica de las Enfermedades', autor:'Enric Corbera', imagen:'Libros/Biodescodificacion.jpg', url:'https://u.pcloud.link/publink/show?code=XZO5gd5ZFLTyhtHflOBiWd4jcqEDPbfNbaWy' },
     { categoria:'Biodescodificación', titulo:'Causas Emocionales de las Enfermedades', autor:'Jacques Martel', imagen:'Libros/Causasdolencias.jpg', url:'https://u.pcloud.link/publink/show?code=XZe5gd5ZtehBnQBbR0QH5ogck4PJeY1TOpuy', imgPosition:'right' },
+    // Budismo
     { categoria:'Budismo', titulo:'El Libro Tibetano de los Muertos', autor:'Timothy Leary', imagen:'Libros/librotibetanomuertos.jpg', url:'https://u.pcloud.link/publink/show?code=XZ6Jgd5ZQMk7RjVC3h0sR3lbz3J1QuuAVyB7' },
     { categoria:'Budismo', titulo:'Budismo Esotérico', autor:'Alfred Percy Sinnett', imagen:'Libros/Budismoesoterico.jpg', url:'https://u.pcloud.link/publink/show?code=XZ5Fgd5ZPXfqBv8PkyV3X5JcuIgpu7Slbnfy', imgPosition:'top' },
+    // Carolyne Myss
     { categoria:'Carolyne Myss', titulo:'Anatomía del Espíritu', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Anatomía_espiritu.jpg', url:'https://u.pcloud.link/publink/show?code=XZHBPd5ZSB68RSog4QzHUWIU4mfLyFTUldAy' },
     { categoria:'Carolyne Myss', titulo:'Arquetipos', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Arquetipos.jpg', url:'https://u.pcloud.link/publink/show?code=XZ4BPd5Z1M6DihaprgSEBfTRCiFTMkyeOIfy' },
     { categoria:'Carolyne Myss', titulo:'El Contrato Sagrado', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Contratosagrado.png', url:'https://u.pcloud.link/publink/show?code=XZmBPd5ZUkoMmu6apG0Eoh1Qty03gm4IhoPX' },
     { categoria:'Carolyne Myss', titulo:'Desafiar la Gravedad', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Desafiargravedad.jpg', url:'https://u.pcloud.link/publink/show?code=XZbBPd5Z788QH94iwXHVGRhkK5wcWf21Nebk' },
     { categoria:'Carolyne Myss', titulo:'La Medicina de la Energía', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Medicinadelaenergia.jpg', url:'https://u.pcloud.link/publink/show?code=XZjBPd5Ze1MdRd0bw1hBXxu7veCd48WGGHz7' },
     { categoria:'Carolyne Myss', titulo:'El Poder Invisible en Acción', autor:'Caroline Myss', imagen:'Libros/Caroline_Myss/Myss_Caroline_El_Poder_Invisible.jpg', url:'https://u.pcloud.link/publink/show?code=XZuBPd5Zj389pDFxeufrtvh60aHpAkCI13JX' },
+    // Constelaciones Familiares
     { categoria:'Constelaciones Familiares', titulo:'Órdenes del Amor', autor:'Bert Hellinger', imagen:'Libros/Constelaciones_familiares/Ordenamor.jpg', url:'https://u.pcloud.link/publink/show?code=XZMlCd5ZUFnlD9GxU3ujB2oyXkeOwhthAAvV' },
     { categoria:'Constelaciones Familiares', titulo:'Cuentos de Vida', autor:'Bert Hellinger', imagen:'Libros/Constelaciones_familiares/Cuentosvida.jpg', url:'https://u.pcloud.link/publink/show?code=XZllCd5ZbQRJ8zfX2vfeptCRCCaTKXhjUqnX' },
     { categoria:'Constelaciones Familiares', titulo:'Guiones que Conducen el Alma', autor:'Bert Hellinger', imagen:'Libros/Constelaciones_familiares/Guionesalma.jpg', url:'https://u.pcloud.link/publink/show?code=XZ6lCd5Znjg5qQwLPDRl0xdx1gVzwpQxnGpX' },
-    { categoria:'Constelaciones Familiares', titulo:'Constelación de la Guerra Civil', autor:'Bert Hellinger', imagen:'Libros/Constelaciones_familiares/Constelacionguerra.jpg', url:'https://u.pcloud.link/publink/show?code=XZalCd5ZRbqFdsFCn7B3Ef8DqM7Mu8hd4emy', imgHeight:'160%' },
+    { categoria:'Constelaciones Familiares', titulo:'Constelación de la Guerra Civil', autor:'Bert Hellinger', imagen:'Libros/Constelaciones_familiares/Constelacionguerra.jpg', url:'https://u.pcloud.link/publink/show?code=XZalCd5ZRbqFdsFCn7B3Ef8DqM7Mu8hd4emy' },
     { categoria:'Constelaciones Familiares', titulo:'El Amor del Espíritu', autor:'Bert Hellinger', imagen:'Libros/Constelaciones_familiares/Amorespiritu.jpg', url:'https://u.pcloud.link/publink/show?code=XZvlCd5ZTFCUUVUk2UStyUbq3YEp0RKEG5IV' },
     { categoria:'Constelaciones Familiares', titulo:'El Destino No Es Respetuoso', autor:'Bert Hellinger', imagen:'Libros/Constelaciones_familiares/Destinonorespetuoso.jpg', url:'https://u.pcloud.link/publink/show?code=XZKdCd5ZWr3AeOBm5eVhKoYfIkmDxfsaHRG7', imgPosition:'center top' },
     { categoria:'Constelaciones Familiares', titulo:'El Centro Se Distingue Por Su Levedad', autor:'Bert Hellinger', imagen:'Libros/Constelaciones_familiares/Centrodistingue.jpg', url:'https://u.pcloud.link/publink/show?code=XZ1ICd5Z8ESz05f1CkReuRfmvOJ4h4EFQxtk' },
-    { categoria:'Constelaciones Familiares', titulo:'Religión Psicoterapia Cura de Almas', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZ82xd5ZHnryyQALvbVUV5psSjNN0bggppV7' },
+    { categoria:'Constelaciones Familiares', titulo:'Religión Psicoterapia Cura de Almas', autor:'Bert Hellinger', imagen:'Libros/Constelaciones_familiares/RelionPsico.jpg', url:'https://u.pcloud.link/publink/show?code=XZ82xd5ZHnryyQALvbVUV5psSjNN0bggppV7' },
     { categoria:'Constelaciones Familiares', titulo:'Hellinger Habla Sobre Gestalt', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZY2xd5ZKoRCv1LF7LzOvauNvv6lazpYaYik' },
     { categoria:'Constelaciones Familiares', titulo:'Del Cielo que Enferma y la Tierra que Sana', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZb2xd5Z5puFgMDP3ejI8GlR27sHzyoUTPWV' },
     { categoria:'Constelaciones Familiares', titulo:'El Manantial y el Camino', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZi2xd5Z5DmoxISXzCu8KcgLwScNLQJvROVV' },
-    { categoria:'Constelaciones Familiares', titulo:'Éxito en la Vida Éxito en los Negocios', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZQWxd5ZJVPxquxrERhqMIsnfK7KgkNRojX7' },
-    { categoria:'Constelaciones Familiares', titulo:'Felicidad que Permanece', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZhWxd5ZgodXehlfo17ekfAE2awBILqkHP0V' },
+    { categoria:'Constelaciones Familiares', titulo:'Éxito en la Vida Éxito en los Negocios', autor:'Bert Hellinger', imagen:'Libros/Constelaciones_familiares/Exitoenlavida.jpg', url:'https://u.pcloud.link/publink/show?code=XZQWxd5ZJVPxquxrERhqMIsnfK7KgkNRojX7' },
+    { categoria:'Constelaciones Familiares', titulo:'Felicidad que Permanece', autor:'Bert Hellinger', imagen:'Libros/Constelaciones_familiares/Felicidadpermanece.jpg', url:'https://u.pcloud.link/publink/show?code=XZhWxd5ZgodXehlfo17ekfAE2awBILqkHP0V' },
     { categoria:'Constelaciones Familiares', titulo:'Historias de Éxito en la Empresa y el Trabajo', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZuWxd5ZV5sGrcvQF4pVxYr18fIrSQsNwAPV' },
     { categoria:'Constelaciones Familiares', titulo:'La Práctica del Asesoramiento Empresarial', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZCWxd5Z1j4ob8K73yzQ57bxHRGtiXCTSlNk' },
     { categoria:'Constelaciones Familiares', titulo:'La Sanación', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZKWxd5Z91Vzv1a6gFjbXsxrYO0oLk4RYKLV' },
     { categoria:'Constelaciones Familiares', titulo:'La Paz Inicia en el Alma', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZEWxd5ZVwD2AXMDzhHpHN4CSbVVu5EXwGTX' },
     { categoria:'Constelaciones Familiares', titulo:'Meditaciones', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZInxd5Z0k1LXw4SCHFHisXxFhEUT44sevsy' },
-    { categoria:'Constelaciones Familiares', titulo:'Órdenes del Amor', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZGnxd5ZKeU6z5cX4iVVs1xJQE9cXyBSavF7' },
+    { categoria:'Constelaciones Familiares', titulo:'Órdenes del Amor (Vol. 2)', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZGnxd5ZKeU6z5cX4iVVs1xJQE9cXyBSavF7' },
     { categoria:'Constelaciones Familiares', titulo:'Viajes Interiores', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZvnxd5ZO7P7HBjQ54yMk2GhjsTcW5q52Qjk' },
     { categoria:'Constelaciones Familiares', titulo:'Órdenes de la Ayuda', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZk9xd5Zhmb5uvdCRNbq3PqRy1AqdS8FVNcV' },
     { categoria:'Constelaciones Familiares', titulo:'Mística Cotidiana', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZ49xd5ZPaGPEvzGK5RBVMi5fv2aM5A93zTV' },
@@ -445,12 +351,15 @@
     { categoria:'Constelaciones Familiares', titulo:'Nuevos Caminos en Constelaciones Familiares', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZpMxd5Zj4YAUU9PRzFB1bkXuoKvxuLtbzzX' },
     { categoria:'Constelaciones Familiares', titulo:'Reconocer lo que Es', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZbMxd5ZxvlhoCHHy8B7Y5c7GUmLCpg0mUJy' },
     { categoria:'Constelaciones Familiares', titulo:'Visualizaciones de Hellinger - Recopilación', autor:'Bert Hellinger', imagen:'', url:'https://u.pcloud.link/publink/show?code=XZTMxd5ZKqg7EmYtbJHOikptvtb4tmUv9Ts7' },
+    // Cristaloterapia
     { categoria:'Cristaloterapia', titulo:'La Biblia de los Cristales', autor:'Judy Hall', imagen:'Libros/Bibliacristales.png', url:'', imgContain:true },
+    // Filosofía y Religión
     { categoria:'Filosofía y Religión', titulo:'Practicando la Presencia', autor:'Joel Goldsmith', imagen:'Libros/Filosofia_Religion/PracticandoPresencia.jpg', url:'' },
     { categoria:'Filosofía y Religión', titulo:'Análisis Espiritual (2da Edición)', autor:'F. Javier Sánchez Campuzano', imagen:'Libros/Filosofia_Religion/Analisis_espiritual.jpg', url:'' },
-    { categoria:'Filosofía y Religión', titulo:'Santa Teresa de Ávila, compañera espiritual de la Sierva de Dios, Dorothy Day', autor:'Francis J. Sicius', imagen:'Libros/Filosofia_Religion/SantaTeresa.jpg', url:'', imgPosition:'center top' },
+    { categoria:'Filosofía y Religión', titulo:'Santa Teresa de Ávila', autor:'Francis J. Sicius', imagen:'Libros/Filosofia_Religion/SantaTeresa.jpg', url:'', imgPosition:'center top' },
     { categoria:'Filosofía y Religión', titulo:'La Vida Sempiterna 1', autor:'Duane S. Crowther', imagen:'Libros/Filosofia_Religion/VidaSempiterna1.jpg', url:'' },
     { categoria:'Filosofía y Religión', titulo:'La Vida Sempiterna 2', autor:'Duane S. Crowther', imagen:'Libros/Filosofia_Religion/VidaSempiterna2.jpg', url:'' },
+    // Geometría Sagrada
     { categoria:'Geometría Sagrada', titulo:'Introducción a la Ciencia Sagrada', autor:'Federico González', imagen:'Libros/Geometria_Sagrada/Introduccionciencia.jpg', url:'' },
     { categoria:'Geometría Sagrada', titulo:'El Antiguo Secreto de la Flor de la Vida Vol. 1', autor:'Drunvalo Melchizedek', imagen:'Libros/Geometria_Sagrada/SecretoFlorVida.jpg', url:'' },
     { categoria:'Geometría Sagrada', titulo:'El Antiguo Secreto de la Flor de la Vida Vol. 2', autor:'Drunvalo Melchizedek', imagen:'Libros/Geometria_Sagrada/SecretoFlorVida2.jpg', url:'' },
@@ -458,13 +367,9 @@
     { categoria:'Geometría Sagrada', titulo:'Viviendo en el Corazón', autor:'Drunvalo Melchizedek', imagen:'Libros/Geometria_Sagrada/ViviendoCorazon.jpg', url:'' },
   ];
 
-  // ══════════════════════
-  // NAVEGACIÓN
-  // ══════════════════════
   const panelCats  = document.getElementById('panelCats');
   const panelBooks = document.getElementById('panelBooks');
 
-  // Detectar botón retroceder del navegador via hash
   window.addEventListener('hashchange', function() {
     if (location.hash === '' || location.hash === '#') {
       panelBooks.classList.remove('slide-in');
@@ -476,9 +381,8 @@
   function abrirCategoria(cat, icon) {
     location.hash = encodeURIComponent(cat);
     const filtrados = libros.filter(l => l.categoria === cat);
-
     document.getElementById('booksCatName').textContent = icon + '  ' + cat;
-    document.getElementById('booksCount').textContent   = filtrados.length > 0
+    document.getElementById('booksCount').textContent = filtrados.length > 0
       ? filtrados.length + (filtrados.length === 1 ? ' libro' : ' libros')
       : 'Próximamente';
 
@@ -488,8 +392,8 @@
     } else {
       grid.innerHTML = filtrados.map((l, i) => `
         <div class="book-card" style="animation-delay:${i * 0.07}s">
-          <div class="book-cover-wrap" style="${l.imgHeight ? 'padding-top:'+l.imgHeight : ''}">
-            ${l.imagen 
+          <div class="book-cover-wrap">
+            ${l.imagen
               ? `<img src="${l.imagen}" alt="${l.titulo}" style="${l.imgPosition ? 'object-position:'+l.imgPosition+';' : ''}${l.imgContain ? 'object-fit:contain;background:#1a0f05;' : ''}" onerror="this.style.display='none'">`
               : `<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#2a1a0a,#1a0f05);gap:8px;">
                   <span style="font-size:28px;">🛠️</span>
@@ -501,7 +405,7 @@
           <div class="book-info">
             <div class="book-title">${l.titulo}</div>
             <div class="book-author">${l.autor}</div>
-            ${l.url 
+            ${l.url
               ? `<a class="book-btn" href="${l.url}" target="_blank">Abrir libro</a>`
               : `<span class="book-btn" style="opacity:0.4;cursor:default;">Próximamente</span>`
             }
@@ -522,9 +426,6 @@
     window.scrollTo(0,0);
   }
 
-  // ══════════════════════
-  // PARTÍCULAS
-  // ══════════════════════
   const cont = document.getElementById('particles');
   for (let i = 0; i < 30; i++) {
     const p = document.createElement('div');
@@ -533,18 +434,15 @@
     cont.appendChild(p);
   }
 
-  // ══════════════════════
-  // MÚSICA
-  // ══════════════════════
   const audio = document.getElementById('musicaFondo');
   audio.volume = 0.5;
   function iniciarMusica() {
     audio.play();
     ['inicioMusica','inicioMusicaM'].forEach(id => document.getElementById(id).style.display = 'none');
-    document.getElementById('botonMusica').style.display   = 'flex';
-    document.getElementById('botonMusicaM').style.display  = 'flex';
+    document.getElementById('botonMusica').style.display = 'flex';
+    document.getElementById('botonMusicaM').style.display = 'flex';
     document.getElementById('volumenControl').style.display = 'block';
-    document.getElementById('volumenM').style.display       = 'block';
+    document.getElementById('volumenM').style.display = 'block';
   }
   function toggleAudio() {
     const playing = !audio.paused;
