@@ -206,10 +206,11 @@
     backdrop-filter:blur(10px);
   }
   .back-logo {
-    width:70px; height:70px; border-radius:50%; object-fit:cover;
-    border:1px solid rgba(201,168,76,0.4);
+    width:130px; height:130px; border-radius:50%; object-fit:cover;
+    border:2px solid rgba(201,168,76,0.5);
     cursor:pointer; flex-shrink:0;
     transition:transform 0.3s, box-shadow 0.3s;
+    box-shadow:0 0 30px rgba(201,168,76,0.2);
   }
   .back-logo:hover { transform:scale(1.08); box-shadow:0 0 20px rgba(201,168,76,0.3); }
   .books-header-info { flex:1; }
@@ -424,9 +425,9 @@
   const panelCats  = document.getElementById('panelCats');
   const panelBooks = document.getElementById('panelBooks');
 
-  // Detectar botón retroceder del navegador
-  window.addEventListener('popstate', function(e) {
-    if (panelBooks.classList.contains('slide-in')) {
+  // Detectar botón retroceder del navegador via hash
+  window.addEventListener('hashchange', function() {
+    if (location.hash === '' || location.hash === '#') {
       panelBooks.classList.remove('slide-in');
       panelCats.classList.remove('slide-out');
       window.scrollTo(0,0);
@@ -434,7 +435,7 @@
   });
 
   function abrirCategoria(cat, icon) {
-    history.pushState({ cat, icon }, '', '');
+    location.hash = encodeURIComponent(cat);
     const filtrados = libros.filter(l => l.categoria === cat);
 
     document.getElementById('booksCatName').textContent = icon + '  ' + cat;
@@ -470,6 +471,7 @@
   }
 
   function volverInicio() {
+    history.pushState('', document.title, window.location.pathname);
     panelBooks.classList.remove('slide-in');
     panelCats.classList.remove('slide-out');
     window.scrollTo(0,0);
