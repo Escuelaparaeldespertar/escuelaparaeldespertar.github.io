@@ -213,11 +213,12 @@
   }
 
   #panelMusicaMobile {
-    position:fixed; bottom:0; left:0; right:0;
+    position:fixed; bottom:0; left:0; right:auto;
     display:flex; flex-direction:row; justify-content:center; align-items:center;
     gap:14px; padding:12px 16px;
     background:linear-gradient(145deg,#2a1a0a,#1a0f05);
-    border-top:1px solid rgba(201,168,76,0.2); border-radius:14px 14px 0 0; z-index:1100;
+    border-top:1px solid rgba(201,168,76,0.2); border-right:1px solid rgba(201,168,76,0.2);
+    border-radius:0 14px 0 0; z-index:1100;
   }
   .music-label-m { font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:rgba(201,168,76,0.45); text-transform:uppercase; }
   #inicioMusicaM { padding:8px 16px; font-size:12px; background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; border:none; border-radius:8px; cursor:pointer; font-family:'Cinzel',serif; letter-spacing:1px; }
