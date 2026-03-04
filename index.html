@@ -59,17 +59,15 @@
 
   .vol-popup {
     display:none; position:absolute; bottom:44px; right:-10px;
-    flex-direction:column; align-items:center; gap:6px;
+    flex-direction:row; align-items:center; gap:6px;
     background:linear-gradient(145deg,#2a1a0a,#1a0f05);
     border:1px solid rgba(201,168,76,0.3); border-radius:10px;
     padding:10px 14px; z-index:200;
     box-shadow:0 4px 18px rgba(0,0,0,0.5); white-space:nowrap;
   }
   .vol-popup.open { display:flex; }
-  .vol-popup span { font-size:9px; font-family:'Cinzel',serif; color:rgba(201,168,76,0.5); letter-spacing:1px; }
-  .vol-slider-vert {
-    width:100px; accent-color:var(--gold); cursor:pointer;
-  }
+  .vol-popup span { font-size:11px; }
+  .vol-slider-vert { width:90px; accent-color:var(--gold); cursor:pointer; }
 
   .app { position:relative; z-index:1; display:flex; min-height:100vh; overflow:hidden; }
 
