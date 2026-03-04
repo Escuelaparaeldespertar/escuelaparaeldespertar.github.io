@@ -30,13 +30,14 @@
   .particle { position:absolute; width:2px; height:2px; background:var(--gold-light); border-radius:50%; opacity:0; animation:float-up linear infinite; }
 
   #panelMusica {
-    position:fixed; bottom:20px; left:0; width:auto;
+    position:fixed; bottom:0; left:0; width:240px;
     display:flex; flex-direction:row; align-items:center; justify-content:center; gap:8px;
     background:linear-gradient(145deg,#2a1a0a,#1a0f05);
     border:1px solid rgba(201,168,76,0.3); border-left:none; border-bottom:none;
-    padding:10px 16px; border-radius:0 10px 0 0;
+    padding:10px 16px; border-radius:0 14px 0 0;
     box-shadow:0 4px 18px rgba(0,0,0,0.5); z-index:1000;
   }
+  @media(min-width:1200px) { #panelMusica { width:280px; } }
   .music-label { font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px; color:rgba(201,168,76,0.45); text-transform:uppercase; }
   #inicioMusica { padding:6px 12px; font-size:10px; background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; border:none; border-radius:7px; cursor:pointer; font-family:'Cinzel',serif; letter-spacing:1px; box-shadow:0 3px 10px rgba(201,168,76,0.3); transition:transform 0.2s; }
   #inicioMusica:hover { transform:scale(1.05); }
@@ -213,12 +214,11 @@
   }
 
   #panelMusicaMobile {
-    position:fixed; bottom:0; left:0; right:auto;
+    position:fixed; bottom:0; left:0; right:0;
     display:flex; flex-direction:row; justify-content:center; align-items:center;
     gap:14px; padding:12px 16px;
     background:linear-gradient(145deg,#2a1a0a,#1a0f05);
-    border-top:1px solid rgba(201,168,76,0.2); border-right:1px solid rgba(201,168,76,0.2);
-    border-radius:0 14px 0 0; z-index:1100;
+    border-top:1px solid rgba(201,168,76,0.2); border-radius:14px 14px 0 0; z-index:1100;
   }
   .music-label-m { font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:rgba(201,168,76,0.45); text-transform:uppercase; }
   #inicioMusicaM { padding:8px 16px; font-size:12px; background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; border:none; border-radius:8px; cursor:pointer; font-family:'Cinzel',serif; letter-spacing:1px; }
