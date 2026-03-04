@@ -49,13 +49,30 @@
   .player-title { font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px; color:rgba(201,168,76,0.6); text-transform:uppercase; }
   .player-progress { width:100%; height:3px; background:rgba(201,168,76,0.2); border-radius:2px; cursor:pointer; position:relative; }
   .player-progress-bar { height:100%; background:linear-gradient(90deg,var(--gold),var(--gold-light)); border-radius:2px; width:0%; transition:width 0.5s linear; pointer-events:none; }
-  .player-controls { display:flex; align-items:center; gap:10px; }
+  .player-controls { display:flex; align-items:center; gap:10px; position:relative; }
   .player-btn { background:none; border:none; color:rgba(201,168,76,0.5); font-size:14px; cursor:pointer; transition:all 0.2s; padding:2px; }
   .player-btn:hover { color:var(--gold-light); transform:scale(1.15); }
   .player-btn.disabled { opacity:0.25; cursor:default; pointer-events:none; }
   .player-btn.play-btn { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; font-size:13px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px rgba(201,168,76,0.4); }
   .player-btn.play-btn:hover { transform:scale(1.1); box-shadow:0 4px 15px rgba(201,168,76,0.6); }
   .player-volume { width:60px; accent-color:var(--gold); cursor:pointer; }
+
+  .vol-popup {
+    display:none; position:absolute; bottom:44px; right:0;
+    flex-direction:column; align-items:center; gap:6px;
+    background:linear-gradient(145deg,#2a1a0a,#1a0f05);
+    border:1px solid rgba(201,168,76,0.3); border-radius:10px;
+    padding:12px 8px; z-index:200;
+    box-shadow:0 4px 18px rgba(0,0,0,0.5);
+  }
+  .vol-popup.open { display:flex; }
+  .vol-popup span { font-size:9px; font-family:'Cinzel',serif; color:rgba(201,168,76,0.5); letter-spacing:1px; }
+  .vol-slider-vert {
+    writing-mode:vertical-lr; direction:rtl;
+    -webkit-appearance:slider-vertical;
+    width:6px; height:80px;
+    accent-color:var(--gold); cursor:pointer;
+  }
 
   .app { position:relative; z-index:1; display:flex; min-height:100vh; overflow:hidden; }
 
@@ -268,10 +285,12 @@
       <button class="player-btn play-btn" id="playPauseBtn" onclick="toggleAudio()">⏸</button>
       <button class="player-btn disabled" title="Siguiente">⏭</button>
       <button class="player-btn" id="repeatBtn" onclick="toggleRepeat()" title="Repetir">🔁</button>
-      <button class="player-btn" id="volBtn" onclick="toggleVolumen()" title="Volumen">🔊</button>
-    </div>
-    <div id="volumenWrap" style="display:none;width:100%;padding:4px 0;">
-      <input type="range" class="player-volume" style="width:100%;" id="volumenControl" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
+      <button class="player-btn" id="volBtn" onclick="toggleVolumen('volPopup','volBtn')" title="Volumen">🔊</button>
+      <div class="vol-popup" id="volPopup">
+        <span>🔊</span>
+        <input type="range" class="vol-slider-vert" id="volumenControl" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
+        <span>🔇</span>
+      </div>
     </div>
   </div>
 </div>
@@ -288,10 +307,12 @@
       <button class="player-btn play-btn" id="playPauseBtnM" onclick="toggleAudio()">⏸</button>
       <button class="player-btn disabled">⏭</button>
       <button class="player-btn" id="repeatBtnM" onclick="toggleRepeat()">🔁</button>
-      <button class="player-btn" id="volBtnM" onclick="toggleVolumen()" title="Volumen">🔊</button>
-    </div>
-    <div id="volumenWrapM" style="display:none;width:100%;padding:4px 0;">
-      <input type="range" class="player-volume" style="width:100%;" id="volumenM" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
+      <button class="player-btn" id="volBtnM" onclick="toggleVolumen('volPopupM','volBtnM')" title="Volumen">🔊</button>
+      <div class="vol-popup" id="volPopupM">
+        <span>🔊</span>
+        <input type="range" class="vol-slider-vert" id="volumenM" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
+        <span>🔇</span>
+      </div>
     </div>
   </div>
 </div>
@@ -570,13 +591,16 @@
     document.getElementById('progressFillM').style.width = pct + '%';
   });
 
-  function toggleVolumen() {
-    const isMobile = window.innerWidth <= 600;
-    const wrap = document.getElementById(isMobile ? 'volumenWrapM' : 'volumenWrap');
-    const btn = document.getElementById(isMobile ? 'volBtnM' : 'volBtn');
-    const visible = wrap.style.display === 'block';
-    wrap.style.display = visible ? 'none' : 'block';
-    btn.style.color = visible ? 'rgba(201,168,76,0.5)' : 'var(--gold)';
+  function toggleVolumen(popupId, btnId) {
+    const popup = document.getElementById(popupId);
+    const btn = document.getElementById(btnId);
+    const isOpen = popup.classList.contains('open');
+    document.querySelectorAll('.vol-popup').forEach(p => p.classList.remove('open'));
+    document.querySelectorAll('#volBtn,#volBtnM').forEach(b => b.style.color = 'rgba(201,168,76,0.5)');
+    if (!isOpen) {
+      popup.classList.add('open');
+      btn.style.color = 'var(--gold)';
+    }
   }
 
   function cambiarVolumen() {
