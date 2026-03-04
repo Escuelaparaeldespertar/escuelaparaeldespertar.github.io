@@ -58,15 +58,12 @@
   .player-volume { width:60px; accent-color:var(--gold); cursor:pointer; }
 
   .vol-popup {
-    display:none; position:absolute; bottom:44px; right:-10px;
+    display:none; position:absolute; bottom:52px; right:-10px;
     flex-direction:row; align-items:center; gap:6px;
     background:linear-gradient(145deg,#2a1a0a,#1a0f05);
     border:1px solid rgba(201,168,76,0.3); border-radius:10px;
     padding:10px 14px; z-index:2000;
     box-shadow:0 4px 18px rgba(0,0,0,0.5); white-space:nowrap;
-  }
-  @media(max-width:600px) {
-    .vol-popup { right:auto; left:50%; transform:translateX(-50%); bottom:52px; }
   }
   .vol-popup.open { display:flex; }
   .vol-popup span { font-size:11px; }
