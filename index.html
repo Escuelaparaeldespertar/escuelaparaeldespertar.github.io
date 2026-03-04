@@ -410,11 +410,23 @@
     if (location.hash === '' || location.hash === '#') {
       panelBooks.classList.remove('slide-in');
       panelCats.classList.remove('slide-out');
+      document.getElementById('panelMusica').style.opacity = '1';
+      document.getElementById('panelMusica').style.pointerEvents = 'auto';
+      document.getElementById('panelMusicaMobile').style.opacity = '1';
+      document.getElementById('panelMusicaMobile').style.pointerEvents = 'auto';
       window.scrollTo(0,0);
     }
   });
 
   function abrirCategoria(cat, icon) {
+    document.getElementById('panelMusica').style.transition = 'opacity 0.5s ease';
+    document.getElementById('panelMusica').style.opacity = '0';
+    document.getElementById('panelMusicaMobile').style.transition = 'opacity 0.5s ease';
+    document.getElementById('panelMusicaMobile').style.opacity = '0';
+    setTimeout(() => {
+      document.getElementById('panelMusica').style.pointerEvents = 'none';
+      document.getElementById('panelMusicaMobile').style.pointerEvents = 'none';
+    }, 500);
     location.hash = encodeURIComponent(cat);
     const filtrados = libros.filter(l => l.categoria === cat);
     document.getElementById('booksCatName').textContent = icon + '  ' + cat;
@@ -456,6 +468,10 @@
   }
 
   function volverInicio() {
+    document.getElementById('panelMusica').style.opacity = '1';
+    document.getElementById('panelMusica').style.pointerEvents = 'auto';
+    document.getElementById('panelMusicaMobile').style.opacity = '1';
+    document.getElementById('panelMusicaMobile').style.pointerEvents = 'auto';
     history.pushState('', document.title, window.location.pathname);
     panelBooks.classList.remove('slide-in');
     panelCats.classList.remove('slide-out');
