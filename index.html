@@ -62,11 +62,11 @@
     flex-direction:row; align-items:center; gap:6px;
     background:linear-gradient(145deg,#2a1a0a,#1a0f05);
     border:1px solid rgba(201,168,76,0.3); border-radius:10px;
-    padding:10px 14px; z-index:200;
+    padding:10px 14px; z-index:2000;
     box-shadow:0 4px 18px rgba(0,0,0,0.5); white-space:nowrap;
   }
   @media(max-width:600px) {
-    .vol-popup { right:auto; left:50%; transform:translateX(-50%); bottom:48px; }
+    .vol-popup { right:auto; left:50%; transform:translateX(-50%); bottom:52px; }
   }
   .vol-popup.open { display:flex; }
   .vol-popup span { font-size:11px; }
@@ -245,7 +245,8 @@
     display:flex; flex-direction:row; justify-content:center; align-items:center;
     gap:14px; padding:12px 16px;
     background:linear-gradient(145deg,#2a1a0a,#1a0f05);
-    border-top:1px solid rgba(201,168,76,0.2); border-radius:14px 14px 0 0; z-index:1100;
+    border-top:1px solid rgba(201,168,76,0.2); border-radius:14px 14px 0 0;
+    z-index:1100; overflow:visible;
   }
   .music-label-m { font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:rgba(201,168,76,0.45); text-transform:uppercase; }
   #inicioMusicaM { padding:8px 16px; font-size:12px; background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; border:none; border-radius:8px; cursor:pointer; font-family:'Cinzel',serif; letter-spacing:1px; }
