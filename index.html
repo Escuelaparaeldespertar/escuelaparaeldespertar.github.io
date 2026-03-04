@@ -58,20 +58,17 @@
   .player-volume { width:60px; accent-color:var(--gold); cursor:pointer; }
 
   .vol-popup {
-    display:none; position:absolute; bottom:44px; right:0;
+    display:none; position:absolute; bottom:44px; right:-10px;
     flex-direction:column; align-items:center; gap:6px;
     background:linear-gradient(145deg,#2a1a0a,#1a0f05);
     border:1px solid rgba(201,168,76,0.3); border-radius:10px;
-    padding:12px 8px; z-index:200;
-    box-shadow:0 4px 18px rgba(0,0,0,0.5);
+    padding:10px 14px; z-index:200;
+    box-shadow:0 4px 18px rgba(0,0,0,0.5); white-space:nowrap;
   }
   .vol-popup.open { display:flex; }
   .vol-popup span { font-size:9px; font-family:'Cinzel',serif; color:rgba(201,168,76,0.5); letter-spacing:1px; }
   .vol-slider-vert {
-    writing-mode:vertical-lr; direction:rtl;
-    -webkit-appearance:slider-vertical;
-    width:6px; height:80px;
-    accent-color:var(--gold); cursor:pointer;
+    width:100px; accent-color:var(--gold); cursor:pointer;
   }
 
   .app { position:relative; z-index:1; display:flex; min-height:100vh; overflow:hidden; }
@@ -287,9 +284,9 @@
       <button class="player-btn" id="repeatBtn" onclick="toggleRepeat()" title="Repetir">🔁</button>
       <button class="player-btn" id="volBtn" onclick="toggleVolumen('volPopup','volBtn')" title="Volumen">🔊</button>
       <div class="vol-popup" id="volPopup">
-        <span>🔊</span>
+        <span style="font-size:11px;">🔇</span>
         <input type="range" class="vol-slider-vert" id="volumenControl" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
-        <span>🔇</span>
+        <span style="font-size:11px;">🔊</span>
       </div>
     </div>
   </div>
@@ -309,9 +306,9 @@
       <button class="player-btn" id="repeatBtnM" onclick="toggleRepeat()">🔁</button>
       <button class="player-btn" id="volBtnM" onclick="toggleVolumen('volPopupM','volBtnM')" title="Volumen">🔊</button>
       <div class="vol-popup" id="volPopupM">
-        <span>🔊</span>
+        <span style="font-size:11px;">🔇</span>
         <input type="range" class="vol-slider-vert" id="volumenM" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
-        <span>🔇</span>
+        <span style="font-size:11px;">🔊</span>
       </div>
     </div>
   </div>
