@@ -65,6 +65,9 @@
     padding:10px 14px; z-index:200;
     box-shadow:0 4px 18px rgba(0,0,0,0.5); white-space:nowrap;
   }
+  @media(max-width:600px) {
+    .vol-popup { right:auto; left:50%; transform:translateX(-50%); bottom:48px; }
+  }
   .vol-popup.open { display:flex; }
   .vol-popup span { font-size:11px; }
   .vol-slider-vert { width:90px; accent-color:var(--gold); cursor:pointer; }
