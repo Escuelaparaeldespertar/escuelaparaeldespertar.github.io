@@ -563,14 +563,14 @@
       document.getElementById('booksCount').textContent = subcats.length + ' colecciones';
       const grid = document.getElementById('booksInner');
 
-      const subcatIcons = {
-        'Audios de Neville Goddard': '🎧',
-        'Libros de Neville Goddard': '📚'
-      };
+      const subcatImages = {
+  'Audios de Neville Goddard': 'Libros/Neville_goddard/Audios/audiosneville.jpg',
+  'Libros de Neville Goddard': 'Libros/Neville_goddard/Libros/librosneville.jpg'
+};
 
       grid.innerHTML = subcats.map((sub, i) => {
         const subLibros = libros.filter(l => l.subcategoria === sub);
-        const primerImg = subLibros[0]?.imagen || '';
+        const primerImg = subcatImages[sub] || subLibros[0]?.imagen || '';
         const subIcon = subcatIcons[sub] || '📁';
         return `
         <div class="book-card" style="animation-delay:${i * 0.1}s; cursor:pointer;" onclick="abrirSubcategoria('${cat}','${sub}','${icon}','${subIcon}')">
@@ -723,6 +723,7 @@
 </script>
 </body>
 </html>
+
 
 
 
