@@ -631,7 +631,7 @@
             <div class="book-title">${l.titulo}</div>
             <div class="book-author">${l.autor}</div>
             ${l.url
-              ? `<button class="book-btn" onclick="window.open('${l.url}','_blank')">${l.subcategoria && l.subcategoria.includes('Audio') ? '🎧 Escuchar' : '📖 Abrir libro'}</button>`
+              ? `<a class="book-btn" href="${l.url}" target="_blank" rel="noopener noreferrer">${l.subcategoria && l.subcategoria.includes('Audio') ? '🎧 Escuchar' : '📖 Abrir libro'}</a>`
               : `<span class="book-btn" style="opacity:0.4;cursor:default;">Próximamente</span>`
             }
           </div>
