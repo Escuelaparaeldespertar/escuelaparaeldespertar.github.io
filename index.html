@@ -563,9 +563,14 @@
       document.getElementById('booksCount').textContent = subcats.length + ' colecciones';
       const grid = document.getElementById('booksInner');
 
-      const subcatImages = {
+  const subcatImages = {
   'Audios de Neville Goddard': 'Libros/Neville_goddard/Audios/audiosneville.jpg',
   'Libros de Neville Goddard': 'Libros/Neville_goddard/Libros/librosneville.jpg'
+};
+
+const subcatIcons = {
+  'Audios de Neville Goddard': '🎧',
+  'Libros de Neville Goddard': '📚'
 };
 
       grid.innerHTML = subcats.map((sub, i) => {
@@ -723,6 +728,7 @@
 </script>
 </body>
 </html>
+
 
 
 
