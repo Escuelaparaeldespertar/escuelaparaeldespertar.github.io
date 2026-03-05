@@ -543,15 +543,22 @@
 
   window.addEventListener('popstate', function(e) {
     const state = e.state || {};
-    if (state.nav === 'subcategory') {
-      // Going back from subcategory → show the category's subcollections
-      _mostrarCategoria(state.cat, state.catIcon);
-      navState = 'category';
-    } else if (state.nav === 'category') {
-      // Going back from category → go home
-      _irAInicio();
+    if (state.nav === 'category') {
+      // Coming back from subcategory → re-render the category subcollections, keep panel open
+      const subcats = [...new Set(libros.filter(l => l.categoria === state.cat && l.subcategoria).map(l => l.subcategoria))];
+      if (subcats.length > 0) {
+        _mostrarCategoria(state.cat, state.icon);
+        navState = 'category';
+      } else {
+        // Category with no subcats — just re-render books, panel stays open
+        const filtrados = libros.filter(l => l.categoria === state.cat && !l.subcategoria);
+        document.getElementById('booksCatName').textContent = state.icon + '  ' + state.cat;
+        document.getElementById('booksCount').textContent = filtrados.length + (filtrados.length === 1 ? ' libro' : ' libros');
+        mostrarLibros(filtrados);
+        navState = 'category';
+      }
     } else {
-      // Going back to home
+      // home state or unknown — close panel
       _irAInicio();
     }
   });
