@@ -614,20 +614,6 @@
     panelBooks.scrollTop = 0;
   }
 
-  function abrirEnlace(url) {
-    window.open(url, '_blank');
-  }
-
-  function abrirEnlace(url) {
-    const a = document.createElement('a');
-    a.href = url;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
-
   function mostrarLibros(filtrados) {
     const grid = document.getElementById('booksInner');
     if (filtrados.length === 0) {
@@ -649,7 +635,7 @@
             <div class="book-title">${l.titulo}</div>
             <div class="book-author">${l.autor}</div>
             ${l.url
-              ? `<button class="book-btn" onclick="abrirEnlace('${l.url}')">${l.subcategoria && l.subcategoria.includes('Audio') ? '🎧 Escuchar' : '📖 Abrir libro'}</button>`
+              ? `<a class="book-btn" href="${l.url}" target="_blank" rel="noopener noreferrer">${l.subcategoria && l.subcategoria.includes('Audio') ? '🎧 Escuchar' : '📖 Abrir libro'}</a>`
               : `<span class="book-btn" style="opacity:0.4;cursor:default;">Próximamente</span>`
             }
           </div>
