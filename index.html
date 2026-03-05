@@ -193,7 +193,7 @@
 
   @media(max-width:600px) {
     .back-btn { padding:6px 10px; font-size:9px; letter-spacing:1px; }
-    .back-logo { width:80px; height:80px; }
+    .back-logo { width:110px; height:110px; }
     .books-cat-name { font-size:9px; letter-spacing:2px; }
   }
 
@@ -239,8 +239,8 @@
 
   #panelMusicaMobile {
     position:fixed; bottom:0; left:0; right:0;
-    display:flex; flex-direction:row; justify-content:center; align-items:center;
-    gap:14px; padding:12px 16px;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    gap:8px; padding:10px 16px;
     background:linear-gradient(145deg,#2a1a0a,#1a0f05);
     border-top:1px solid rgba(201,168,76,0.2); border-radius:14px 14px 0 0;
     z-index:1100; overflow:visible;
@@ -248,7 +248,9 @@
   .music-label-m { font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:rgba(201,168,76,0.45); text-transform:uppercase; }
   #inicioMusicaM { padding:8px 16px; font-size:12px; background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; border:none; border-radius:8px; cursor:pointer; font-family:'Cinzel',serif; letter-spacing:1px; }
   #botonMusicaM { width:36px; height:36px; border-radius:50%; background:rgba(201,168,76,0.12); color:var(--gold-light); border:1px solid rgba(201,168,76,0.3); font-size:18px; display:none; align-items:center; justify-content:center; cursor:pointer; }
-  #volumenM { display:none; width:90px; accent-color:var(--gold); }
+  .mobile-vol-row { display:none; align-items:center; gap:8px; width:100%; justify-content:center; }
+  .mobile-vol-row span { font-size:13px; }
+  #volumenM { width:120px; accent-color:var(--gold); cursor:pointer; height:4px; }
 
   @media(max-width:600px) { #panelMusica { display:none !important; } }
   @media(min-width:601px) { #panelMusicaMobile { display:none !important; } }
@@ -303,12 +305,11 @@
       <button class="player-btn play-btn" id="playPauseBtnM" onclick="toggleAudio()">⏸</button>
       <button class="player-btn disabled">⏭</button>
       <button class="player-btn" id="repeatBtnM" onclick="toggleRepeat()">🔁</button>
-      <button class="player-btn" id="volBtnM" onclick="toggleVolumen('volPopupM','volBtnM')" title="Volumen">🔊</button>
-      <div class="vol-popup" id="volPopupM">
-        <span style="font-size:11px;">🔇</span>
-        <input type="range" class="vol-slider-vert" id="volumenM" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
-        <span style="font-size:11px;">🔊</span>
-      </div>
+    </div>
+    <div class="mobile-vol-row" id="mobileVolRow">
+      <span>🔇</span>
+      <input type="range" id="volumenM" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
+      <span>🔊</span>
     </div>
   </div>
 </div>
@@ -532,19 +533,75 @@
   const panelCats  = document.getElementById('panelCats');
   const panelBooks = document.getElementById('panelBooks');
 
-  window.addEventListener('hashchange', function() {
-    if (location.hash === '' || location.hash === '#') {
-      panelBooks.classList.remove('slide-in');
-      panelCats.classList.remove('slide-out');
-      document.getElementById('panelMusica').style.opacity = '1';
-      document.getElementById('panelMusica').style.pointerEvents = 'auto';
-      document.getElementById('panelMusicaMobile').style.opacity = '1';
-      document.getElementById('panelMusicaMobile').style.pointerEvents = 'auto';
-      window.scrollTo(0,0);
+  // Navigation state
+  let navState = 'home'; // 'home' | 'category' | 'subcategory'
+  let currentCat = null;
+  let currentCatIcon = null;
+
+  // Push initial state so we can catch the first popstate
+  history.replaceState({ nav: 'home' }, '');
+
+  window.addEventListener('popstate', function(e) {
+    const state = e.state || {};
+    if (state.nav === 'subcategory') {
+      // Going back from subcategory → show category (subcats)
+      _mostrarCategoria(currentCat, currentCatIcon);
+    } else {
+      // Going back to home
+      _irAInicio();
     }
   });
 
+  function _irAInicio() {
+    navState = 'home';
+    document.getElementById('panelMusica').style.opacity = '1';
+    document.getElementById('panelMusica').style.pointerEvents = 'auto';
+    document.getElementById('panelMusicaMobile').style.opacity = '1';
+    document.getElementById('panelMusicaMobile').style.pointerEvents = 'auto';
+    panelBooks.classList.remove('slide-in');
+    panelCats.classList.remove('slide-out');
+    window.scrollTo(0,0);
+  }
+
+  function _mostrarCategoria(cat, icon) {
+    const subcats = [...new Set(libros.filter(l => l.categoria === cat && l.subcategoria).map(l => l.subcategoria))];
+    const subcatImages = {
+      'Audios de Neville Goddard': 'Libros/Neville_goddard/Audios/audiosneville.jpg',
+      'Libros de Neville Goddard': 'Libros/Neville_goddard/Libros/librosneville.jpg'
+    };
+    const subcatIcons = {
+      'Audios de Neville Goddard': '🎧',
+      'Libros de Neville Goddard': '📚'
+    };
+    document.getElementById('booksCatName').textContent = icon + '  ' + cat;
+    document.getElementById('booksCount').textContent = subcats.length + ' colecciones';
+    const grid = document.getElementById('booksInner');
+    grid.innerHTML = subcats.map((sub, i) => {
+      const subLibros = libros.filter(l => l.subcategoria === sub);
+      const primerImg = subcatImages[sub] || subLibros[0]?.imagen || '';
+      const subIcon = subcatIcons[sub] || '📁';
+      return `
+      <div class="book-card" style="animation-delay:${i * 0.1}s; cursor:pointer;" onclick="abrirSubcategoria('${cat}','${sub}','${icon}','${subIcon}')">
+        <div class="book-cover-wrap">
+          ${primerImg
+            ? `<img src="${primerImg}" alt="${sub}" style="object-fit:contain;background:#1a0f05;" onerror="this.style.display='none'">`
+            : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:40px;">${subIcon}</div>`
+          }
+        </div>
+        <div class="book-info">
+          <div class="book-title">${subIcon} ${sub}</div>
+          <div class="book-author">${subLibros.length} ${subLibros.length === 1 ? 'elemento' : 'elementos'}</div>
+        </div>
+      </div>`;
+    }).join('');
+    navState = 'category';
+    panelBooks.scrollTop = 0;
+  }
+
   function abrirCategoria(cat, icon) {
+    currentCat = cat;
+    currentCatIcon = icon;
+
     document.getElementById('panelMusica').style.transition = 'opacity 0.5s ease';
     document.getElementById('panelMusica').style.opacity = '0';
     document.getElementById('panelMusicaMobile').style.transition = 'opacity 0.5s ease';
@@ -553,45 +610,14 @@
       document.getElementById('panelMusica').style.pointerEvents = 'none';
       document.getElementById('panelMusicaMobile').style.pointerEvents = 'none';
     }, 500);
-    location.hash = encodeURIComponent(cat);
 
     const subcats = [...new Set(libros.filter(l => l.categoria === cat && l.subcategoria).map(l => l.subcategoria))];
     const sinSubcat = libros.filter(l => l.categoria === cat && !l.subcategoria);
 
     if (subcats.length > 0) {
-      document.getElementById('booksCatName').textContent = icon + '  ' + cat;
-      document.getElementById('booksCount').textContent = subcats.length + ' colecciones';
-      const grid = document.getElementById('booksInner');
-
-      const subcatImages = {
-        'Audios de Neville Goddard': 'Libros/Neville_goddard/Audios/audiosneville.jpg',
-        'Libros de Neville Goddard': 'Libros/Neville_goddard/Libros/librosneville.jpg'
-      };
-
-      const subcatIcons = {
-        'Audios de Neville Goddard': '🎧',
-        'Libros de Neville Goddard': '📚'
-      };
-
-      grid.innerHTML = subcats.map((sub, i) => {
-        const subLibros = libros.filter(l => l.subcategoria === sub);
-        const primerImg = subcatImages[sub] || subLibros[0]?.imagen || '';
-        const subIcon = subcatIcons[sub] || '📁';
-        return `
-        <div class="book-card" style="animation-delay:${i * 0.1}s; cursor:pointer;" onclick="abrirSubcategoria('${cat}','${sub}','${icon}','${subIcon}')">
-          <div class="book-cover-wrap">
-            ${primerImg
-              ? `<img src="${primerImg}" alt="${sub}" style="object-fit:contain;background:#1a0f05;" onerror="this.style.display='none'">`
-              : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:40px;">${subIcon}</div>`
-            }
-          </div>
-          <div class="book-info">
-            <div class="book-title">${subIcon} ${sub}</div>
-            <div class="book-author">${subLibros.length} ${subLibros.length === 1 ? 'elemento' : 'elementos'}</div>
-          </div>
-        </div>`;
-      }).join('');
-
+      _mostrarCategoria(cat, icon);
+      history.pushState({ nav: 'category', cat, icon }, '');
+      navState = 'category';
     } else {
       const filtrados = sinSubcat.length > 0 ? sinSubcat : libros.filter(l => l.categoria === cat);
       document.getElementById('booksCatName').textContent = icon + '  ' + cat;
@@ -599,6 +625,8 @@
         ? filtrados.length + (filtrados.length === 1 ? ' libro' : ' libros')
         : 'Próximamente';
       mostrarLibros(filtrados);
+      history.pushState({ nav: 'category', cat, icon }, '');
+      navState = 'category';
     }
 
     panelCats.classList.add('slide-out');
@@ -611,6 +639,8 @@
     document.getElementById('booksCatName').textContent = subIcon + '  ' + sub;
     document.getElementById('booksCount').textContent = filtrados.length + (filtrados.length === 1 ? ' elemento' : ' elementos');
     mostrarLibros(filtrados);
+    history.pushState({ nav: 'subcategory', cat, sub, catIcon, subIcon }, '');
+    navState = 'subcategory';
     panelBooks.scrollTop = 0;
   }
 
@@ -645,14 +675,8 @@
   }
 
   function volverInicio() {
-    document.getElementById('panelMusica').style.opacity = '1';
-    document.getElementById('panelMusica').style.pointerEvents = 'auto';
-    document.getElementById('panelMusicaMobile').style.opacity = '1';
-    document.getElementById('panelMusicaMobile').style.pointerEvents = 'auto';
-    history.pushState('', document.title, window.location.pathname);
-    panelBooks.classList.remove('slide-in');
-    panelCats.classList.remove('slide-out');
-    window.scrollTo(0,0);
+    history.pushState({ nav: 'home' }, '');
+    _irAInicio();
   }
 
   const cont = document.getElementById('particles');
@@ -673,6 +697,7 @@
     document.querySelectorAll('.music-label, .music-label-m').forEach(el => el.style.display = 'none');
     document.getElementById('playerWidget').style.display = 'flex';
     document.getElementById('playerWidgetM').style.display = 'flex';
+    document.getElementById('mobileVolRow').style.display = 'flex';
   }
 
   function toggleAudio() {
@@ -722,7 +747,8 @@
 
   function cambiarVolumen() {
     const isMobile = window.innerWidth <= 600;
-    audio.volume = document.getElementById(isMobile ? 'volumenM' : 'volumenControl').value;
+    const slider = document.getElementById(isMobile ? 'volumenM' : 'volumenControl');
+    if (slider) audio.volume = slider.value;
   }
 </script>
 </body>
