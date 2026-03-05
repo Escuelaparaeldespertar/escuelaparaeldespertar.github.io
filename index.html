@@ -544,8 +544,12 @@
   window.addEventListener('popstate', function(e) {
     const state = e.state || {};
     if (state.nav === 'subcategory') {
-      // Going back from subcategory → show category (subcats)
-      _mostrarCategoria(currentCat, currentCatIcon);
+      // Going back from subcategory → show the category's subcollections
+      _mostrarCategoria(state.cat, state.catIcon);
+      navState = 'category';
+    } else if (state.nav === 'category') {
+      // Going back from category → go home
+      _irAInicio();
     } else {
       // Going back to home
       _irAInicio();
