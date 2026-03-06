@@ -877,11 +877,14 @@
 
   function iniciarMusica() {
     audio.play();
-    ['inicioMusica','inicioMusicaM'].forEach(id => document.getElementById(id).style.display = 'none');
-    document.querySelectorAll('.music-label, .music-label-m').forEach(el => el.style.display = 'none');
-    document.getElementById('playerWidget').style.display = 'flex';
-    document.getElementById('playerWidgetM').style.display = 'flex';
-    document.getElementById('mobileVolRow').style.display = 'flex';
+    // Ocultar botón de inicio
+    const btnInicio = document.getElementById('inicioMusicaM');
+    if (btnInicio) btnInicio.style.display = 'none';
+    // Mostrar reproductor flotante
+    const playerM = document.getElementById('playerWidgetM');
+    if (playerM) playerM.style.display = 'flex';
+    const volRow = document.getElementById('mobileVolRow');
+    if (volRow) volRow.style.display = 'flex';
   }
 
   function toggleAudio() {
