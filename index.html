@@ -310,6 +310,111 @@
   ::-webkit-scrollbar { width:6px; }
   ::-webkit-scrollbar-track { background:#1a0f05; }
   ::-webkit-scrollbar-thumb { background:rgba(201,168,76,0.3); border-radius:3px; }
+
+  /* ── Buscador expansivo ── */
+  .cats-label {
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .cats-label-text { flex-shrink:0; }
+
+  .search-pill-wrap { position:relative; display:flex; justify-content:flex-end; flex:1; margin-left:12px; }
+
+  .search-pill {
+    display:flex; align-items:center;
+    height:36px; width:36px;
+    background:linear-gradient(135deg,var(--gold),var(--warm-brown));
+    border:none; border-radius:18px; cursor:pointer;
+    overflow:hidden;
+    box-shadow:0 3px 14px rgba(201,168,76,0.4);
+    transition:width 0.5s cubic-bezier(0.4,0,0.2,1), border-radius 0.5s cubic-bezier(0.4,0,0.2,1), background 0.4s ease, box-shadow 0.3s ease;
+    position:relative; z-index:10; flex-shrink:0;
+  }
+  .search-pill.expanded {
+    width:260px; border-radius:10px;
+    background:rgba(255,255,255,0.05);
+    box-shadow:0 0 20px rgba(201,168,76,0.15);
+    border:1px solid rgba(201,168,76,0.35);
+    cursor:default;
+  }
+  .pill-icon {
+    width:36px; min-width:36px; height:36px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; flex-shrink:0;
+    transition:font-size 0.3s ease;
+  }
+  .search-pill.expanded .pill-icon { font-size:13px; }
+
+  .pill-input {
+    flex:1; background:none; border:none; outline:none;
+    color:var(--cream); font-family:'Cormorant Garamond',serif;
+    font-size:14px; letter-spacing:0.3px;
+    opacity:0; width:0;
+    transition:opacity 0.3s ease 0.25s;
+    padding:0; white-space:nowrap;
+  }
+  .search-pill.expanded .pill-input { opacity:1; width:auto; }
+  .pill-input::placeholder { color:rgba(201,168,76,0.35); font-style:italic; }
+
+  .pill-close {
+    background:none; border:none; color:rgba(201,168,76,0.45);
+    font-size:14px; cursor:pointer; padding:0 10px 0 4px;
+    opacity:0; transition:opacity 0.2s ease 0.3s, color 0.2s;
+    flex-shrink:0; line-height:1;
+  }
+  .search-pill.expanded .pill-close { opacity:1; }
+  .pill-close:hover { color:var(--gold); }
+
+  .search-dropdown {
+    position:absolute; top:44px; right:0;
+    width:320px;
+    background:linear-gradient(145deg,#2e1c0c,#1a0f05);
+    border:1px solid rgba(201,168,76,0.2);
+    border-radius:12px; overflow:hidden;
+    box-shadow:0 10px 40px rgba(0,0,0,0.6);
+    opacity:0; transform:translateY(-6px);
+    pointer-events:none;
+    transition:opacity 0.25s ease, transform 0.25s ease;
+    z-index:100; max-height:360px; overflow-y:auto;
+  }
+  .search-dropdown.open { opacity:1; transform:translateY(0); pointer-events:auto; }
+
+  .sd-header {
+    padding:6px 13px;
+    font-family:'Cinzel',serif; font-size:8px; letter-spacing:2px;
+    color:rgba(201,168,76,0.3); text-transform:uppercase;
+    border-bottom:1px solid rgba(201,168,76,0.07);
+  }
+  .sd-item {
+    display:flex; align-items:center; gap:10px;
+    padding:9px 13px; border-bottom:1px solid rgba(201,168,76,0.06);
+    cursor:pointer; transition:background 0.15s;
+    animation:sdSlide 0.2s ease both;
+  }
+  @keyframes sdSlide { from{opacity:0;transform:translateX(-5px);} to{opacity:1;transform:translateX(0);} }
+  .sd-item:last-child { border-bottom:none; }
+  .sd-item:hover { background:rgba(201,168,76,0.07); }
+  .sd-icon { font-size:14px; flex-shrink:0; }
+  .sd-info { flex:1; min-width:0; }
+  .sd-titulo {
+    font-family:'Cormorant Garamond',serif; font-weight:600;
+    font-size:13px; color:var(--gold-light);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .sd-titulo mark { background:none; color:var(--gold); font-weight:700; }
+  .sd-autor { font-size:10px; color:rgba(201,168,76,0.4); font-style:italic; margin-top:1px; }
+  .sd-cat {
+    font-family:'Cinzel',serif; font-size:7px; letter-spacing:1px;
+    color:rgba(201,168,76,0.28); text-transform:uppercase; flex-shrink:0;
+  }
+  .sd-empty {
+    padding:16px 13px; text-align:center;
+    font-style:italic; font-size:14px; color:rgba(201,168,76,0.3);
+  }
+
+  @media(max-width:600px) {
+    .search-pill.expanded { width:200px; }
+    .search-dropdown { width:260px; right:0; }
+  }
 </style>
 </head>
 <body>
@@ -376,7 +481,17 @@
       <div class="app-quote">Un refugio para el alma que busca</div>
     </div>
     <div class="cats-right">
-      <div class="cats-label">✦ &nbsp; Colecciones</div>
+      <div class="cats-label">
+        <span class="cats-label-text">✦ &nbsp; Colecciones</span>
+        <div class="search-pill-wrap">
+          <div class="search-pill" id="searchPill" onclick="expandirBusqueda()">
+            <div class="pill-icon">🔍</div>
+            <input class="pill-input" id="searchInput" type="text" placeholder="Busca un libro o autor…" oninput="buscarLibros()" autocomplete="off" readonly>
+            <button class="pill-close" onclick="contraerBusqueda(event)">✕</button>
+          </div>
+          <div class="search-dropdown" id="searchDropdown"></div>
+        </div>
+      </div>
       <div class="cats-grid">
         <div class="cat-card" onclick="abrirCategoria('Barbara Ann Brenan','🌺')" style="animation-delay:0.05s"><span class="cat-icon">🌺</span><span class="cat-name">Barbara Ann Brenan</span></div>
         <div class="cat-card" onclick="abrirCategoria('Biodescodificación','🧬')" style="animation-delay:0.08s"><span class="cat-icon">🧬</span><span class="cat-name">Biodescodificación</span></div>
@@ -816,6 +931,82 @@
     const restante = Math.max(0, LOTO_MIN - elapsed);
     setTimeout(() => { spinner.classList.add('hidden'); }, restante);
   }
+
+  // ── Buscador expansivo ──
+  let busquedaExpandida = false;
+
+  function expandirBusqueda() {
+    if (busquedaExpandida) return;
+    busquedaExpandida = true;
+    const pill = document.getElementById('searchPill');
+    const input = document.getElementById('searchInput');
+    pill.classList.add('expanded');
+    pill.onclick = null;
+    setTimeout(() => { input.removeAttribute('readonly'); input.focus(); }, 420);
+  }
+
+  function contraerBusqueda(e) {
+    if (e) e.stopPropagation();
+    busquedaExpandida = false;
+    const pill = document.getElementById('searchPill');
+    const input = document.getElementById('searchInput');
+    const dd = document.getElementById('searchDropdown');
+    pill.classList.remove('expanded');
+    input.value = '';
+    input.setAttribute('readonly', true);
+    dd.classList.remove('open');
+    setTimeout(() => { pill.onclick = expandirBusqueda; }, 500);
+  }
+
+  function highlight(texto, q) {
+    const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+    return texto.replace(re, '<mark>$1</mark>');
+  }
+
+  const catIcons = {
+    'Ken Wilber':'🌊','Barbara Ann Brenan':'🌺','Biodescodificación':'🧬',
+    'Budismo':'🌿','Carolyne Myss':'🌸','Constelaciones Familiares':'🫧',
+    'Cristaloterapia':'💎','Filosofía y Religión':'🕊️','Geometría Sagrada':'🌀',
+    'Kabbalah':'🔮','Kryon':'✨','Libros Raros':'📜','Lobsang Rampa':'🏔️',
+    'Neville Goddard':'🌙','Nikola Tesla':'⚡','Teosofía':'🌌','Triguerinho':'🌟'
+  };
+
+  function buscarLibros() {
+    const q = document.getElementById('searchInput').value.trim();
+    const dd = document.getElementById('searchDropdown');
+    if (!q) { dd.classList.remove('open'); return; }
+
+    const encontrados = libros.filter(l =>
+      l.titulo.toLowerCase().includes(q.toLowerCase()) ||
+      l.autor.toLowerCase().includes(q.toLowerCase()) ||
+      l.categoria.toLowerCase().includes(q.toLowerCase())
+    ).slice(0, 8);
+
+    if (encontrados.length === 0) {
+      dd.innerHTML = `<div class="sd-empty">No se encontró "<em>${q}</em>" ✦</div>`;
+    } else {
+      dd.innerHTML = `
+        <div class="sd-header">${encontrados.length} resultado${encontrados.length>1?'s':''}</div>
+        ${encontrados.map((l,i) => `
+          <div class="sd-item" style="animation-delay:${i*0.04}s"
+               onclick="contraerBusqueda(null); abrirCategoria('${l.categoria}','${catIcons[l.categoria]||'📖'}')">
+            <span class="sd-icon">${catIcons[l.categoria]||'📖'}</span>
+            <div class="sd-info">
+              <div class="sd-titulo">${highlight(l.titulo, q)}</div>
+              <div class="sd-autor">${l.autor}</div>
+            </div>
+            <span class="sd-cat">${l.categoria}</span>
+          </div>`).join('')}`;
+    }
+    dd.classList.add('open');
+  }
+
+  // Cerrar al click fuera
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.search-pill-wrap') && busquedaExpandida) {
+      contraerBusqueda(null);
+    }
+  });
 
   // Partículas de fondo
   const cont = document.getElementById('particles');
