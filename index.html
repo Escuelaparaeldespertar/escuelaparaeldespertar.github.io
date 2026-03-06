@@ -22,6 +22,49 @@
   @keyframes fadeIn { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
   @keyframes card-in { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 
+  /* ── Loto spinner ── */
+  @keyframes loto-rotate { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+  @keyframes pulse-petal  { 0%,100%{filter:brightness(1);} 50%{filter:brightness(1.9) drop-shadow(0 0 5px rgba(232,201,126,0.9));} }
+  @keyframes pulse-center { 0%,100%{box-shadow:0 0 8px rgba(232,201,126,0.4);} 50%{box-shadow:0 0 18px rgba(232,201,126,1);} }
+
+  .loto-spinner {
+    position:absolute; inset:0; display:flex;
+    align-items:center; justify-content:center;
+    z-index:3; pointer-events:none;
+    transition:opacity 0.5s ease;
+  }
+  .loto-spinner.hidden { opacity:0; }
+
+  .loto-petals {
+    position:relative; width:52px; height:52px;
+    animation:loto-rotate 3.5s linear infinite;
+  }
+  .petal {
+    position:absolute; width:14px; height:23px;
+    background:radial-gradient(ellipse at 50% 30%, rgba(232,201,126,0.95), rgba(201,168,76,0.15));
+    border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;
+    left:50%; top:50%;
+    transform-origin:50% 100%;
+    margin-left:-7px; margin-top:-23px;
+  }
+  .petal:nth-child(1){transform:rotate(0deg);   animation:pulse-petal 1.6s ease-in-out infinite 0.00s;}
+  .petal:nth-child(2){transform:rotate(45deg);  animation:pulse-petal 1.6s ease-in-out infinite 0.20s;}
+  .petal:nth-child(3){transform:rotate(90deg);  animation:pulse-petal 1.6s ease-in-out infinite 0.40s;}
+  .petal:nth-child(4){transform:rotate(135deg); animation:pulse-petal 1.6s ease-in-out infinite 0.60s;}
+  .petal:nth-child(5){transform:rotate(180deg); animation:pulse-petal 1.6s ease-in-out infinite 0.80s;}
+  .petal:nth-child(6){transform:rotate(225deg); animation:pulse-petal 1.6s ease-in-out infinite 1.00s;}
+  .petal:nth-child(7){transform:rotate(270deg); animation:pulse-petal 1.6s ease-in-out infinite 1.20s;}
+  .petal:nth-child(8){transform:rotate(315deg); animation:pulse-petal 1.6s ease-in-out infinite 1.40s;}
+  .loto-center {
+    position:absolute; width:11px; height:11px;
+    background:radial-gradient(circle, var(--gold-light), var(--gold));
+    border-radius:50%; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 10px rgba(232,201,126,0.7);
+    animation:pulse-center 1.6s ease-in-out infinite;
+  }
+  /* ── fin loto ── */
+
   @media(max-width:600px) {
     #lotusBg img { width:90% !important; margin-left:0 !important; opacity:0.07 !important; }
   }
@@ -215,7 +258,12 @@
   }
   .book-card:hover { transform:translateY(-5px); box-shadow:0 12px 32px rgba(0,0,0,0.5); border-color:rgba(201,168,76,0.4); }
   .book-cover-wrap { width:100%; padding-top:110%; position:relative; overflow:hidden; background:linear-gradient(135deg,#3a2510,#2a1a0a); }
-  .book-cover-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+  .book-cover-wrap img {
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    transition:transform 0.4s, opacity 0.6s ease;
+    opacity:0; /* empieza invisible, aparece cuando carga */
+  }
+  .book-cover-wrap img.img-loaded { opacity:1; }
   .book-card:hover .book-cover-wrap img { transform:scale(1.06); }
   .book-cover-placeholder { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:40px; opacity:0.3; }
   .book-info { padding:12px 12px 10px; display:flex; flex-direction:column; flex:1; }
@@ -509,7 +557,7 @@
     { categoria:'Lobsang Rampa', titulo:'Una Luz En La Oscuridad', autor:'Lobsang Rampa', imagen:'Libros/lobsang_rampa/luzenlaoscuridad.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZADdd5ZIMonFoqhqby4a2ugTCOoeuVEyrMy' },
     { categoria:'Lobsang Rampa', titulo:'Vida Con El Lama', autor:'Lobsang Rampa', imagen:'Libros/lobsang_rampa/vidaconlama.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZNDdd5ZurMIUca4WPyvfNWvfhIHrYfve5G7' },
     { categoria:'Lobsang Rampa', titulo:'Yo Creo', autor:'Lobsang Rampa', imagen:'Libros/lobsang_rampa/yocreo.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZvDdd5ZLRzLr4mFlMF2Ft9UXPW2cR8gP3X7' },
-    // Neville Goddard - Audios
+    // Neville Goddard
     { categoria:'Neville Goddard', subcategoria:'Audios de Neville Goddard', titulo:'Conciencia del Ser', autor:'Neville Goddard', imagen:'Libros/Neville_goddard/Audios/concienciadelser.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZjxdd5ZuSSL8HP24NhtizI4caudy0wvWnzV' },
     { categoria:'Neville Goddard', subcategoria:'Audios de Neville Goddard', titulo:'Sabes Rezar (Quotes)', autor:'Neville Goddard', imagen:'Libros/Neville_goddard/Audios/sabes_rezar.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZtwdd5ZCdzlTkDWa8QPeal81JeX8RfzQ4k7' },
     { categoria:'Neville Goddard', subcategoria:'Audios de Neville Goddard', titulo:'Sentir es el Secreto', autor:'Neville Goddard', imagen:'Libros/Neville_goddard/Audios/sentireselsecret.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ6wdd5ZbFknhvQGRqu5WKgTE9qcRptiFKJX' },
@@ -528,58 +576,53 @@
     { categoria:'Neville Goddard', subcategoria:'Libros de Neville Goddard', titulo:'Tiempo de Siembra y Cosecha', autor:'Neville Goddard', imagen:'Libros/Neville_goddard/Libros/tiemposiembracosecha.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZL2qd5ZqxvOpKbct1z7is8HlGFHhmGucqw7' },
     { categoria:'Neville Goddard', subcategoria:'Libros de Neville Goddard', titulo:'Yo conozco a mi Padre', autor:'Neville Goddard', imagen:'Libros/Neville_goddard/Libros/yoconozcopadre.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZm2qd5Z2PrEn8zPgxQV6eomABzEbkCPwkDV' },
     // Teosofía
-// Teosofía
-{ categoria:'Teosofía', titulo:'Astrología Esotérica', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/astrologiaesoterica.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZWfEd5Z0YKe51l29j8uueH7hB4LkbbIOYOX' },
-{ categoria:'Teosofía', titulo:'El Destino de las Naciones', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/destinonaciones.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZMfEd5ZzQANY0vYIOmCOMP2fVDPoukATLSk' },
-{ categoria:'Teosofía', titulo:'Los Trabajos de Hércules', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/trabajoshercules.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZxfEd5ZmCCaIQOAbd4mOlC81LHsN5A5LSCV' },
-{ categoria:'Teosofía', titulo:'Autobiografía Inconclusa', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/autobiografiaincon.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZdfEd5Zm7AKVeQ1iQuHNipcln7txfHGdQvV' },
-{ categoria:'Teosofía', titulo:'Cartas Sobre Meditación Ocultista', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/meditacionocultista.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZqfEd5ZWxcPE61drd7pFY7M6oVEHzwnaa8X' },
-{ categoria:'Teosofía', titulo:'Del Intelecto a la Intuición', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/intelectointuicion.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZGfEd5ZL7mjfQIWXJyn4ROMMlctayqgLqWy' },
-{ categoria:'Teosofía', titulo:'El Alma y la Cualidad de la Vida', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/almacualidad.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZofEd5ZsvHpOODdyxyIB1Ykw7Ckj5T6kU70' },
-{ categoria:'Teosofía', titulo:'El Alma y su Mecanismo', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/almamecanismo.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZXBEd5ZutppyeRlfjkH2riLpJKfIREm2XgX' },
-{ categoria:'Teosofía', titulo:'El Discipulado en la Nueva Era 1', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/discipulado1.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ5BEd5ZrcQT3Mcxk1HcijEotRECbLczGagk' },
-{ categoria:'Teosofía', titulo:'El Discipulado en la Nueva Era 2', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/discipulado2.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZpBEd5ZHYX7W2L3QSuyfLEuKQPv6YezsbB7' },
-{ categoria:'Teosofía', titulo:'El Sexo - Recopilación', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/elsexo.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZzBEd5ZuCn5eyAtPV4369GMYEJbpFijbOtX' },
-{ categoria:'Teosofía', titulo:'El Nuevo Grupo de Servidores del Mundo', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/nuevogruposerv.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZLBEd5Zz2ymNM7Nv8JLEU25XwweDj7WAiNX' },
-{ categoria:'Teosofía', titulo:'El Séptimo Rayo Revelador', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/ultimorayo.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ8BEd5ZFNzXAv7LtURESKE1LEJOJF1jwMuV' },
-{ categoria:'Teosofía', titulo:'Iniciación Humana y Solar', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/iniciacionhumana.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZYBEd5ZddrMrXdLTDJcDrR8eCpuTFtFgVyk' },
-{ categoria:'Teosofía', titulo:'La Conciencia del Átomo', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/concienciaatomo.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZfBEd5ZfrzoTUz8egbQmDiopDTpESIuKhCX' },
-{ categoria:'Teosofía', titulo:'La Curación Esotérica', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/curacionesoterica.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZDBEd5ZDTmUSgTbOBXD3DSEUEYOzHzBt4SV' },
-{ categoria:'Teosofía', titulo:'La Educación en la Nueva Era', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/educacionnueva.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ9BEd5Z1rHtyUYSm7Bx301Mesk5QYRmWIQ7' },
-{ categoria:'Teosofía', titulo:'La Exteriorización de la Jerarquía', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/exteorizacion.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZCBEd5Z57q5OyH8857bxjyWl55OzfvQGb4y' },
-{ categoria:'Teosofía', titulo:'La Luz del Alma', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/luzalma.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZKBEd5Z6JBtIV5qGh5WcnQKCgkBjyCvwUqk' },
-{ categoria:'Teosofía', titulo:'La Doctrina Secreta - Síntesis de la Ciencia', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/doctrinasecret.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZqBEd5Zh7GBn4c4pz5qNx2bzVCTq0wg7bhk' },
-{ categoria:'Teosofía', titulo:'Los Rayos y las Iniciaciones', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/rayosiniciaciones.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZEBEd5Z6Q5AUVESJT0rXhC9qnyrOJlOpxR7' },
-{ categoria:'Teosofía', titulo:'Los Siete Rayos de la Vida', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/sieterayos.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZvBEd5ZW3gUfMJ0mhB5AW9UG07mhJnwG6nV' },
-{ categoria:'Teosofía', titulo:'Psicología Esotérica I', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/psicologia1.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZX2Ed5Z4HXcJ2tQrsXWTss0gHJWWHybDAmX' },
-{ categoria:'Teosofía', titulo:'Psicología Esotérica II', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/psicologia2.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZrBEd5ZM7QpSpDSYI5bBbUqwd5Wd4wX4sUV' },
-{ categoria:'Teosofía', titulo:'Reflexiones Sobre Esto', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/reflexionen.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ02Ed5ZDpnvoEthc5yw1Hti2jel24ipL4aX' },
-{ categoria:'Teosofía', titulo:'Telepatía y el Vehículo Etérico', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/telepatia.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZJ2Ed5ZvPw401MRlik3bRUEtalIsXCaJA0y' },
-{ categoria:'Teosofía', titulo:'Tratado Sobre Fuego Cósmico', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/tratado.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZL2Ed5ZmSFXeFDXDW4L531cga5PtYswGbIk' },
-{ categoria:'Teosofía', titulo:'Una Gran Aventura - La Muerte', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/aventuramuerte.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ82Ed5Ze2aVLCzOm4jHq5KwIWl5wJq5BGU7' },
+    { categoria:'Teosofía', titulo:'Astrología Esotérica', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/astrologiaesoterica.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZWfEd5Z0YKe51l29j8uueH7hB4LkbbIOYOX' },
+    { categoria:'Teosofía', titulo:'El Destino de las Naciones', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/destinonaciones.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZMfEd5ZzQANY0vYIOmCOMP2fVDPoukATLSk' },
+    { categoria:'Teosofía', titulo:'Los Trabajos de Hércules', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/trabajoshercules.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZxfEd5ZmCCaIQOAbd4mOlC81LHsN5A5LSCV' },
+    { categoria:'Teosofía', titulo:'Autobiografía Inconclusa', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/autobiografiaincon.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZdfEd5Zm7AKVeQ1iQuHNipcln7txfHGdQvV' },
+    { categoria:'Teosofía', titulo:'Cartas Sobre Meditación Ocultista', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/meditacionocultista.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZqfEd5ZWxcPE61drd7pFY7M6oVEHzwnaa8X' },
+    { categoria:'Teosofía', titulo:'Del Intelecto a la Intuición', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/intelectointuicion.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZGfEd5ZL7mjfQIWXJyn4ROMMlctayqgLqWy' },
+    { categoria:'Teosofía', titulo:'El Alma y la Cualidad de la Vida', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/almacualidad.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZofEd5ZsvHpOODdyxyIB1Ykw7Ckj5T6kU70' },
+    { categoria:'Teosofía', titulo:'El Alma y su Mecanismo', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/almamecanismo.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZXBEd5ZutppyeRlfjkH2riLpJKfIREm2XgX' },
+    { categoria:'Teosofía', titulo:'El Discipulado en la Nueva Era 1', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/discipulado1.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ5BEd5ZrcQT3Mcxk1HcijEotRECbLczGagk' },
+    { categoria:'Teosofía', titulo:'El Discipulado en la Nueva Era 2', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/discipulado2.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZpBEd5ZHYX7W2L3QSuyfLEuKQPv6YezsbB7' },
+    { categoria:'Teosofía', titulo:'El Sexo - Recopilación', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/elsexo.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZzBEd5ZuCn5eyAtPV4369GMYEJbpFijbOtX' },
+    { categoria:'Teosofía', titulo:'El Nuevo Grupo de Servidores del Mundo', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/nuevogruposerv.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZLBEd5Zz2ymNM7Nv8JLEU25XwweDj7WAiNX' },
+    { categoria:'Teosofía', titulo:'El Séptimo Rayo Revelador', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/ultimorayo.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ8BEd5ZFNzXAv7LtURESKE1LEJOJF1jwMuV' },
+    { categoria:'Teosofía', titulo:'Iniciación Humana y Solar', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/iniciacionhumana.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZYBEd5ZddrMrXdLTDJcDrR8eCpuTFtFgVyk' },
+    { categoria:'Teosofía', titulo:'La Conciencia del Átomo', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/concienciaatomo.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZfBEd5ZfrzoTUz8egbQmDiopDTpESIuKhCX' },
+    { categoria:'Teosofía', titulo:'La Curación Esotérica', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/curacionesoterica.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZDBEd5ZDTmUSgTbOBXD3DSEUEYOzHzBt4SV' },
+    { categoria:'Teosofía', titulo:'La Educación en la Nueva Era', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/educacionnueva.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ9BEd5Z1rHtyUYSm7Bx301Mesk5QYRmWIQ7' },
+    { categoria:'Teosofía', titulo:'La Exteriorización de la Jerarquía', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/exteorizacion.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZCBEd5Z57q5OyH8857bxjyWl55OzfvQGb4y' },
+    { categoria:'Teosofía', titulo:'La Luz del Alma', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/luzalma.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZKBEd5Z6JBtIV5qGh5WcnQKCgkBjyCvwUqk' },
+    { categoria:'Teosofía', titulo:'La Doctrina Secreta - Síntesis de la Ciencia', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/doctrinasecret.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZqBEd5Zh7GBn4c4pz5qNx2bzVCTq0wg7bhk' },
+    { categoria:'Teosofía', titulo:'Los Rayos y las Iniciaciones', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/rayosiniciaciones.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZEBEd5Z6Q5AUVESJT0rXhC9qnyrOJlOpxR7' },
+    { categoria:'Teosofía', titulo:'Los Siete Rayos de la Vida', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/sieterayos.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZvBEd5ZW3gUfMJ0mhB5AW9UG07mhJnwG6nV' },
+    { categoria:'Teosofía', titulo:'Psicología Esotérica I', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/psicologia1.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZX2Ed5Z4HXcJ2tQrsXWTss0gHJWWHybDAmX' },
+    { categoria:'Teosofía', titulo:'Psicología Esotérica II', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/psicologia2.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZrBEd5ZM7QpSpDSYI5bBbUqwd5Wd4wX4sUV' },
+    { categoria:'Teosofía', titulo:'Reflexiones Sobre Esto', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/reflexionen.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ02Ed5ZDpnvoEthc5yw1Hti2jel24ipL4aX' },
+    { categoria:'Teosofía', titulo:'Telepatía y el Vehículo Etérico', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/telepatia.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZJ2Ed5ZvPw401MRlik3bRUEtalIsXCaJA0y' },
+    { categoria:'Teosofía', titulo:'Tratado Sobre Fuego Cósmico', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/tratado.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZL2Ed5ZmSFXeFDXDW4L531cga5PtYswGbIk' },
+    { categoria:'Teosofía', titulo:'Una Gran Aventura - La Muerte', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/aventuramuerte.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ82Ed5Ze2aVLCzOm4jHq5KwIWl5wJq5BGU7' },
   ];
 
   const panelCats  = document.getElementById('panelCats');
   const panelBooks = document.getElementById('panelBooks');
 
-  // Navigation state
-  let navState = 'home'; // 'home' | 'category' | 'subcategory'
+  let navState = 'home';
   let currentCat = null;
   let currentCatIcon = null;
 
-  // Push initial state so we can catch the first popstate
   history.replaceState({ nav: 'home' }, '');
 
   window.addEventListener('popstate', function(e) {
     const state = e.state || {};
     if (state.nav === 'category') {
-      // Coming back from subcategory → re-render the category subcollections, keep panel open
       const subcats = [...new Set(libros.filter(l => l.categoria === state.cat && l.subcategoria).map(l => l.subcategoria))];
       if (subcats.length > 0) {
         _mostrarCategoria(state.cat, state.icon);
         navState = 'category';
       } else {
-        // Category with no subcats — just re-render books, panel stays open
         const filtrados = libros.filter(l => l.categoria === state.cat && !l.subcategoria);
         document.getElementById('booksCatName').textContent = state.icon + '  ' + state.cat;
         document.getElementById('booksCount').textContent = filtrados.length + (filtrados.length === 1 ? ' libro' : ' libros');
@@ -587,7 +630,6 @@
         navState = 'category';
       }
     } else {
-      // home state or unknown — close panel
       _irAInicio();
     }
   });
@@ -623,8 +665,17 @@
       return `
       <div class="book-card" style="animation-delay:${i * 0.1}s; cursor:pointer;" onclick="abrirSubcategoria('${cat}','${sub}','${icon}','${subIcon}')">
         <div class="book-cover-wrap">
+          <div class="loto-spinner" id="loto-sub-${i}">
+            <div class="loto-petals">
+              <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+              <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+              <div class="loto-center"></div>
+            </div>
+          </div>
           ${primerImg
-            ? `<img src="${primerImg}" alt="${sub}" style="object-fit:contain;background:#1a0f05;" onerror="this.style.display='none'">`
+            ? `<img src="${primerImg}" alt="${sub}" style="object-fit:contain;background:#1a0f05;"
+                 onload="this.classList.add('img-loaded'); const s=this.parentElement.querySelector('.loto-spinner'); if(s){s.classList.add('hidden');}"
+                 onerror="this.style.display='none'; const s=this.parentElement.querySelector('.loto-spinner'); if(s){s.classList.add('hidden');}">`
             : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:40px;">${subIcon}</div>`
           }
         </div>
@@ -684,33 +735,48 @@
     panelBooks.scrollTop = 0;
   }
 
+  // ── Función central: genera HTML de una tarjeta de libro con loto ──
+  function bookCardHTML(l, i) {
+    const tieneImagen = l.imagen && l.imagen.trim();
+    const esAudio = l.subcategoria && l.subcategoria.includes('Audio');
+    return `
+      <div class="book-card" style="animation-delay:${i * 0.07}s">
+        <div class="book-cover-wrap">
+          <div class="loto-spinner">
+            <div class="loto-petals">
+              <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+              <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
+              <div class="loto-center"></div>
+            </div>
+          </div>
+          ${tieneImagen
+            ? `<img src="${l.imagen}" alt="${l.titulo}"
+                 style="${l.imgPosition ? 'object-position:'+l.imgPosition+';' : ''}${l.imgContain ? 'object-fit:contain;background:#1a0f05;' : ''}"
+                 onload="this.classList.add('img-loaded'); const s=this.parentElement.querySelector('.loto-spinner'); if(s) s.classList.add('hidden');"
+                 onerror="this.style.display='none'; const s=this.parentElement.querySelector('.loto-spinner'); if(s) s.classList.add('hidden');">`
+            : `<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#2a1a0a,#1a0f05);gap:8px;padding:10px;">
+                <span style="font-size:36px;">🌌</span>
+                <span style="font-family:'Cinzel',serif;font-size:7px;letter-spacing:2px;color:rgba(201,168,76,0.5);text-transform:uppercase;text-align:center;">Próximamente</span>
+               </div>`
+          }
+        </div>
+        <div class="book-info">
+          <div class="book-title">${l.titulo}</div>
+          <div class="book-author">${l.autor}</div>
+          ${l.url
+            ? `<a class="book-btn" href="${l.url}" target="_blank" rel="noopener noreferrer">${esAudio ? '🎧 Escuchar' : '📖 Abrir libro'}</a>`
+            : `<span class="book-btn" style="opacity:0.4;cursor:default;">Próximamente</span>`
+          }
+        </div>
+      </div>`;
+  }
+
   function mostrarLibros(filtrados) {
     const grid = document.getElementById('booksInner');
     if (filtrados.length === 0) {
       grid.innerHTML = `<div class="empty-msg">Próximamente libros<br>en esta colección ✦</div>`;
     } else {
-      grid.innerHTML = filtrados.map((l, i) => `
-        <div class="book-card" style="animation-delay:${i * 0.07}s">
-          <div class="book-cover-wrap">
-            ${(l.imagen && l.imagen.trim())
-              ? `<img src="${l.imagen}" alt="${l.titulo}" style="${l.imgPosition ? 'object-position:'+l.imgPosition+';' : ''}${l.imgContain ? 'object-fit:contain;background:#1a0f05;' : ''}" onerror="this.style.display='none'">`
-              : `<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#2a1a0a,#1a0f05);gap:8px;padding:10px;">
-                  <span style="font-size:36px;">🌌</span>
-                  <span style="font-family:'Cinzel',serif;font-size:7px;letter-spacing:2px;color:rgba(201,168,76,0.5);text-transform:uppercase;text-align:center;">Próximamente</span>
-                 </div>`
-            }
-            <div class="book-cover-placeholder"></div>
-          </div>
-          <div class="book-info">
-            <div class="book-title">${l.titulo}</div>
-            <div class="book-author">${l.autor}</div>
-            ${l.url
-              ? `<a class="book-btn" href="${l.url}" target="_blank" rel="noopener noreferrer">${l.subcategoria && l.subcategoria.includes('Audio') ? '🎧 Escuchar' : '📖 Abrir libro'}</a>`
-              : `<span class="book-btn" style="opacity:0.4;cursor:default;">Próximamente</span>`
-            }
-          </div>
-        </div>
-      `).join('');
+      grid.innerHTML = filtrados.map((l, i) => bookCardHTML(l, i)).join('');
     }
   }
 
@@ -719,6 +785,7 @@
     _irAInicio();
   }
 
+  // Partículas de fondo
   const cont = document.getElementById('particles');
   for (let i = 0; i < 30; i++) {
     const p = document.createElement('div');
@@ -727,6 +794,7 @@
     cont.appendChild(p);
   }
 
+  // ── Audio ──
   const audio = document.getElementById('musicaFondo');
   audio.volume = 0.5;
   let isRepeating = true;
@@ -793,7 +861,3 @@
 </script>
 </body>
 </html>
-
-
-
-
