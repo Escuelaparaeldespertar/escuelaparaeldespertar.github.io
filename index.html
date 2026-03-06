@@ -364,9 +364,9 @@
   .pill-close:hover { color:var(--gold); }
 
   .search-dropdown {
-    position:absolute; top:44px; left:50%;
+    position:fixed; top:auto; left:50%;
     transform:translateX(-50%) translateY(-6px);
-    width:230px;
+    width:260px;
     background:linear-gradient(145deg,#2e1c0c,#1a0f05);
     border:1px solid rgba(201,168,76,0.2);
     border-radius:12px; overflow:hidden;
@@ -374,7 +374,7 @@
     opacity:0;
     pointer-events:none;
     transition:opacity 0.25s ease, transform 0.25s ease;
-    z-index:9999; max-height:360px; overflow-y:auto;
+    z-index:99999; max-height:360px; overflow-y:auto;
   }
   .search-dropdown.open { opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto; }
 
@@ -966,9 +966,18 @@
     'Neville Goddard':'🌙','Nikola Tesla':'⚡','Teosofía':'🌌','Triguerinho':'🌟'
   };
 
+  function posicionarDropdown() {
+    const pill = document.getElementById('searchPill');
+    const dd = document.getElementById('searchDropdown');
+    const rect = pill.getBoundingClientRect();
+    dd.style.top = (rect.bottom + 8) + 'px';
+    dd.style.left = (rect.left + rect.width / 2) + 'px';
+  }
+
   function buscarLibros() {
     const q = document.getElementById('searchInput').value.trim();
     const dd = document.getElementById('searchDropdown');
+    posicionarDropdown();
     if (!q) { dd.classList.remove('open'); return; }
 
     const encontrados = libros.filter(l =>
