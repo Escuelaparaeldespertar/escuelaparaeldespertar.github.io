@@ -364,8 +364,7 @@
   .pill-close:hover { color:var(--gold); }
 
   .search-dropdown {
-    position:fixed; top:auto; left:50%;
-    transform:translateX(-50%) translateY(-6px);
+    position:fixed;
     width:260px;
     background:linear-gradient(145deg,#2e1c0c,#1a0f05);
     border:1px solid rgba(201,168,76,0.2);
@@ -373,10 +372,11 @@
     box-shadow:0 10px 40px rgba(0,0,0,0.9);
     opacity:0;
     pointer-events:none;
-    transition:opacity 0.25s ease, transform 0.25s ease;
+    transition:opacity 0.25s ease, margin-top 0.25s ease;
     z-index:99999; max-height:360px; overflow-y:auto;
+    margin-top:-6px;
   }
-  .search-dropdown.open { opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto; }
+  .search-dropdown.open { opacity:1; margin-top:0; pointer-events:auto; }
 
   .sd-header {
     padding:6px 13px;
@@ -970,8 +970,12 @@
     const pill = document.getElementById('searchPill');
     const dd = document.getElementById('searchDropdown');
     const rect = pill.getBoundingClientRect();
+    const ddWidth = 260;
+    let leftPos = rect.left + rect.width / 2 - ddWidth / 2;
+    // Evitar que se salga por los bordes
+    leftPos = Math.max(8, Math.min(leftPos, window.innerWidth - ddWidth - 8));
     dd.style.top = (rect.bottom + 8) + 'px';
-    dd.style.left = (rect.left + rect.width / 2) + 'px';
+    dd.style.left = leftPos + 'px';
   }
 
   function buscarLibros() {
