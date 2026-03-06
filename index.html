@@ -171,7 +171,7 @@
     }
     .panel-cats::before {
       content:''; position:fixed; left:240px; top:0; bottom:0;
-      width:1px; background:rgba(201,168,76,0.15); z-index:2; pointer-events:none;
+      width:1px; background:rgba(201,168,76,0.15); z-index:1200; pointer-events:none;
     }
     .app-logo { width:180px; height:180px; margin-bottom:20px; }
     .app-title { font-size:11px; letter-spacing:4px; }
@@ -182,7 +182,7 @@
   @media(min-width:1200px) {
     .app-header { width:280px; min-width:280px; }
     .cats-grid { grid-template-columns:repeat(5,1fr); }
-    .panel-cats::before { left:280px; }
+    .panel-cats::before { left:280px; z-index:1200; }
   }
 
   .cat-card {
@@ -295,7 +295,7 @@
     gap:12px; padding:8px 20px;
     background:linear-gradient(145deg,#2a1a0a,#1a0f05);
     border-top:1px solid rgba(201,168,76,0.2);
-    z-index:1100; overflow:visible;
+    z-index:500; overflow:visible;
   }
   .music-label-m { font-family:'Cinzel',serif; font-size:9px; letter-spacing:2px; color:rgba(201,168,76,0.45); text-transform:uppercase; }
   #inicioMusicaM { padding:8px 16px; font-size:12px; background:linear-gradient(135deg,var(--gold),var(--warm-brown)); color:white; border:none; border-radius:8px; cursor:pointer; font-family:'Cinzel',serif; letter-spacing:1px; }
@@ -744,7 +744,11 @@
     const input = document.getElementById('searchInput');
     pill.classList.add('expanded');
     pill.onclick = null;
-    setTimeout(() => { input.removeAttribute('readonly'); input.focus(); }, 420);
+    setTimeout(() => {
+      input.removeAttribute('readonly');
+      input.focus();
+      posicionarDropdown();
+    }, 420);
   }
 
   function contraerBusqueda(e) {
