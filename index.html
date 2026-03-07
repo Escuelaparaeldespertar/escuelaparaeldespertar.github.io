@@ -452,6 +452,26 @@
 
   @media(max-width:600px) {
     .sr-grid { grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:10px; }
+
+    /* ── FIX MÓVIL: header sticky para que el buscador no desaparezca ── */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(180deg, #2a1a0a 85%, rgba(42,26,10,0) 100%);
+      padding-bottom: 16px;
+    }
+
+    /* Espacio extra al final de resultados para que no queden tapados por el teclado */
+    .search-results {
+      padding-bottom: 45vh;
+    }
+
+    /* Asegurar que cats-right tenga scroll propio en móvil */
+    .cats-right {
+      width: 100%;
+      overflow-y: auto;
+    }
   }
 </style>
 </head>
@@ -746,7 +766,6 @@
       grid.innerHTML = `<div class="empty-msg">Próximamente libros<br>en esta colección ✦</div>`;
     } else {
       grid.innerHTML = filtrados.map((l, i) => bookCardHTML(l, i)).join('');
-      // Registrar tiempo de inicio en cada spinner recién creado
       requestAnimationFrame(() => {
         const now = Date.now();
         grid.querySelectorAll('.loto-spinner').forEach(s => { s._startTime = now; });
@@ -853,6 +872,13 @@
           : `<span class="sr-btn" style="opacity:0.35;cursor:default;">Próximamente</span>`}
       </div>`;
     }).join('');
+
+    // ── FIX MÓVIL: scroll suave hacia los resultados cuando aparecen ──
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
   }
 
   function limpiarBusqueda() {
@@ -860,6 +886,15 @@
     buscarLibros();
     document.getElementById('searchInput').focus();
   }
+
+  // ── FIX MÓVIL: al enfocar el buscador, hacer scroll para que quede visible ──
+  document.getElementById('searchInput').addEventListener('focus', function() {
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 350); // esperar a que el teclado termine de abrirse
+    }
+  });
 
   // Partículas de fondo
   const cont = document.getElementById('particles');
@@ -877,10 +912,8 @@
 
   function iniciarMusica() {
     audio.play();
-    // Ocultar botón de inicio
     const btnInicio = document.getElementById('inicioMusicaM');
     if (btnInicio) btnInicio.style.display = 'none';
-    // Mostrar reproductor flotante
     const playerM = document.getElementById('playerWidgetM');
     if (playerM) playerM.style.display = 'flex';
     const volRow = document.getElementById('mobileVolRow');
