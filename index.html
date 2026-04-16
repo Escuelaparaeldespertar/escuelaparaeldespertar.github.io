@@ -201,10 +201,9 @@
   ::-webkit-scrollbar-thumb { background:rgba(201,168,76,0.3); border-radius:3px; }
 
   /* ══════════════════════════════════════════════
-     VISOR LATERAL — NUEVO
+     VISOR LATERAL
   ══════════════════════════════════════════════ */
 
-  /* Overlay oscuro detrás del panel */
   #visorOverlay {
     position: fixed;
     inset: 0;
@@ -220,7 +219,6 @@
     pointer-events: auto;
   }
 
-  /* Panel lateral */
   #visorPanel {
     position: fixed;
     top: 0;
@@ -241,7 +239,6 @@
     transform: translateX(0);
   }
 
-  /* Cabecera del visor */
   #visorHeader {
     display: flex;
     align-items: center;
@@ -269,7 +266,6 @@
     font-family: 'Cormorant Garamond', serif;
   }
 
-  /* Botón cerrar */
   #visorCerrar {
     width: 34px;
     height: 34px;
@@ -290,123 +286,15 @@
     transform: rotate(90deg);
   }
 
-  /* Botón abrir en pestaña nueva */
-  #visorExternoBtn {
-    padding: 6px 12px;
-    background: rgba(201,168,76,0.1);
-    border: 1px solid rgba(201,168,76,0.25);
-    border-radius: 8px;
-    color: rgba(201,168,76,0.7);
-    font-family: 'Cinzel', serif;
-    font-size: 8px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-  #visorExternoBtn:hover {
-    background: rgba(201,168,76,0.2);
-    color: var(--gold-light);
-  }
-
-  /* Controles de página */
-  #visorControles {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 10px 20px;
-    border-bottom: 1px solid rgba(201,168,76,0.15);
-    background: rgba(26,15,5,0.8);
-    flex-shrink: 0;
-  }
-  .visor-btn {
-    padding: 5px 14px;
-    background: rgba(201,168,76,0.08);
-    border: 1px solid rgba(201,168,76,0.25);
-    border-radius: 7px;
-    color: var(--gold-light);
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .visor-btn:hover:not(:disabled) {
-    background: rgba(201,168,76,0.2);
-  }
-  .visor-btn:disabled {
-    opacity: 0.3;
-    cursor: default;
-  }
-  #visorPaginaInfo {
-    font-size: 12px;
-    color: rgba(201,168,76,0.5);
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    min-width: 110px;
-    text-align: center;
-  }
-  .visor-modo-btn {
-    padding: 5px 10px;
-    background: rgba(201,168,76,0.05);
-    border: 1px solid rgba(201,168,76,0.2);
-    border-radius: 7px;
-    color: rgba(201,168,76,0.5);
-    font-size: 10px;
-    font-family: 'Cinzel', serif;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .visor-modo-btn:hover {
-    background: rgba(201,168,76,0.12);
-    color: var(--gold-light);
-  }
-
-  /* Área de renderizado */
+  /* Área del iframe */
   #visorArea {
     flex: 1;
     overflow: hidden;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: #0f0a04;
   }
 
-  /* Libro (doble página) */
-  #visorLibro {
-    display: flex;
-    align-items: stretch;
-    gap: 0;
-    height: 100%;
-    max-height: 100%;
-    justify-content: center;
-    padding: 16px;
-  }
-  .visor-pagina {
-    background: #fff;
-    border-radius: 2px;
-    overflow: hidden;
-    position: relative;
-    flex-shrink: 0;
-    box-shadow: 3px 3px 20px rgba(0,0,0,0.5);
-  }
-  .visor-pagina canvas {
-    display: block;
-  }
-  #visorLomo {
-    width: 6px;
-    background: linear-gradient(to right, #555, #aaa, #555);
-    flex-shrink: 0;
-    align-self: stretch;
-  }
-
-  /* Estado de carga / error */
+  /* Spinner de carga */
   #visorEstado {
     position: absolute;
     inset: 0;
@@ -420,72 +308,26 @@
     font-style: italic;
     font-size: 16px;
     z-index: 5;
+    background: #0f0a04;
+    pointer-events: none;
   }
-  .visor-loto-grande {
-    width: 60px;
-    height: 60px;
-    animation: loto-rotate 3s linear infinite;
-    position: relative;
-  }
-  #visorError {
+  #visorEstado.oculto {
     display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    text-align: center;
-    padding: 20px;
   }
-  #visorError p {
-    font-size: 14px;
-    color: rgba(201,168,76,0.5);
-    font-style: italic;
-    line-height: 1.7;
-    max-width: 340px;
-  }
-  #visorErrorAbrirBtn {
-    padding: 10px 22px;
-    background: linear-gradient(135deg, var(--gold), var(--warm-brown));
-    color: white;
+
+  /* iframe del visor */
+  #visorIframe {
+    width: 100%;
+    height: 100%;
     border: none;
-    border-radius: 10px;
-    font-family: 'Cinzel', serif;
-    font-size: 10px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s;
-    display: inline-block;
-  }
-  #visorErrorAbrirBtn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 16px rgba(201,168,76,0.4);
+    display: block;
   }
 
-  /* Zoom con rueda del ratón */
-  #visorArea canvas { cursor: zoom-in; }
-
-  /* Animación de giro de página */
-  @keyframes pageTurn {
-    0%   { transform: perspective(1200px) rotateY(0deg); }
-    50%  { transform: perspective(1200px) rotateY(-30deg); opacity: 0.6; }
-    100% { transform: perspective(1200px) rotateY(0deg); }
-  }
-  .visor-pagina.turning {
-    animation: pageTurn 0.35s ease;
-  }
-
-  /* Responsive: en móvil el panel ocupa todo */
   @media(max-width:600px) {
     #visorPanel {
       width: 100vw;
       border-left: none;
     }
-    #visorControles {
-      gap: 8px;
-      padding: 8px 10px;
-    }
-    .visor-btn { padding: 4px 8px; font-size: 9px; }
-    #visorExternoBtn { display: none; }
   }
 </style>
 </head>
@@ -523,7 +365,7 @@
 </div>
 
 <!-- ══════════════════════════════════════
-     VISOR LATERAL PDF
+     VISOR LATERAL — IFRAME
 ══════════════════════════════════════ -->
 <div id="visorOverlay" onclick="cerrarVisor()"></div>
 
@@ -534,23 +376,14 @@
       <div id="visorTitulo">Cargando...</div>
       <div id="visorAutor"></div>
     </div>
-    <a id="visorExternoBtn" href="#" target="_blank" rel="noopener noreferrer">↗ Abrir en nueva pestaña</a>
     <button id="visorCerrar" onclick="cerrarVisor()" title="Cerrar">✕</button>
-  </div>
-
-  <!-- Controles de navegación -->
-  <div id="visorControles">
-    <button class="visor-btn" id="vBtnPrev" onclick="visorCambiarPagina(-1)" disabled>← Ant</button>
-    <span id="visorPaginaInfo">—</span>
-    <button class="visor-btn" id="vBtnNext" onclick="visorCambiarPagina(1)" disabled>Sig →</button>
-    <button class="visor-modo-btn" id="vModoBtn" onclick="visorToggleModo()">⊟ Simple</button>
   </div>
 
   <!-- Área del libro -->
   <div id="visorArea">
-    <!-- Estado de carga -->
+    <!-- Spinner de carga -->
     <div id="visorEstado">
-      <div class="visor-loto-grande">
+      <div style="width:60px;height:60px;">
         <div class="loto-petals" style="width:60px;height:60px;">
           <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
           <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
@@ -559,24 +392,8 @@
       </div>
       <span>Abriendo libro...</span>
     </div>
-
-    <!-- Error / CORS -->
-    <div id="visorError">
-      <span style="font-size:32px;">📖</span>
-      <p>Este libro no puede mostrarse aquí directamente.<br>Haz clic para abrirlo en una nueva pestaña.</p>
-      <a id="visorErrorAbrirBtn" href="#" target="_blank" rel="noopener noreferrer">Abrir libro</a>
-    </div>
-
-    <!-- Páginas del libro -->
-    <div id="visorLibro">
-      <div class="visor-pagina" id="vPaginaIzq">
-        <canvas id="vCanvasIzq"></canvas>
-      </div>
-      <div id="visorLomo"></div>
-      <div class="visor-pagina" id="vPaginaDer">
-        <canvas id="vCanvasDer"></canvas>
-      </div>
-    </div>
+    <!-- iframe de pCloud -->
+    <iframe id="visorIframe" src="about:blank" allowfullscreen></iframe>
   </div>
 </div>
 <!-- FIN VISOR LATERAL -->
@@ -651,194 +468,55 @@
 <script>
 
   /* ══════════════════════════════════════
-     VISOR LATERAL — LÓGICA PDF.js
+     VISOR LATERAL — IFRAME
   ══════════════════════════════════════ */
-  const PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-  const PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-  let visorPdfDoc   = null;
-  let visorPagina   = 1;
-  let visorTotal    = 0;
-  let visorDoble    = true;
-  let visorScale    = 1.0;
-  let visorUrlActual = '';
-  let pdfjsListo    = false;
-
-  // Cargar PDF.js de forma diferida (solo cuando se necesite)
-  function cargarPDFjs(cb) {
-    if (pdfjsListo) { cb(); return; }
-    const s = document.createElement('script');
-    s.src = PDFJS_CDN;
-    s.onload = () => {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
-      pdfjsListo = true;
-      cb();
-    };
-    document.head.appendChild(s);
-  }
-
-  // Abrir el visor con una URL de PDF
   function abrirVisor(url, titulo, autor) {
-    visorUrlActual = url;
-
     // Actualizar cabecera
     document.getElementById('visorTitulo').textContent = titulo || 'Libro';
     document.getElementById('visorAutor').textContent  = autor  || '';
-    document.getElementById('visorExternoBtn').href    = url;
-    document.getElementById('visorErrorAbrirBtn').href = url;
+
+    // Mostrar spinner
+    document.getElementById('visorEstado').classList.remove('oculto');
+
+    // Cargar iframe
+    const iframe = document.getElementById('visorIframe');
+    iframe.src = 'about:blank';
+    iframe.onload = function() {
+      // Ocultar spinner cuando carga
+      if (iframe.src !== 'about:blank') {
+        document.getElementById('visorEstado').classList.add('oculto');
+      }
+    };
+    // Pequeño delay para que se vea el spinner
+    setTimeout(() => { iframe.src = url; }, 300);
 
     // Mostrar panel
     document.getElementById('visorOverlay').classList.add('visible');
     document.getElementById('visorPanel').classList.add('open');
     document.body.style.overflow = 'hidden';
-
-    // Mostrar spinner, ocultar error y libro
-    document.getElementById('visorEstado').style.display  = 'flex';
-    document.getElementById('visorError').style.display   = 'none';
-    document.getElementById('visorLibro').style.display   = 'flex';
-
-    // Limpiar canvas
-    ['vCanvasIzq','vCanvasDer'].forEach(id => {
-      const c = document.getElementById(id);
-      const ctx = c.getContext('2d');
-      ctx.clearRect(0,0,c.width,c.height);
-      c.width = 0; c.height = 0;
-    });
-
-    // Deshabilitar controles hasta que cargue
-    document.getElementById('vBtnPrev').disabled = true;
-    document.getElementById('vBtnNext').disabled = true;
-    document.getElementById('visorPaginaInfo').textContent = 'Cargando...';
-
-    cargarPDFjs(() => cargarPDF(url));
-  }
-
-  async function cargarPDF(url) {
-    visorPdfDoc = null;
-    visorPagina = 1;
-
-    try {
-  // pCloud devuelve un link de descarga directo; intentamos cargarlo
-  const proxyUrl = url.includes('pcloud')
-    ? `https://corsproxy.io/?${encodeURIComponent(url)}`
-    : url;
-
-  const loadingTask = pdfjsLib.getDocument({
-    url: proxyUrl,
-    withCredentials: false,
-    cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
-    cMapPacked: true,
-  });
-
-      visorPdfDoc = await loadingTask.promise;
-      visorTotal  = visorPdfDoc.numPages;
-      visorPagina = 1;
-
-      // Calcular escala según el ancho disponible
-      visorScale  = calcularEscala();
-
-      document.getElementById('visorEstado').style.display = 'none';
-      await renderizarPaginas();
-
-    } catch(e) {
-      // CORS u otro error → mostrar fallback
-      document.getElementById('visorEstado').style.display  = 'none';
-      document.getElementById('visorLibro').style.display   = 'none';
-      document.getElementById('visorError').style.display   = 'flex';
-    }
-  }
-
-  function calcularEscala() {
-    const area   = document.getElementById('visorArea');
-    const ancho  = area.clientWidth  - 40;  // padding
-    const alto   = area.clientHeight - 40;
-    // estimación: una página A4 en PDF tiene ~595x842pt
-    const escalaAncho = visorDoble ? (ancho / 2 / 595) : (ancho / 595);
-    const escalaAlto  = alto / 842;
-    return Math.min(escalaAncho, escalaAlto, 2.2);
-  }
-
-  async function renderizarPaginas() {
-    if (!visorPdfDoc) return;
-
-    // Página izquierda
-    await renderizarPagina(visorPagina, document.getElementById('vCanvasIzq'));
-
-    const mostrarDer = visorDoble && (visorPagina + 1) <= visorTotal;
-    document.getElementById('vPaginaDer').style.display = mostrarDer ? 'block' : 'none';
-    document.getElementById('visorLomo').style.display  = mostrarDer ? 'block' : 'none';
-
-    if (mostrarDer) {
-      await renderizarPagina(visorPagina + 1, document.getElementById('vCanvasDer'));
-    }
-
-    // Actualizar info y controles
-    const hasta = visorDoble ? Math.min(visorPagina + 1, visorTotal) : visorPagina;
-    const texto = visorDoble
-      ? `${visorPagina}–${hasta} de ${visorTotal}`
-      : `${visorPagina} de ${visorTotal}`;
-    document.getElementById('visorPaginaInfo').textContent = texto;
-    document.getElementById('vBtnPrev').disabled = visorPagina <= 1;
-    document.getElementById('vBtnNext').disabled = visorDoble
-      ? visorPagina + 1 >= visorTotal
-      : visorPagina >= visorTotal;
-  }
-
-  async function renderizarPagina(num, canvas) {
-    const page     = await visorPdfDoc.getPage(num);
-    const viewport = page.getViewport({ scale: visorScale });
-    canvas.width   = viewport.width;
-    canvas.height  = viewport.height;
-    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-  }
-
-  function visorCambiarPagina(dir) {
-    const paso = visorDoble ? 2 : 1;
-    visorPagina = Math.max(1, Math.min(visorTotal - (visorDoble ? 1 : 0), visorPagina + dir * paso));
-
-    // Animación de giro
-    const pag = document.getElementById(dir > 0 ? 'vPaginaIzq' : 'vPaginaDer');
-    pag.classList.add('turning');
-    setTimeout(() => pag.classList.remove('turning'), 380);
-
-    renderizarPaginas();
-  }
-
-  function visorToggleModo() {
-    visorDoble = !visorDoble;
-    const btn  = document.getElementById('vModoBtn');
-    btn.textContent = visorDoble ? '⊟ Simple' : '⊞ Doble';
-    visorScale = calcularEscala();
-    renderizarPaginas();
   }
 
   function cerrarVisor() {
     document.getElementById('visorOverlay').classList.remove('visible');
     document.getElementById('visorPanel').classList.remove('open');
     document.body.style.overflow = '';
-    visorPdfDoc = null;
+    // Limpiar iframe al cerrar
+    setTimeout(() => {
+      document.getElementById('visorIframe').src = 'about:blank';
+      document.getElementById('visorEstado').classList.remove('oculto');
+    }, 450);
   }
 
-  // Zoom con rueda del ratón
-  ['vCanvasIzq','vCanvasDer'].forEach(id => {
-    document.getElementById(id).addEventListener('wheel', e => {
-      e.preventDefault();
-      visorScale = Math.max(0.5, Math.min(3.5, visorScale - e.deltaY * 0.0015));
-      renderizarPaginas();
-    }, { passive: false });
-  });
-
-  // Teclas de navegación
+  // Tecla Escape para cerrar
   document.addEventListener('keydown', e => {
-    if (!document.getElementById('visorPanel').classList.contains('open')) return;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') visorCambiarPagina(1);
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   visorCambiarPagina(-1);
-    if (e.key === 'Escape') cerrarVisor();
+    if (e.key === 'Escape' && document.getElementById('visorPanel').classList.contains('open')) {
+      cerrarVisor();
+    }
   });
 
   /* ══════════════════════════════════════
-     FUNCIÓN bookCardHTML — actualizada
-     para abrir el visor en lugar de nueva pestaña
+     FUNCIÓN bookCardHTML
   ══════════════════════════════════════ */
   function bookCardHTML(l, i) {
     const tieneImagen = l.imagen && l.imagen.trim();
@@ -846,7 +524,6 @@
     const tituloEsc   = (l.titulo || '').replace(/'/g,"\\'").replace(/"/g,'&quot;');
     const autorEsc    = (l.autor  || '').replace(/'/g,"\\'");
 
-    // Los audios siguen abriendo en nueva pestaña
     const btnHtml = l.url
       ? (esAudio
           ? `<a class="book-btn" href="${l.url}" target="_blank" rel="noopener noreferrer">🎧 Escuchar</a>`
