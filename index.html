@@ -69,7 +69,6 @@
   .mobile-vol-row { display:none; align-items:center; gap:8px; width:100%; justify-content:center; }
   .mobile-vol-row span { font-size:13px; }
   #volumenM { width:100px; accent-color:var(--gold); cursor:pointer; height:4px; }
-
   .player-widget#playerWidgetM { background:linear-gradient(145deg,#2a1a0a,#1a0f05); border:1px solid rgba(201,168,76,0.3); border-radius:14px; padding:12px 14px; box-shadow:0 6px 24px rgba(0,0,0,0.6); min-width:180px; }
 
   .app { position:relative; z-index:1; display:flex; min-height:100vh; overflow:hidden; }
@@ -219,14 +218,17 @@
     pointer-events: auto;
   }
 
+  /* ── Panel: 90vh para dejar espacio al banner de cookies ── */
   #visorPanel {
     position: fixed;
     top: 0;
     right: 0;
-    width: min(92vw, 860px);
-    height: 100vh;
+    width: min(85vw, 1100px);   /* más ancho en PC */
+    height: 90vh;               /* 90% para que las cookies queden visibles */
     background: linear-gradient(180deg, #2a1a0a 0%, #1a0f05 100%);
     border-left: 1px solid rgba(201,168,76,0.3);
+    border-bottom: 1px solid rgba(201,168,76,0.3);
+    border-radius: 0 0 0 14px;
     box-shadow: -8px 0 48px rgba(0,0,0,0.7);
     z-index: 2100;
     display: flex;
@@ -243,7 +245,7 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 14px 20px;
+    padding: 10px 16px;        /* un poco más compacto */
     border-bottom: 1px solid rgba(201,168,76,0.2);
     background: rgba(42,26,10,0.98);
     flex-shrink: 0;
@@ -286,7 +288,6 @@
     transform: rotate(90deg);
   }
 
-  /* Área del iframe */
   #visorArea {
     flex: 1;
     overflow: hidden;
@@ -294,7 +295,6 @@
     background: #0f0a04;
   }
 
-  /* Spinner de carga */
   #visorEstado {
     position: absolute;
     inset: 0;
@@ -315,7 +315,6 @@
     display: none;
   }
 
-  /* iframe del visor */
   #visorIframe {
     width: 100%;
     height: 100%;
@@ -323,10 +322,19 @@
     display: block;
   }
 
+  /* ── Móvil: ancho completo, altura 90vh ── */
   @media(max-width:600px) {
     #visorPanel {
       width: 100vw;
+      height: 90vh;
       border-left: none;
+      border-radius: 0 0 0 0;
+    }
+    #visorHeader {
+      padding: 8px 12px;       /* cabecera más compacta en móvil */
+    }
+    #visorTitulo {
+      font-size: 13px;
     }
   }
 </style>
@@ -370,7 +378,6 @@
 <div id="visorOverlay" onclick="cerrarVisor()"></div>
 
 <div id="visorPanel">
-  <!-- Cabecera -->
   <div id="visorHeader">
     <div style="flex:1;min-width:0;">
       <div id="visorTitulo">Cargando...</div>
@@ -378,10 +385,7 @@
     </div>
     <button id="visorCerrar" onclick="cerrarVisor()" title="Cerrar">✕</button>
   </div>
-
-  <!-- Área del libro -->
   <div id="visorArea">
-    <!-- Spinner de carga -->
     <div id="visorEstado">
       <div style="width:60px;height:60px;">
         <div class="loto-petals" style="width:60px;height:60px;">
@@ -392,7 +396,6 @@
       </div>
       <span>Abriendo libro...</span>
     </div>
-    <!-- iframe de pCloud -->
     <iframe id="visorIframe" src="about:blank" allowfullscreen></iframe>
   </div>
 </div>
@@ -470,28 +473,18 @@
   /* ══════════════════════════════════════
      VISOR LATERAL — IFRAME
   ══════════════════════════════════════ */
-
   function abrirVisor(url, titulo, autor) {
-    // Actualizar cabecera
     document.getElementById('visorTitulo').textContent = titulo || 'Libro';
     document.getElementById('visorAutor').textContent  = autor  || '';
-
-    // Mostrar spinner
     document.getElementById('visorEstado').classList.remove('oculto');
-
-    // Cargar iframe
     const iframe = document.getElementById('visorIframe');
     iframe.src = 'about:blank';
     iframe.onload = function() {
-      // Ocultar spinner cuando carga
       if (iframe.src !== 'about:blank') {
         document.getElementById('visorEstado').classList.add('oculto');
       }
     };
-    // Pequeño delay para que se vea el spinner
     setTimeout(() => { iframe.src = url; }, 300);
-
-    // Mostrar panel
     document.getElementById('visorOverlay').classList.add('visible');
     document.getElementById('visorPanel').classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -501,14 +494,12 @@
     document.getElementById('visorOverlay').classList.remove('visible');
     document.getElementById('visorPanel').classList.remove('open');
     document.body.style.overflow = '';
-    // Limpiar iframe al cerrar
     setTimeout(() => {
       document.getElementById('visorIframe').src = 'about:blank';
       document.getElementById('visorEstado').classList.remove('oculto');
     }, 450);
   }
 
-  // Tecla Escape para cerrar
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && document.getElementById('visorPanel').classList.contains('open')) {
       cerrarVisor();
@@ -560,11 +551,10 @@
   }
 
   /* ══════════════════════════════════════
-     NAVEGACIÓN ENTRE PANELES
+     NAVEGACIÓN
   ══════════════════════════════════════ */
   const panelCats  = document.getElementById('panelCats');
   const panelBooks = document.getElementById('panelBooks');
-
   let navState = 'home';
   let currentCat = null;
   let currentCatIcon = null;
@@ -575,19 +565,14 @@
     const state = e.state || {};
     if (state.nav === 'category') {
       const subcats = [...new Set(libros.filter(l => l.categoria === state.cat && l.subcategoria).map(l => l.subcategoria))];
-      if (subcats.length > 0) {
-        _mostrarCategoria(state.cat, state.icon);
-        navState = 'category';
-      } else {
+      if (subcats.length > 0) { _mostrarCategoria(state.cat, state.icon); navState = 'category'; }
+      else {
         const filtrados = libros.filter(l => l.categoria === state.cat && !l.subcategoria);
         document.getElementById('booksCatName').textContent = state.icon + '  ' + state.cat;
         document.getElementById('booksCount').textContent = filtrados.length + (filtrados.length === 1 ? ' libro' : ' libros');
-        mostrarLibros(filtrados);
-        navState = 'category';
+        mostrarLibros(filtrados); navState = 'category';
       }
-    } else {
-      _irAInicio();
-    }
+    } else { _irAInicio(); }
   });
 
   function _irAInicio() {
@@ -605,10 +590,7 @@
       'Audios de Neville Goddard': 'Libros/Neville_goddard/Audios/audiosneville.jpg',
       'Libros de Neville Goddard': 'Libros/Neville_goddard/Libros/librosneville.jpg'
     };
-    const subcatIcons = {
-      'Audios de Neville Goddard': '🎧',
-      'Libros de Neville Goddard': '📚'
-    };
+    const subcatIcons = { 'Audios de Neville Goddard': '🎧', 'Libros de Neville Goddard': '📚' };
     document.getElementById('booksCatName').textContent = icon + '  ' + cat;
     document.getElementById('booksCount').textContent = subcats.length + ' colecciones';
     const grid = document.getElementById('booksInner');
@@ -648,10 +630,8 @@
     document.getElementById('panelMusicaMobile').style.transition = 'opacity 0.5s ease';
     document.getElementById('panelMusicaMobile').style.opacity = '0';
     setTimeout(() => { document.getElementById('panelMusicaMobile').style.pointerEvents = 'none'; }, 500);
-
     const subcats   = [...new Set(libros.filter(l => l.categoria === cat && l.subcategoria).map(l => l.subcategoria))];
     const sinSubcat = libros.filter(l => l.categoria === cat && !l.subcategoria);
-
     if (subcats.length > 0) {
       _mostrarCategoria(cat, icon);
       history.pushState({ nav: 'category', cat, icon }, '');
@@ -660,8 +640,7 @@
       const filtrados = sinSubcat.length > 0 ? sinSubcat : libros.filter(l => l.categoria === cat);
       document.getElementById('booksCatName').textContent = icon + '  ' + cat;
       document.getElementById('booksCount').textContent = filtrados.length > 0
-        ? filtrados.length + (filtrados.length === 1 ? ' libro' : ' libros')
-        : 'Próximamente';
+        ? filtrados.length + (filtrados.length === 1 ? ' libro' : ' libros') : 'Próximamente';
       mostrarLibros(filtrados);
       history.pushState({ nav: 'category', cat, icon }, '');
       navState = 'category';
@@ -699,7 +678,6 @@
     _irAInicio();
   }
 
-  /* ══ Loto: tiempo mínimo ══ */
   const LOTO_MIN = 1200;
   function revelarPortada(img) {
     const spinner = img.parentElement.querySelector('.loto-spinner');
@@ -822,18 +800,15 @@
   }
   function toggleRepeat() {
     isRepeating = !isRepeating; audio.loop = isRepeating;
-    const color = isRepeating ? 'var(--gold)' : 'rgba(201,168,76,0.3)';
-    document.getElementById('repeatBtnM').style.color = color;
+    document.getElementById('repeatBtnM').style.color = isRepeating ? 'var(--gold)' : 'rgba(201,168,76,0.3)';
   }
   function seekAudio(e) {
     const bar = e.currentTarget;
-    const ratio = e.offsetX / bar.offsetWidth;
-    audio.currentTime = ratio * audio.duration;
+    audio.currentTime = (e.offsetX / bar.offsetWidth) * audio.duration;
   }
   audio.addEventListener('timeupdate', () => {
     if (!audio.duration) return;
-    const pct = (audio.currentTime / audio.duration) * 100;
-    document.getElementById('progressFillM').style.width = pct + '%';
+    document.getElementById('progressFillM').style.width = (audio.currentTime / audio.duration * 100) + '%';
   });
   function cambiarVolumen() {
     const slider = document.getElementById('volumenM');
