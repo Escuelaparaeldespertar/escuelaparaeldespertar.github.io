@@ -517,7 +517,7 @@
 
     const btnHtml = l.url
       ? (esAudio
-          ? `<a class="book-btn" href="${l.url}" target="_blank" rel="noopener noreferrer">🎧 Escuchar</a>`
+          ? `<button class="book-btn" onclick="abrirVisor('${l.url}','${tituloEsc}','${autorEsc}')">🎧 Escuchar</button>`
           : `<button class="book-btn" onclick="abrirVisor('${l.url}','${tituloEsc}','${autorEsc}')">📖 Abrir libro</button>`)
       : `<span class="book-btn" style="opacity:0.4;cursor:default;">Próximamente</span>`;
 
@@ -749,7 +749,7 @@
         </div>
         ${l.url
           ? (esAudio
-              ? `<a class="sr-btn" href="${l.url}" target="_blank" rel="noopener noreferrer">🎧 Escuchar</a>`
+              ? `<button class="sr-btn" onclick="abrirVisor('${l.url}','${tit}','${aut}')">🎧 Escuchar</button>`
               : `<button class="sr-btn" onclick="abrirVisor('${l.url}','${tit}','${aut}')">📖 Abrir libro</button>`)
           : `<span class="sr-btn" style="opacity:0.35;cursor:default;">Próximamente</span>`}
       </div>`;
