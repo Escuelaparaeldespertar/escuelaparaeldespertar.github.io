@@ -192,4 +192,6 @@
     { categoria:'Teosofía', titulo:'Telepatía y el Vehículo Etérico', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/telepatia.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZJ2Ed5ZvPw401MRlik3bRUEtalIsXCaJA0y' },
     { categoria:'Teosofía', titulo:'Tratado Sobre Fuego Cósmico', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/tratado.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZL2Ed5ZmSFXeFDXDW4L531cga5PtYswGbIk' },
     { categoria:'Teosofía', titulo:'Una Gran Aventura - La Muerte', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/aventuramuerte.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ82Ed5Ze2aVLCzOm4jHq5KwIWl5wJq5BGU7' },
+    // Biología y comportamiento social
+    { categoria:'Biología y comportamiento social', titulo:'El gen egoísta Las bases biológicas de nuestra conducta',autor:'Richard Dawkins',imagen:'Libros/Biologia/Gen_egoista.jpg',imgContain:true,url:'https://u.pcloud.link/publink/show?code=XZ05iE5Zl8EPMi4uDwHPsK0KFNSRB5KrQ05k' },
   ];
