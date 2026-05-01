@@ -521,7 +521,7 @@
     ? (esAudio
         ? `<button class="book-btn" onclick="abrirVisor('${l.url}','${tituloEsc}','${autorEsc}')">🎧 Escuchar</button>`
         : `<button class="book-btn" onclick="abrirVisor('${l.url}','${tituloEsc}','${autorEsc}')">📖 Abrir libro</button>`)
-    : `<span class="book-btn" style="opacity:0.4;cursor:default;">Próximamente</span>`}
+    : ``}
   ${l.video
     ? `<button class="book-btn" style="margin-top:5px;" onclick="abrirVisor('${l.video}','${tituloEsc}','${autorEsc}')">▶ Ver video</button>`
     : ''}
