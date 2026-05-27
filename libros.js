@@ -196,4 +196,6 @@
     { categoria:'Biología y comportamiento social', titulo:'El gen egoísta Las bases biológicas de nuestra conducta',autor:'Richard Dawkins',imagen:'Libros/Biologia/Gen_egoista.jpg',imgContain:true,url:'https://u.pcloud.link/publink/show?code=XZ05iE5Zl8EPMi4uDwHPsK0KFNSRB5KrQ05k' },
     // Documentales
     { categoria:'Documentales', titulo:'Despierta', autor:'', imagen:'Documentales/Despierta.jpg', imgContain:true, video:'https://mega.nz/embed/sqV02ahJ#2rv89EsBHR2gZ7h2Gg0UXwQNFCZHHfoVle7UtZvpw98!1a' },
+   // INTELIGENCIA ARTIFICIAL EN LO HUMANO
+    { categoria:'INTELIGENCIA ARTIFICIAL EN LO HUMANO', titulo:'Artificial La nueva inteligencia y el contorno de lo humano', autor:'Mariano Sigman / Santiago Bilinkis', imagen:'Inteligencia/ARTIFICIAL.jpg', imgContain:true, video:'https://u.pcloud.link/publink/show?code=XZULLI5ZeIrmWgUWr47mTtbElrtRRLOKGVY7' },
   ];
