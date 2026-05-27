@@ -197,5 +197,5 @@
     // Documentales
     { categoria:'Documentales', titulo:'Despierta', autor:'', imagen:'Documentales/Despierta.jpg', imgContain:true, video:'https://mega.nz/embed/sqV02ahJ#2rv89EsBHR2gZ7h2Gg0UXwQNFCZHHfoVle7UtZvpw98!1a' },
    // INTELIGENCIA ARTIFICIAL EN LO HUMANO
-   { categoria: 'Inteligencia Artificial en lo Humano', titulo: 'La nueva inteligencia y el contorno de lo humano', autor: 'Mariano Sigman / Santiago Bilinkis', imagen: 'Inteligencia/ARTIFICIAL.jpg', imgContain: true, url: 'https://u.pcloud.link/publink/show?code=XZULLI5ZeIrmWgUWr47mTtbElrtRRLOKGVY7' },
+   { categoria: 'Inteligencia Artificial en lo Humano', titulo: 'La nueva inteligencia y el contorno de lo humano', autor: 'Mariano Sigman / Santiago Bilinkis', imagen: 'Libros/Inteligencia/ARTIFICIAL.jpg', imgContain: true, url: 'https://u.pcloud.link/publink/show?code=XZULLI5ZeIrmWgUWr47mTtbElrtRRLOKGVY7' },
   ];
