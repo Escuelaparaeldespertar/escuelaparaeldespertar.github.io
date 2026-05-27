@@ -198,4 +198,7 @@
     { categoria:'Documentales', titulo:'Despierta', autor:'', imagen:'Documentales/Despierta.jpg', imgContain:true, video:'https://mega.nz/embed/sqV02ahJ#2rv89EsBHR2gZ7h2Gg0UXwQNFCZHHfoVle7UtZvpw98!1a' },
    // INTELIGENCIA ARTIFICIAL EN LO HUMANO
    { categoria: 'Inteligencia Artificial en lo Humano', titulo: 'La nueva inteligencia y el contorno de lo humano', autor: 'Mariano Sigman / Santiago Bilinkis', imagen: 'Libros/Inteligencia/ARTIFICIAL.jpg', imgContain: true, url: 'https://u.pcloud.link/publink/show?code=XZULLI5ZeIrmWgUWr47mTtbElrtRRLOKGVY7' },
+    // Herramientas Prácticas para Sostener los Cambios
+   { categoria:'Herramientas Prácticas para Sostener los Cambios', titulo:'¿Por qué nadie me lo dijo antes?', autor:'Dra. Julie Smith', imagen:'Libros/Herramientas/Porquenadie.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZHLLI5ZoJJYekdtXEuD43UgGsgzLHDFg8PX' },
+   { categoria:'Herramientas Prácticas para Sostener los Cambios', titulo:'Autodisciplina Automática - El Poder de la Mente Subconsciente', autor:'Russel C. James', imagen:'Libros/Herramientas/autodisciplina.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZzLLI5Z8RWB6QVBaXYqAJaDz9CR0pfcgJwk' },
   ];
