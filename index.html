@@ -7,13 +7,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cream: #F9F9F9;
+    --cream: #D1D1D1;
     --card-bg: #C8B49A;
     --card-hover: #b8a088;
     --gold: #c9a84c;
     --gold-light: #e8c97e;
     --gold-dark: #a07830;
-    --sidebar-bg: #F2EDE6;
+    --sidebar-bg: #C8C8C8;
     --sidebar-border: rgba(201,168,76,0.25);
     --text-dark: #3e2712;
     --text-mid: #7a6040;
@@ -336,7 +336,7 @@
   .sr-card { background:white; border:1px solid rgba(201,168,76,0.15); border-radius:12px; overflow:hidden; cursor:pointer; transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1); animation:cardPop 0.4s ease both; display:flex; flex-direction:column; box-shadow:0 2px 10px rgba(139,99,64,0.07); }
   .sr-card:hover { transform:translateY(-5px) scale(1.02); box-shadow:0 14px 36px rgba(139,99,64,0.16); border-color:rgba(201,168,76,0.4); }
   .sr-cover { width:100%; padding-top:120%; position:relative; background:linear-gradient(135deg,#e8ddd0,#d4c4b0); overflow:hidden; }
-  .sr-cover img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#f5efe4; opacity:0; transition:opacity 0.6s ease; }
+  .sr-cover img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#D1D1D1; opacity:0; transition:opacity 0.6s ease; }
   .sr-cover img.loaded { opacity:1; }
   .sr-cover-fallback { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:10px; }
   .sr-cover-fallback span { font-size:30px; opacity:0.5; }
@@ -588,7 +588,7 @@
           </div>
           ${tieneImagen
             ? `<img src="${l.imagen}" alt="${l.titulo}"
-                 style="${l.imgPosition ? 'object-position:'+l.imgPosition+';' : ''}${l.imgContain ? 'object-fit:contain;background:#f5efe4;' : ''}"
+                 style="${l.imgPosition ? 'object-position:'+l.imgPosition+';' : ''}${l.imgContain ? 'object-fit:contain;background:#D1D1D1;' : ''}"
                  onload="revelarPortada(this)"
                  onerror="this.style.display='none'; ocultarLoto(this.parentElement.querySelector('.loto-spinner'));">`
             : `<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#e8ddd0,#d4c4b0);gap:8px;padding:10px;">
@@ -662,7 +662,7 @@
             </div>
           </div>
           ${primerImg
-            ? `<img src="${primerImg}" alt="${sub}" style="object-fit:contain;background:#f5efe4;"
+            ? `<img src="${primerImg}" alt="${sub}" style="object-fit:contain;background:#D1D1D1;"
                  onload="this.classList.add('img-loaded'); const s=this.parentElement.querySelector('.loto-spinner'); if(s){s.classList.add('hidden');}"
                  onerror="this.style.display='none'; const s=this.parentElement.querySelector('.loto-spinner'); if(s){s.classList.add('hidden');}">`
             : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:40px;">${subIcon}</div>`
