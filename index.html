@@ -7,45 +7,55 @@
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cream: #D1D1D1;
-    --card-bg: #C8B49A;
-    --card-hover: #b8a088;
+    --bg: #F8F5EE;
+    --card-bg: #E8D5C4;
+    --card-hover: #D9C3AF;
     --gold: #C5A059;
-    --gold-light: #D4AF6A;
-    --gold-dark: #C5A059;
-    --sidebar-bg: #C8C8C8;
-    --sidebar-border: rgba(201,168,76,0.25);
-    --text-dark: #3e2712;
-    --text-mid: #7a6040;
-    --text-light: rgba(62,39,18,0.45);
-    --ink: #1a110a;
+    --gold-light: #D4B06A;
+    --gold-dark: #A07838;
+    --glass: rgba(255,255,255,0.55);
+    --glass-border: rgba(255,255,255,0.75);
+    --glass-shadow: rgba(0,0,0,0.08);
+    --text-dark: #1C1C1E;
+    --text-mid: #3A3A3C;
+    --text-light: #6C6C70;
+    --text-gold: #C5A059;
   }
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
 
   body {
-    background: var(--cream);
+    background: var(--bg);
     font-family: 'Josefin Sans', sans-serif;
     color: var(--text-dark);
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* ══ Animaciones ══ */
-  @keyframes fadeIn { from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:translateY(0);} }
-  @keyframes card-in { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-  @keyframes float-up { 0%{transform:translateY(100vh);opacity:0;} 10%{opacity:0.3;} 90%{opacity:0.1;} 100%{transform:translateY(-20px);opacity:0;} }
-  @keyframes cardPop { from{opacity:0;transform:scale(0.93) translateY(8px)} to{opacity:1;transform:scale(1) translateY(0)} }
+  /* ══ Noise texture overlay ══ */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.4;
+  }
 
+  /* ══ Animaciones ══ */
+  @keyframes fadeUp   { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+  @keyframes fadeIn   { from{opacity:0;} to{opacity:1;} }
+  @keyframes scaleIn  { from{opacity:0;transform:scale(0.92);} to{opacity:1;transform:scale(1);} }
+  @keyframes float    { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+  @keyframes shimmer  { 0%{background-position:-200% center;} 100%{background-position:200% center;} }
   @keyframes loto-rotate { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
-  @keyframes pulse-petal  { 0%,100%{filter:brightness(1);} 50%{filter:brightness(1.9) drop-shadow(0 0 5px rgba(201,168,76,0.9));} }
-  @keyframes pulse-center { 0%,100%{box-shadow:0 0 8px rgba(201,168,76,0.4);} 50%{box-shadow:0 0 18px rgba(201,168,76,1);} }
+  @keyframes pulse-petal  { 0%,100%{filter:brightness(1);} 50%{filter:brightness(1.9) drop-shadow(0 0 5px rgba(197,160,89,0.9));} }
+  @keyframes pulse-center { 0%,100%{box-shadow:0 0 8px rgba(197,160,89,0.4);} 50%{box-shadow:0 0 18px rgba(197,160,89,1);} }
+  @keyframes float-up { 0%{transform:translateY(100vh);opacity:0;} 10%{opacity:0.3;} 90%{opacity:0.1;} 100%{transform:translateY(-20px);opacity:0;} }
 
   /* ══ Loto spinner ══ */
   .loto-spinner { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:3; pointer-events:none; transition:opacity 0.5s ease; }
   .loto-spinner.hidden { opacity:0; }
   .loto-petals { position:relative; width:52px; height:52px; animation:loto-rotate 3.5s linear infinite; }
-  .petal { position:absolute; width:14px; height:23px; background:radial-gradient(ellipse at 50% 30%, rgba(201,168,76,0.95), rgba(201,168,76,0.15)); border-radius:50% 50% 50% 50% / 62% 62% 38% 38%; left:50%; top:50%; transform-origin:50% 100%; margin-left:-7px; margin-top:-23px; }
+  .petal { position:absolute; width:14px; height:23px; background:radial-gradient(ellipse at 50% 30%, rgba(197,160,89,0.95), rgba(197,160,89,0.15)); border-radius:50% 50% 50% 50% / 62% 62% 38% 38%; left:50%; top:50%; transform-origin:50% 100%; margin-left:-7px; margin-top:-23px; }
   .petal:nth-child(1){transform:rotate(0deg);   animation:pulse-petal 1.6s ease-in-out infinite 0.00s;}
   .petal:nth-child(2){transform:rotate(45deg);  animation:pulse-petal 1.6s ease-in-out infinite 0.20s;}
   .petal:nth-child(3){transform:rotate(90deg);  animation:pulse-petal 1.6s ease-in-out infinite 0.40s;}
@@ -54,821 +64,352 @@
   .petal:nth-child(6){transform:rotate(225deg); animation:pulse-petal 1.6s ease-in-out infinite 1.00s;}
   .petal:nth-child(7){transform:rotate(270deg); animation:pulse-petal 1.6s ease-in-out infinite 1.20s;}
   .petal:nth-child(8){transform:rotate(315deg); animation:pulse-petal 1.6s ease-in-out infinite 1.40s;}
-  .loto-center { position:absolute; width:11px; height:11px; background:radial-gradient(circle, var(--gold-light), var(--gold)); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 0 10px rgba(201,168,76,0.7); animation:pulse-center 1.6s ease-in-out infinite; }
+  .loto-center { position:absolute; width:11px; height:11px; background:radial-gradient(circle, var(--gold-light), var(--gold)); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 0 10px rgba(197,160,89,0.7); animation:pulse-center 1.6s ease-in-out infinite; }
 
-  /* ══ Partículas sutiles ══ */
+  /* ══ Partículas ══ */
   #particles { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:hidden; }
-  .particle { position:absolute; width:2px; height:2px; background:var(--gold); border-radius:50%; opacity:0; animation:float-up linear infinite; }
+  .particle { position:absolute; border-radius:50%; opacity:0; animation:float-up linear infinite; background:var(--gold); }
 
   /* ══ Music player ══ */
   #panelMusica { display:none !important; }
   #panelMusicaMobile {
-    position:fixed; bottom:20px; right:20px;
+    position:fixed; bottom:24px; right:24px;
     display:flex; flex-direction:column; align-items:flex-end;
-    gap:10px; z-index:500;
+    gap:12px; z-index:500;
   }
   #inicioMusicaM {
-    width:52px; height:52px; border-radius:50%;
-    background:linear-gradient(135deg,var(--gold),#a07830);
-    color:white; border:none; cursor:pointer; font-size:22px;
+    width:54px; height:54px; border-radius:50%;
+    background: var(--glass);
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    border: 1.5px solid var(--glass-border);
+    color: var(--gold); font-size:20px;
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 4px 20px rgba(201,168,76,0.4);
-    transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
+    cursor:pointer;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.8);
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
   }
-  #inicioMusicaM:hover { transform:scale(1.12); box-shadow:0 6px 28px rgba(201,168,76,0.6); }
+  #inicioMusicaM:hover { transform:scale(1.12); box-shadow:0 12px 40px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.8); }
 
-  .player-widget { display:none; flex-direction:column; align-items:center; gap:6px; width:100%; }
-  .player-progress { width:100%; height:3px; background:rgba(201,168,76,0.2); border-radius:2px; cursor:pointer; position:relative; }
-  .player-progress-bar { height:100%; background:linear-gradient(90deg,var(--gold),var(--gold-light)); border-radius:2px; width:0%; transition:width 0.5s linear; pointer-events:none; }
-  .player-controls { display:flex; align-items:center; gap:10px; }
-  .player-btn { background:none; border:none; color:rgba(139,99,64,0.5); font-size:14px; cursor:pointer; transition:all 0.2s; padding:2px; }
+  .player-widget { display:none; flex-direction:column; align-items:center; gap:8px; width:100%; }
+  .player-progress { width:100%; height:3px; background:rgba(197,160,89,0.2); border-radius:2px; cursor:pointer; }
+  .player-progress-bar { height:100%; background:linear-gradient(90deg,var(--gold),var(--gold-light)); border-radius:2px; width:0%; transition:width 0.5s linear; }
+  .player-controls { display:flex; align-items:center; gap:12px; }
+  .player-btn { background:none; border:none; color:rgba(197,160,89,0.5); font-size:14px; cursor:pointer; transition:all 0.2s; }
   .player-btn:hover { color:var(--gold); transform:scale(1.15); }
-  .player-btn.disabled { opacity:0.25; cursor:default; pointer-events:none; }
-  .player-btn.play-btn { width:32px; height:32px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#a07830); color:white; font-size:13px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px rgba(201,168,76,0.4); }
-  .player-btn.play-btn:hover { transform:scale(1.1); }
+  .player-btn.disabled { opacity:0.2; cursor:default; pointer-events:none; }
+  .player-btn.play-btn { width:34px; height:34px; border-radius:50%; background:var(--gold); color:white; font-size:13px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(197,160,89,0.4); }
   .mobile-vol-row { display:none; align-items:center; gap:8px; width:100%; justify-content:center; }
   .mobile-vol-row span { font-size:13px; }
-  #volumenM { width:100px; accent-color:var(--gold); cursor:pointer; height:4px; }
-  .player-widget#playerWidgetM { background:white; border:1px solid rgba(201,168,76,0.3); border-radius:14px; padding:12px 14px; box-shadow:0 6px 24px rgba(0,0,0,0.12); min-width:180px; }
+  #volumenM { width:100px; accent-color:var(--gold); cursor:pointer; height:3px; }
+  .player-widget#playerWidgetM {
+    background: var(--glass);
+    backdrop-filter: blur(20px) saturate(1.8);
+    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    border: 1.5px solid var(--glass-border);
+    border-radius:18px; padding:14px 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8);
+    min-width:190px;
+  }
 
-  /* ══ Layout principal ══ */
-  .app { position:relative; z-index:1; display:flex; min-height:100vh; overflow:hidden; }
+  /* ══ Layout ══ */
+  .app { position:relative; z-index:1; display:flex; min-height:100vh; }
 
   .panel-cats {
     width:100%; flex-shrink:0; display:flex; flex-direction:column;
-    align-items:center; min-height:100vh; padding-bottom:0;
-    transition:transform 0.5s cubic-bezier(0.77,0,0.18,1), opacity 0.4s ease;
+    align-items:center; min-height:100vh;
+    transition:transform 0.55s cubic-bezier(0.77,0,0.18,1), opacity 0.4s ease;
     will-change:transform,opacity;
   }
   .panel-cats.slide-out { transform:translateX(-100%); opacity:0; pointer-events:none; position:absolute; top:0; left:0; width:100%; }
 
-  /* ══ Header / Sidebar ══ */
+  /* ══ Sidebar ══ */
   .app-header {
     width:100%; display:flex; flex-direction:column; align-items:center;
-    padding:44px 24px 30px;
-    border-bottom:2px solid rgba(197,160,89,0.6);
-    animation:fadeIn 0.8s ease 0.1s both;
-    background: #D1D1D1;
+    padding:48px 28px 32px;
+    background: var(--glass);
+    backdrop-filter: blur(24px) saturate(1.8);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8);
+    border-bottom: 1.5px solid var(--glass-border);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9);
+    animation: fadeUp 0.7s cubic-bezier(0.34,1.56,0.64,1) both;
+    position: relative;
   }
+
   .app-logo {
-    width:160px; height:160px; border-radius:50%; object-fit:cover;
-    border:2px solid rgba(201,168,76,0.4);
-    box-shadow:0 4px 24px rgba(201,168,76,0.15);
-    margin-bottom:18px; cursor:pointer;
-    transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
+    width:150px; height:150px; border-radius:50%; object-fit:cover;
+    border: 2px solid rgba(255,255,255,0.8);
+    box-shadow:
+      0 0 0 1px rgba(197,160,89,0.3),
+      0 8px 32px rgba(0,0,0,0.12),
+      0 2px 8px rgba(0,0,0,0.08),
+      inset 0 1px 0 rgba(255,255,255,0.5);
+    margin-bottom:20px; cursor:pointer;
+    transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease;
+    animation: float 6s ease-in-out infinite;
   }
-  .app-logo:hover { transform:scale(1.05); box-shadow:0 8px 36px rgba(201,168,76,0.25); }
+  .app-logo:hover {
+    transform: scale(1.06);
+    box-shadow:
+      0 0 0 1px rgba(197,160,89,0.5),
+      0 16px 48px rgba(0,0,0,0.18),
+      0 4px 16px rgba(197,160,89,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.5);
+    animation: none;
+  }
+
+  .app-ornament { display:none; }
 
   .app-title {
     font-family:'Josefin Sans', sans-serif;
-    font-size:13px; letter-spacing:5px; color:var(--gold-dark);
-    text-transform:uppercase; line-height:2; text-align:center;
-    font-weight:600;
+    font-size:12px; letter-spacing:6px; color:var(--text-gold);
+    text-transform:uppercase; line-height:2.2; text-align:center;
+    font-weight:700;
   }
   .app-quote {
     font-family:'Cormorant Garamond', serif;
     font-style:italic; font-size:13px;
-    color:#2d2d2d; margin-top:8px; text-align:center;
+    color:#2d2d2d; margin-top:10px; text-align:center;
+    line-height:1.6;
   }
 
-  /* Ocultar ornamento de estrellas */
-  .app-ornament { display:none; }
-
-  /* ══ Buscador ══ */
-  .search-box-wrap { width:100%; margin-top:16px; position:relative; }
+  /* ══ Buscador estilo iOS ══ */
+  .search-box-wrap { width:100%; margin-top:20px; }
   .search-box {
     width:100%; display:flex; align-items:center; gap:10px;
-    background:white; border:1.5px solid rgba(201,168,76,0.3);
-    border-radius:50px; padding:9px 16px;
-    transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-    box-shadow:0 2px 8px rgba(201,168,76,0.08);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(255,255,255,0.9);
+    border-radius:14px; padding:11px 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+    transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
   }
   .search-box:focus-within {
-    border-color:rgba(201,168,76,0.7);
-    box-shadow:0 4px 20px rgba(201,168,76,0.18);
-    transform:translateY(-1px);
+    border-color: rgba(197,160,89,0.6);
+    box-shadow: 0 4px 24px rgba(197,160,89,0.15), inset 0 1px 0 rgba(255,255,255,0.9);
+    transform: translateY(-1px) scale(1.01);
+    background: rgba(255,255,255,0.85);
   }
   .search-box input {
     flex:1; background:none; border:none; outline:none;
     color:var(--text-dark); font-family:'Josefin Sans', sans-serif;
-    font-size:13px; letter-spacing:0.5px;
+    font-size:13px; letter-spacing:0.3px;
   }
-  .search-box input::placeholder { color:rgba(139,99,64,0.4); font-style:italic; }
-  .search-box-icon { font-size:14px; color:rgba(201,168,76,0.6); flex-shrink:0; }
-  .search-box-clear { background:none; border:none; color:rgba(139,99,64,0.4); font-size:13px; cursor:pointer; padding:2px; transition:color 0.2s; display:none; flex-shrink:0; }
+  .search-box input::placeholder { color:rgba(100,80,40,0.4); font-style:italic; }
+  .search-box-icon { font-size:14px; color:rgba(197,160,89,0.7); flex-shrink:0; }
+  .search-box-clear { background:none; border:none; color:rgba(100,80,40,0.4); font-size:13px; cursor:pointer; padding:2px; transition:all 0.2s; display:none; }
   .search-box-clear.visible { display:block; }
-  .search-box-clear:hover { color:var(--gold); }
+  .search-box-clear:hover { color:var(--gold); transform:scale(1.2); }
 
-  /* ══ Label Colecciones ══ */
+  /* ══ Label colecciones ══ */
   .cats-label {
     font-family:'Josefin Sans', sans-serif;
-    font-size:10px; letter-spacing:5px; color:var(--gold-dark);
-    text-transform:uppercase; width:100%; padding:24px 28px 14px;
-    animation:fadeIn 0.8s ease 0.3s both;
-    display:flex; align-items:center; justify-content:space-between;
-    font-weight:600;
+    font-size:10px; letter-spacing:5px; color:var(--text-gold);
+    text-transform:uppercase; width:100%; padding:28px 28px 16px;
+    animation:fadeUp 0.7s ease 0.2s both;
+    display:flex; align-items:center; gap:14px; font-weight:700;
   }
   .cats-label::after {
-    content:''; flex:1; height:1px;
-    background:linear-gradient(90deg, rgba(197,160,89,0.8), transparent);
-    margin-left:16px;
+    content:''; flex:1; height:2px;
+    background:linear-gradient(90deg, rgba(197,160,89,0.7), transparent);
+    border-radius:1px;
   }
 
-  /* ══ Grid de categorías ══ */
-  .cats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:0 20px 20px; width:100%; animation:fadeIn 0.8s ease 0.4s both; }
-  .cats-grid-wrap { transition:opacity 0.3s; }
+  /* ══ Grid categorías ══ */
+  .cats-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; padding:0 20px 32px; width:100%; animation:fadeUp 0.7s ease 0.3s both; }
   .cats-grid-wrap.hidden { display:none; }
 
-  /* ══ Tarjeta de categoría — efecto Apple ══ */
+  /* ══ Tarjeta categoría — Apple style ══ */
   .cat-card {
     background: var(--card-bg);
-    border:none;
-    border-radius:16px;
-    padding:22px 14px 18px;
+    border: none;
+    border-radius:20px;
+    padding:24px 14px 20px;
     cursor:pointer;
-    display:flex; flex-direction:column; align-items:center; gap:10px;
-    transition:
-      transform 0.45s cubic-bezier(0.34,1.56,0.64,1),
-      box-shadow 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
-      background 0.3s ease;
-    animation:fadeIn 0.6s ease both;
-    position:relative;
-    overflow:hidden;
-    box-shadow: 0 2px 8px rgba(139,99,64,0.12);
-  }
-  .cat-card::before {
-    content:'';
-    position:absolute; inset:0;
-    background:linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%);
-    pointer-events:none;
-    border-radius:16px;
-  }
-  .cat-card:hover {
-    transform:translateY(-6px) scale(1.03);
+    display:flex; flex-direction:column; align-items:center; gap:12px;
+    position:relative; overflow:hidden;
+    /* Sombra Apple: capas múltiples */
     box-shadow:
-      0 16px 40px rgba(139,99,64,0.22),
-      0 4px 12px rgba(139,99,64,0.15),
-      inset 0 1px 0 rgba(255,255,255,0.3);
-    background: var(--card-hover);
-  }
-  .cat-card:active {
-    transform:scale(0.97) translateY(-2px);
-    transition:transform 0.15s cubic-bezier(0.25,0.46,0.45,0.94);
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 4px 16px rgba(0,0,0,0.08),
+      0 1px 4px rgba(0,0,0,0.06);
+    transition:
+      transform 0.5s cubic-bezier(0.34,1.56,0.64,1),
+      box-shadow 0.4s cubic-bezier(0.25,0.46,0.45,0.94),
+      background 0.3s ease;
+    animation: scaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
   }
 
-  /* ══ Icono con efecto dorado → color original ══ */
+  /* Brillo interno superior — efecto cristal Apple */
+  .cat-card::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:50%;
+    background:linear-gradient(180deg, rgba(255,255,255,0.25) 0%, transparent 100%);
+    border-radius:20px 20px 0 0;
+    pointer-events:none;
+  }
+
+  /* Reflejo sutil en hover */
+  .cat-card::after {
+    content:'';
+    position:absolute; inset:0;
+    background:radial-gradient(circle at 50% 0%, rgba(255,255,255,0.18) 0%, transparent 70%);
+    opacity:0;
+    transition:opacity 0.4s ease;
+    pointer-events:none;
+    border-radius:20px;
+  }
+
+  .cat-card:hover {
+    transform: translateY(-8px) scale(1.04);
+    background: var(--card-hover);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 20px 50px rgba(0,0,0,0.15),
+      0 8px 20px rgba(0,0,0,0.1),
+      0 0 0 0.5px rgba(255,255,255,0.3);
+  }
+  .cat-card:hover::after { opacity:1; }
+
+  .cat-card:active {
+    transform: scale(0.96) translateY(-2px);
+    transition: transform 0.12s cubic-bezier(0.25,0.46,0.45,0.94);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.3) inset,
+      0 6px 20px rgba(0,0,0,0.1);
+  }
+
+  /* ══ Icono dorado → color original ══ */
   .cat-icon {
-    font-size:34px;
+    font-size:36px;
     display:block;
-    /* Dorado en reposo: sepia + saturación + tono dorado */
-    filter:
-      sepia(1)
-      saturate(3)
-      hue-rotate(5deg)
-      brightness(0.9);
+    filter: sepia(1) saturate(3.5) hue-rotate(5deg) brightness(0.88);
     transition:
-      filter 0.5s cubic-bezier(0.25,0.46,0.45,0.94),
-      transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
-    transform-origin:center bottom;
+      filter 0.55s cubic-bezier(0.25,0.46,0.45,0.94),
+      transform 0.55s cubic-bezier(0.34,1.56,0.64,1);
+    transform-origin: center bottom;
+    will-change: filter, transform;
   }
   .cat-card:hover .cat-icon {
-    /* Color original del emoji */
     filter: none;
-    transform: scale(1.22) translateY(-3px);
+    transform: scale(1.28) translateY(-4px) rotate(-3deg);
   }
 
   .cat-name {
     font-family:'Josefin Sans', sans-serif;
     font-size:9px; letter-spacing:1.5px;
-    color:var(--text-dark);
+    color:var(--text-dark); opacity:0.8;
     text-transform:uppercase; text-align:center;
     line-height:1.6; font-weight:600;
-    opacity:0.85;
-    transition:opacity 0.3s ease, color 0.3s ease;
+    transition: opacity 0.3s, letter-spacing 0.4s cubic-bezier(0.34,1.56,0.64,1);
   }
-  .cat-card:hover .cat-name {
-    opacity:1;
-    color:var(--text-dark);
-  }
+  .cat-card:hover .cat-name { opacity:1; letter-spacing:2px; }
 
-  /* ══ Panel de libros ══ */
+  /* ══ Panel libros ══ */
   .panel-books {
     position:fixed; inset:0; display:flex; flex-direction:column;
-    background: var(--cream);
+    background: var(--bg);
     z-index:10;
     transform:translateX(100%); opacity:0;
-    transition:transform 0.5s cubic-bezier(0.77,0,0.18,1), opacity 0.4s ease;
+    transition:transform 0.55s cubic-bezier(0.77,0,0.18,1), opacity 0.4s ease;
     will-change:transform,opacity; overflow-y:auto; padding-bottom:80px;
   }
   .panel-books.slide-in { transform:translateX(0); opacity:1; }
   .books-loto { position:fixed; inset:0; background-image:url('Fondo/Loto.png'); background-size:cover; background-position:center; opacity:0.04; pointer-events:none; z-index:0; }
 
   .books-header {
-    position:sticky; top:0; z-index:5; display:flex; align-items:center;
-    gap:16px; padding:16px 24px;
-    background:rgba(209,209,209,0.97);
-    border-bottom:2px solid rgba(197,160,89,0.6);
-    backdrop-filter:blur(12px);
+    position:sticky; top:0; z-index:5;
+    display:flex; align-items:center; gap:16px; padding:16px 28px;
+    background: rgba(248,245,238,0.85);
+    backdrop-filter: blur(24px) saturate(1.8);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8);
+    border-bottom: 2px solid rgba(197,160,89,0.6);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 4px 20px rgba(0,0,0,0.06);
   }
-  .back-logo { width:110px; height:110px; border-radius:50%; object-fit:cover; border:2px solid rgba(201,168,76,0.4); cursor:pointer; flex-shrink:0; transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s; box-shadow:0 2px 16px rgba(201,168,76,0.15); }
-  .back-logo:hover { transform:scale(1.08); }
+  .back-logo {
+    width:100px; height:100px; border-radius:50%; object-fit:cover;
+    border:2px solid rgba(255,255,255,0.8);
+    box-shadow: 0 0 0 1px rgba(197,160,89,0.3), 0 4px 16px rgba(0,0,0,0.1);
+    cursor:pointer; flex-shrink:0;
+    transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .back-logo:hover { transform:scale(1.08) rotate(-3deg); }
   .books-header-info { flex:1; }
-  .books-cat-name { font-family:'Josefin Sans', sans-serif; font-size:11px; letter-spacing:3px; color:var(--gold-dark); text-transform:uppercase; font-weight:600; }
-  .books-count { font-size:12px; color:var(--text-light); margin-top:2px; font-style:italic; font-family:'Cormorant Garamond', serif; }
+  .books-cat-name { font-family:'Josefin Sans', sans-serif; font-size:11px; letter-spacing:4px; color:var(--text-gold); text-transform:uppercase; font-weight:700; }
+  .books-count { font-size:12px; color:var(--text-light); margin-top:3px; font-style:italic; font-family:'Cormorant Garamond', serif; }
   .back-btn {
-    padding:8px 18px;
-    background:white; border:1.5px solid rgba(201,168,76,0.35);
-    border-radius:50px; color:var(--gold-dark);
+    padding:10px 22px;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border:1.5px solid rgba(255,255,255,0.8);
+    border-radius:50px; color:var(--text-gold);
     font-family:'Josefin Sans', sans-serif; font-size:10px;
-    letter-spacing:2px; cursor:pointer; font-weight:600;
-    transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-    white-space:nowrap; box-shadow:0 2px 8px rgba(201,168,76,0.1);
+    letter-spacing:2px; cursor:pointer; font-weight:700;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+    transition:all 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    white-space:nowrap;
   }
   .back-btn:hover {
     background:var(--gold); color:white;
     border-color:var(--gold);
-    transform:translateY(-2px) scale(1.04);
-    box-shadow:0 6px 20px rgba(201,168,76,0.35);
+    transform:translateY(-3px) scale(1.05);
+    box-shadow:0 8px 28px rgba(197,160,89,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
   }
 
-  /* ══ Grid de libros ══ */
-  .books-inner { position:relative; z-index:1; display:grid; grid-template-columns:repeat(2,1fr); gap:16px; padding:24px 20px; justify-items:start; }
+  /* ══ Grid libros ══ */
+  .books-inner { position:relative; z-index:1; display:grid; grid-template-columns:repeat(2,1fr); gap:18px; padding:28px 24px; }
   @media(min-width:500px) { .books-inner { grid-template-columns:repeat(3,1fr); } }
-  @media(min-width:768px) { .books-inner { grid-template-columns:repeat(4,1fr); max-width:960px; margin:0; padding:30px 28px; gap:20px; } }
-  @media(min-width:1100px) { .books-inner { grid-template-columns:repeat(5,1fr); max-width:1200px; margin:0; } }
+  @media(min-width:768px) { .books-inner { grid-template-columns:repeat(4,1fr); max-width:960px; padding:32px 32px; gap:22px; } }
+  @media(min-width:1100px) { .books-inner { grid-template-columns:repeat(5,1fr); max-width:1200px; } }
 
   .book-card {
-    background:white; border:1px solid rgba(201,168,76,0.18);
-    border-radius:14px; overflow:hidden; cursor:pointer;
-    transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
-    animation:card-in 0.5s ease both; max-width:280px; margin:0; width:100%;
-    display:flex; flex-direction:column;
-    box-shadow:0 2px 12px rgba(139,99,64,0.08);
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid var(--glass-border);
+    border-radius:18px; overflow:hidden; cursor:pointer;
+    transition:all 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    animation:scaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    max-width:280px; width:100%; display:flex; flex-direction:column;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.9);
   }
-  .book-card:hover { transform:translateY(-6px) scale(1.02); box-shadow:0 16px 40px rgba(139,99,64,0.18); border-color:rgba(201,168,76,0.4); }
-  .book-cover-wrap { width:100%; padding-top:110%; position:relative; overflow:hidden; background:linear-gradient(135deg,#e8ddd0,#d4c4b0); }
-  .book-cover-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform 0.4s, opacity 0.8s ease; opacity:0; }
+  .book-card:hover {
+    transform:translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.14), 0 8px 20px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+    border-color:rgba(197,160,89,0.5);
+  }
+  .book-cover-wrap { width:100%; padding-top:110%; position:relative; overflow:hidden; background:linear-gradient(135deg,#e0d5c5,#ccc0aa); }
+  .book-cover-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1), opacity 0.8s ease; opacity:0; }
   .book-cover-wrap img.img-loaded { opacity:1; }
-  .book-card:hover .book-cover-wrap img { transform:scale(1.06); }
-  .book-info { padding:12px 12px 10px; display:flex; flex-direction:column; flex:1; }
-  .book-title { font-family:'Josefin Sans', sans-serif; font-weight:600; font-size:12px; color:var(--text-dark); line-height:1.4; margin-bottom:3px; letter-spacing:0.3px; }
-  .book-author { font-size:11px; color:var(--text-light); font-style:italic; margin-bottom:auto; padding-bottom:10px; font-family:'Cormorant Garamond', serif; }
+  .book-card:hover .book-cover-wrap img { transform:scale(1.08); }
+  .book-info { padding:14px 14px 12px; display:flex; flex-direction:column; flex:1; }
+  .book-title { font-family:'Josefin Sans', sans-serif; font-weight:700; font-size:12px; color:var(--text-dark); line-height:1.4; margin-bottom:4px; letter-spacing:0.3px; }
+  .book-author { font-size:11px; color:var(--text-light); font-style:italic; margin-bottom:auto; padding-bottom:12px; font-family:'Cormorant Garamond', serif; }
   .book-btn {
-    display:block; width:100%; padding:6px;
-    background:linear-gradient(135deg, rgba(201,168,76,0.15), rgba(160,120,48,0.1));
-    color:var(--gold-dark); border:1px solid rgba(201,168,76,0.3);
-    border-radius:8px; cursor:pointer;
+    display:block; width:100%; padding:7px;
+    background: rgba(197,160,89,0.12);
+    color:var(--gold-dark); border:1.5px solid rgba(197,160,89,0.35);
+    border-radius:10px; cursor:pointer;
     font-family:'Josefin Sans', sans-serif; font-size:8px;
     letter-spacing:1.5px; text-transform:uppercase;
-    transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
-    text-decoration:none; text-align:center; font-weight:600;
+    transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    text-decoration:none; text-align:center; font-weight:700;
   }
-  .book-btn:hover { background:linear-gradient(135deg,var(--gold),#a07830); color:white; border-color:transparent; transform:translateY(-1px); box-shadow:0 4px 14px rgba(201,168,76,0.4); }
+  .book-btn:hover { background:var(--gold); color:white; border-color:transparent; transform:translateY(-2px); box-shadow:0 6px 18px rgba(197,160,89,0.4); }
 
-  /* ══ Resultados de búsqueda ══ */
-  .search-results { display:none; animation:fadeIn 0.35s ease both; }
+  /* ══ Resultados búsqueda ══ */
+  .search-results { display:none; animation:fadeUp 0.35s ease both; }
   .search-results.visible { display:block; }
-  .sr-meta { display:flex; align-items:baseline; gap:10px; margin-bottom:16px; padding-bottom:10px; border-bottom:2px solid rgba(197,160,89,0.5); }
-  .sr-count { font-family:'Josefin Sans', sans-serif; font-size:9px; letter-spacing:3px; color:var(--text-light); text-transform:uppercase; font-weight:600; }
-  .sr-query { font-style:italic; font-size:13px; color:var(--gold-dark); font-family:'Cormorant Garamond', serif; }
+  .sr-meta { display:flex; align-items:baseline; gap:10px; margin-bottom:18px; padding-bottom:12px; border-bottom:2px solid rgba(197,160,89,0.5); }
+  .sr-count { font-family:'Josefin Sans', sans-serif; font-size:9px; letter-spacing:3px; color:var(--text-light); text-transform:uppercase; font-weight:700; }
+  .sr-query { font-style:italic; font-size:14px; color:var(--gold); font-family:'Cormorant Garamond', serif; }
   .sr-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:14px; }
 
-  .sr-card { background:white; border:1px solid rgba(201,168,76,0.15); border-radius:12px; overflow:hidden; cursor:pointer; transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1); animation:cardPop 0.4s ease both; display:flex; flex-direction:column; box-shadow:0 2px 10px rgba(139,99,64,0.07); }
-  .sr-card:hover { transform:translateY(-5px) scale(1.02); box-shadow:0 14px 36px rgba(139,99,64,0.16); border-color:rgba(201,168,76,0.4); }
-  .sr-cover { width:100%; padding-top:120%; position:relative; background:linear-gradient(135deg,#e8ddd0,#d4c4b0); overflow:hidden; }
-  .sr-cover img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:#D1D1D1; opacity:0; transition:opacity 0.6s ease; }
-  .sr-cover img.loaded { opacity:1; }
-  .sr-cover-fallback { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:10px; }
-  .sr-cover-fallback span { font-size:30px; opacity:0.5; }
-  .sr-cover-fallback small { font-family:'Josefin Sans', sans-serif; font-size:6px; letter-spacing:1px; color:rgba(139,99,64,0.5); text-transform:uppercase; text-align:center; line-height:1.6; font-weight:600; }
-  .sr-info { padding:9px 10px; flex:1; display:flex; flex-direction:column; gap:3px; }
-  .sr-title { font-family:'Josefin Sans', sans-serif; font-weight:600; font-size:11px; color:var(--text-dark); line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; letter-spacing:0.2px; }
-  .sr-title mark { background:none; color:var(--gold-dark); font-weight:700; }
-  .sr-author { font-size:10px; color:var(--text-light); font-style:italic; font-family:'Cormorant Garamond', serif; }
-  .sr-tag { margin-top:auto; padding-top:6px; font-family:'Josefin Sans', sans-serif; font-size:7px; letter-spacing:1px; color:rgba(139,99,64,0.4); text-transform:uppercase; font-weight:600; }
-  .sr-btn { display:block; width:100%; padding:5px; background:rgba(201,168,76,0.1); color:var(--gold-dark); border:2px solid rgba(197,160,89,0.6); border-radius:0 0 12px 12px; cursor:pointer; font-family:'Josefin Sans', sans-serif; font-size:7px; letter-spacing:1.5px; text-transform:uppercase; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1); text-decoration:none; text-align:center; font-weight:600; }
-  .sr-btn:hover { background:linear-gradient(135deg,var(--gold),#a07830); color:white; border-color:transparent; }
-  .sr-empty { grid-column:1/-1; text-align:center; padding:50px 20px; font-style:italic; font-size:17px; color:var(--text-light); line-height:1.8; font-family:'Cormorant Garamond', serif; }
-  .empty-msg { grid-column:1/-1; text-align:center; padding:60px 20px; font-family:'Cormorant Garamond', serif; font-style:italic; font-size:18px; color:var(--text-light); line-height:1.8; }
-
-  /* ══ Responsive ══ */
-  @media(min-width:600px) {
-    .cats-grid { grid-template-columns:1fr 1fr 1fr; max-width:700px; margin:0 auto; padding:0 28px 28px; }
-    .app-header { padding:50px 40px 36px; }
-    .app-title { font-size:14px; }
-    .sr-grid { grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); }
-  }
-  @media(min-width:900px) {
-    .panel-cats { flex-direction:row; align-items:flex-start; }
-    .app-header {
-      width:260px; min-width:260px; flex-shrink:0; flex-direction:column;
-      align-items:center; min-height:100vh; padding:50px 28px 100px;
-      border-bottom:none; border-right:2px solid rgba(197,160,89,0.6);
-      position:sticky; top:0; height:100vh; justify-content:center; display:flex;
-    }
-    .panel-cats::before { content:''; position:fixed; left:260px; top:0; width:1px; height:100vh; background:rgba(201,168,76,0.2); z-index:9000; pointer-events:none; }
-    .cats-right { flex:1; display:flex; flex-direction:column; padding:40px 36px 60px; overflow-y:auto; background:var(--cream); }
-    .cats-label { padding:0 0 16px; width:auto; }
-    .cats-grid { grid-template-columns:repeat(4,1fr); max-width:none; margin:0; padding:0; gap:14px; }
-  }
-  @media(min-width:1200px) {
-    .app-header { width:300px; min-width:300px; }
-    .cats-grid { grid-template-columns:repeat(5,1fr); }
-    .panel-cats::before { left:300px; }
-  }
-  @media(max-width:600px) {
-    .back-btn { padding:6px 12px; font-size:9px; letter-spacing:1px; }
-    .back-logo { width:90px; height:90px; }
-    .books-cat-name { font-size:9px; letter-spacing:2px; }
-    .app-header { position:sticky; top:0; z-index:20; background:var(--sidebar-bg); padding-bottom:16px; }
-    .search-results { padding-bottom:45vh; }
-    .cats-right { width:100%; overflow-y:auto; }
-    .sr-grid { grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:10px; }
-  }
-
-  /* ══ Visor lateral ══ */
-  #visorOverlay { position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:2000; opacity:0; pointer-events:none; transition:opacity 0.4s ease; backdrop-filter:blur(4px); }
-  #visorOverlay.visible { opacity:1; pointer-events:auto; }
-  #visorPanel { position:fixed; top:0; right:0; width:100vw; height:100vh; background:var(--cream); border-left:1px solid rgba(201,168,76,0.3); border-radius:0 0 0 14px; box-shadow:-8px 0 48px rgba(0,0,0,0.15); z-index:2100; display:flex; flex-direction:column; transform:translateX(100%); transition:transform 0.45s cubic-bezier(0.77,0,0.18,1); will-change:transform; }
-  #visorPanel.open { transform:translateX(0); }
-  #visorHeader { display:flex; align-items:center; gap:14px; padding:10px 16px; border-bottom:2px solid rgba(197,160,89,0.6); background:rgba(249,249,249,0.98); flex-shrink:0; backdrop-filter:blur(10px); }
-  #visorTitulo { flex:1; font-family:'Josefin Sans', sans-serif; font-size:14px; color:var(--text-dark); line-height:1.3; overflow:hidden; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; font-weight:600; letter-spacing:0.5px; }
-  #visorAutor { font-size:11px; color:var(--text-light); font-style:italic; font-family:'Cormorant Garamond', serif; }
-  #visorCerrar { width:34px; height:34px; border-radius:50%; background:rgba(201,168,76,0.1); border:1.5px solid rgba(201,168,76,0.3); color:var(--gold-dark); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1); flex-shrink:0; }
-  #visorCerrar:hover { background:var(--gold); color:white; transform:rotate(90deg) scale(1.1); }
-  #visorArea { flex:1; overflow:hidden; position:relative; background:#f0ebe4; }
-  #visorEstado { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; color:var(--text-light); font-family:'Cormorant Garamond', serif; font-style:italic; font-size:16px; z-index:5; background:#f0ebe4; pointer-events:none; }
-  #visorEstado.oculto { display:none; }
-  #visorIframe { width:100%; height:100%; border:none; display:block; }
-  @media(max-width:600px) { #visorPanel { width:100vw; height:90vh; border-left:none; border-radius:0; } #visorHeader { padding:8px 12px; } #visorTitulo { font-size:13px; } }
-
-  ::-webkit-scrollbar { width:5px; }
-  ::-webkit-scrollbar-track { background:var(--cream); }
-  ::-webkit-scrollbar-thumb { background:rgba(201,168,76,0.3); border-radius:3px; }
-</style>
-</head>
-<body>
-
-<audio id="musicaFondo" loop>
-  <source src="Audio/Musica_fondo.mp3" type="audio/mpeg">
-</audio>
-
-<div id="particles"></div>
-
-<div id="panelMusica"></div>
-
-<div id="panelMusicaMobile">
-  <div class="player-widget" id="playerWidgetM">
-    <div class="player-progress" id="progressBarM" onclick="seekAudio(event)">
-      <div class="player-progress-bar" id="progressFillM"></div>
-    </div>
-    <div class="player-controls">
-      <button class="player-btn disabled">⏮</button>
-      <button class="player-btn play-btn" id="playPauseBtnM" onclick="toggleAudio()">⏸</button>
-      <button class="player-btn disabled">⏭</button>
-      <button class="player-btn" id="repeatBtnM" onclick="toggleRepeat()">🔁</button>
-    </div>
-    <div class="mobile-vol-row" id="mobileVolRow">
-      <span>🔇</span>
-      <input type="range" id="volumenM" min="0" max="1" step="0.01" value="0.5" oninput="cambiarVolumen()">
-      <span>🔊</span>
-    </div>
-  </div>
-  <button id="inicioMusicaM" onclick="iniciarMusica()" title="Reproducir música">🎵</button>
-</div>
-
-<!-- Visor lateral -->
-<div id="visorOverlay" onclick="cerrarVisor()"></div>
-<div id="visorPanel">
-  <div id="visorHeader">
-    <div style="flex:1;min-width:0;">
-      <div id="visorTitulo">Cargando...</div>
-      <div id="visorAutor"></div>
-    </div>
-    <button id="visorCerrar" onclick="cerrarVisor()" title="Cerrar">✕</button>
-  </div>
-  <div id="visorArea">
-    <div id="visorEstado">
-      <div style="width:60px;height:60px;">
-        <div class="loto-petals" style="width:60px;height:60px;">
-          <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
-          <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
-          <div class="loto-center"></div>
-        </div>
-      </div>
-      <span>Abriendo libro...</span>
-    </div>
-    <iframe id="visorIframe" src="about:blank" allowfullscreen></iframe>
-  </div>
-</div>
-
-<div class="app">
-  <div class="panel-cats" id="panelCats">
-    <div class="app-header">
-      <img class="app-logo" src="Fondo/Escuela.png" alt="Logo" onclick="volverInicio()" onerror="this.style.display='none'">
-      <div class="app-title">Biblioteca<br>Virtual</div>
-      <div class="app-quote">Un refugio para el alma que busca</div>
-      <div class="search-box-wrap">
-        <div class="search-box">
-          <span class="search-box-icon">🔍</span>
-          <input id="searchInput" type="text" placeholder="Busca libro o autor…" oninput="buscarLibros()" autocomplete="off">
-          <button class="search-box-clear" id="searchClear" onclick="limpiarBusqueda()">✕</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="cats-right">
-      <div class="search-results" id="searchResults">
-        <div class="sr-meta">
-          <span class="sr-count" id="srCount"></span>
-          <span class="sr-query" id="srQuery"></span>
-        </div>
-        <div class="sr-grid" id="srGrid"></div>
-      </div>
-      <div class="cats-grid-wrap" id="catsGridWrap">
-        <div class="cats-label">
-          <span class="cats-label-text">✦ &nbsp; Colecciones</span>
-        </div>
-        <div class="cats-grid">
-          <div class="cat-card" onclick="abrirCategoria('Barbara Ann Brenan','🌺')" style="animation-delay:0.05s"><span class="cat-icon">🌺</span><span class="cat-name">Barbara Ann Brenan</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Biodescodificación','🧬')" style="animation-delay:0.08s"><span class="cat-icon">🧬</span><span class="cat-name">Biodescodificación</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Budismo','🌿')" style="animation-delay:0.11s"><span class="cat-icon">🌿</span><span class="cat-name">Budismo</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Carolyne Myss','🌸')" style="animation-delay:0.14s"><span class="cat-icon">🌸</span><span class="cat-name">Carolyne Myss</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Constelaciones Familiares','🫧')" style="animation-delay:0.17s"><span class="cat-icon">🫧</span><span class="cat-name">Constelaciones Familiares</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Cristaloterapia','💎')" style="animation-delay:0.20s"><span class="cat-icon">💎</span><span class="cat-name">Cristaloterapia</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Filosofía y Religión','🕊️')" style="animation-delay:0.23s"><span class="cat-icon">🕊️</span><span class="cat-name">Filosofía y Religión</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Geometría Sagrada','🌀')" style="animation-delay:0.26s"><span class="cat-icon">🌀</span><span class="cat-name">Geometría Sagrada</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Kabbalah','🔮')" style="animation-delay:0.29s"><span class="cat-icon">🔮</span><span class="cat-name">Kabbalah</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Ken Wilber','🌊')" style="animation-delay:0.32s"><span class="cat-icon">🌊</span><span class="cat-name">Ken Wilber</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Kryon','✨')" style="animation-delay:0.35s"><span class="cat-icon">✨</span><span class="cat-name">Kryon</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Libros Raros','📜')" style="animation-delay:0.38s"><span class="cat-icon">📜</span><span class="cat-name">Libros Raros</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Lobsang Rampa','🏔️')" style="animation-delay:0.41s"><span class="cat-icon">🏔️</span><span class="cat-name">Lobsang Rampa</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Neville Goddard','🌙')" style="animation-delay:0.44s"><span class="cat-icon">🌙</span><span class="cat-name">Neville Goddard</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Nikola Tesla','⚡')" style="animation-delay:0.47s"><span class="cat-icon">⚡</span><span class="cat-name">Nikola Tesla</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Teosofía','🌌')" style="animation-delay:0.50s"><span class="cat-icon">🌌</span><span class="cat-name">Teosofía</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Triguerinho','🌟')" style="animation-delay:0.53s"><span class="cat-icon">🌟</span><span class="cat-name">Triguerinho</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Biología y comportamiento social','🧬👥')" style="animation-delay:0.53s"><span class="cat-icon">🧬👥</span><span class="cat-name">Biología y comportamiento social</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Documentales','🎬')" style="animation-delay:0.56s"><span class="cat-icon">🎬</span><span class="cat-name">Documentales</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Inteligencia Artificial en lo Humano','🤖')" style="animation-delay:0.59s"><span class="cat-icon">🤖</span><span class="cat-name">Inteligencia Artificial en lo Humano</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Herramientas Prácticas para Sostener los Cambios','🧰')" style="animation-delay:0.62s"><span class="cat-icon">🧰</span><span class="cat-name">Herramientas Prácticas para Sostener los Cambios</span></div>
-          <div class="cat-card" onclick="abrirCategoria('Papa León XIV','📜')" style="animation-delay:0.65s"><span class="cat-icon">📜</span><span class="cat-name">Papa León XIV</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="panel-books" id="panelBooks">
-    <div class="books-loto"></div>
-    <div class="books-header">
-      <img class="back-logo" src="Fondo/Escuela.png" alt="Inicio" onclick="volverInicio()" onerror="this.style.display='none'">
-      <div class="books-header-info">
-        <div class="books-cat-name" id="booksCatName"></div>
-        <div class="books-count" id="booksCount"></div>
-      </div>
-      <button class="back-btn" onclick="volverInicio()">← Volver</button>
-    </div>
-    <div class="books-inner" id="booksInner"></div>
-  </div>
-</div>
-
-<script src="libros.js"></script>
-<script>
-  /* ══ Visor ══ */
-  function abrirVisor(url, titulo, autor) {
-    document.getElementById('visorTitulo').textContent = titulo || 'Libro';
-    document.getElementById('visorAutor').textContent  = autor  || '';
-    document.getElementById('visorEstado').classList.remove('oculto');
-    const iframe = document.getElementById('visorIframe');
-    iframe.src = 'about:blank';
-    iframe.onload = function() {
-      if (iframe.src !== 'about:blank') {
-        document.getElementById('visorEstado').classList.add('oculto');
-      }
-    };
-    setTimeout(() => { iframe.src = url; }, 300);
-    document.getElementById('visorOverlay').classList.add('visible');
-    document.getElementById('visorPanel').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function cerrarVisor() {
-    document.getElementById('visorOverlay').classList.remove('visible');
-    document.getElementById('visorPanel').classList.remove('open');
-    document.body.style.overflow = '';
-    setTimeout(() => {
-      document.getElementById('visorIframe').src = 'about:blank';
-      document.getElementById('visorEstado').classList.remove('oculto');
-    }, 450);
-  }
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && document.getElementById('visorPanel').classList.contains('open')) cerrarVisor();
-  });
-
-  /* ══ Book card ══ */
-  function bookCardHTML(l, i) {
-    const tieneImagen = l.imagen && l.imagen.trim();
-    const esAudio     = l.subcategoria && l.subcategoria.includes('Audio');
-    const tituloEsc   = (l.titulo || '').replace(/'/g,"\\'").replace(/"/g,'&quot;');
-    const autorEsc    = (l.autor  || '').replace(/'/g,"\\'");
-    const btnHtml = `
-      ${l.url ? (esAudio
-        ? `<button class="book-btn" onclick="abrirVisor('${l.url}','${tituloEsc}','${autorEsc}')">🎧 Escuchar</button>`
-        : `<button class="book-btn" onclick="abrirVisor('${l.url}','${tituloEsc}','${autorEsc}')">📖 Abrir libro</button>`)
-      : ``}
-      ${l.video ? `<button class="book-btn" style="margin-top:5px;" onclick="abrirVisor('${l.video}','${tituloEsc}','${autorEsc}')">▶ Ver video</button>` : ''}
-    `;
-    return `
-      <div class="book-card" style="animation-delay:${i * 0.07}s">
-        <div class="book-cover-wrap">
-          <div class="loto-spinner">
-            <div class="loto-petals">
-              <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
-              <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
-              <div class="loto-center"></div>
-            </div>
-          </div>
-          ${tieneImagen
-            ? `<img src="${l.imagen}" alt="${l.titulo}"
-                 style="${l.imgPosition ? 'object-position:'+l.imgPosition+';' : ''}${l.imgContain ? 'object-fit:contain;background:#D1D1D1;' : ''}"
-                 onload="revelarPortada(this)"
-                 onerror="this.style.display='none'; ocultarLoto(this.parentElement.querySelector('.loto-spinner'));">`
-            : `<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#e8ddd0,#d4c4b0);gap:8px;padding:10px;">
-                <span style="font-size:36px;">📖</span>
-                <span style="font-family:'Josefin Sans',sans-serif;font-size:7px;letter-spacing:2px;color:rgba(139,99,64,0.5);text-transform:uppercase;text-align:center;font-weight:600;">Próximamente</span>
-               </div>`
-          }
-        </div>
-        <div class="book-info">
-          <div class="book-title">${l.titulo}</div>
-          <div class="book-author">${l.autor}</div>
-          ${btnHtml}
-        </div>
-      </div>`;
-  }
-
-  /* ══ Navegación ══ */
-  const panelCats  = document.getElementById('panelCats');
-  const panelBooks = document.getElementById('panelBooks');
-  let navState = 'home';
-  let currentCat = null;
-  let currentCatIcon = null;
-
-  history.replaceState({ nav: 'home' }, '');
-
-  window.addEventListener('popstate', function(e) {
-    const state = e.state || {};
-    if (state.nav === 'category') {
-      const subcats = [...new Set(libros.filter(l => l.categoria === state.cat && l.subcategoria).map(l => l.subcategoria))];
-      if (subcats.length > 0) { _mostrarCategoria(state.cat, state.icon); navState = 'category'; }
-      else {
-        const filtrados = libros.filter(l => l.categoria === state.cat && !l.subcategoria);
-        document.getElementById('booksCatName').textContent = state.icon + '  ' + state.cat;
-        document.getElementById('booksCount').textContent = filtrados.length + (filtrados.length === 1 ? ' libro' : ' libros');
-        mostrarLibros(filtrados); navState = 'category';
-      }
-    } else { _irAInicio(); }
-  });
-
-  function _irAInicio() {
-    navState = 'home';
-    document.getElementById('panelMusicaMobile').style.opacity = '1';
-    document.getElementById('panelMusicaMobile').style.pointerEvents = 'auto';
-    panelBooks.classList.remove('slide-in');
-    panelCats.classList.remove('slide-out');
-    window.scrollTo(0,0);
-  }
-
-  function _mostrarCategoria(cat, icon) {
-    const subcats = [...new Set(libros.filter(l => l.categoria === cat && l.subcategoria).map(l => l.subcategoria))];
-    const subcatImages = {
-      'Audios de Neville Goddard': 'Libros/Neville_goddard/Audios/audiosneville.jpg',
-      'Libros de Neville Goddard': 'Libros/Neville_goddard/Libros/librosneville.jpg'
-    };
-    const subcatIcons = { 'Audios de Neville Goddard': '🎧', 'Libros de Neville Goddard': '📚' };
-    document.getElementById('booksCatName').textContent = icon + '  ' + cat;
-    document.getElementById('booksCount').textContent = subcats.length + ' colecciones';
-    const grid = document.getElementById('booksInner');
-    grid.innerHTML = subcats.map((sub, i) => {
-      const subLibros = libros.filter(l => l.subcategoria === sub);
-      const primerImg = subcatImages[sub] || subLibros[0]?.imagen || '';
-      const subIcon = subcatIcons[sub] || '📁';
-      return `
-      <div class="book-card" style="animation-delay:${i * 0.1}s; cursor:pointer;" onclick="abrirSubcategoria('${cat}','${sub}','${icon}','${subIcon}')">
-        <div class="book-cover-wrap">
-          <div class="loto-spinner" id="loto-sub-${i}">
-            <div class="loto-petals">
-              <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
-              <div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div>
-              <div class="loto-center"></div>
-            </div>
-          </div>
-          ${primerImg
-            ? `<img src="${primerImg}" alt="${sub}" style="object-fit:contain;background:#D1D1D1;"
-                 onload="this.classList.add('img-loaded'); const s=this.parentElement.querySelector('.loto-spinner'); if(s){s.classList.add('hidden');}"
-                 onerror="this.style.display='none'; const s=this.parentElement.querySelector('.loto-spinner'); if(s){s.classList.add('hidden');}">`
-            : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:40px;">${subIcon}</div>`
-          }
-        </div>
-        <div class="book-info">
-          <div class="book-title">${subIcon} ${sub}</div>
-          <div class="book-author">${subLibros.length} ${subLibros.length === 1 ? 'elemento' : 'elementos'}</div>
-        </div>
-      </div>`;
-    }).join('');
-    navState = 'category';
-    panelBooks.scrollTop = 0;
-  }
-
-  function abrirCategoria(cat, icon) {
-    currentCat = cat; currentCatIcon = icon;
-    document.getElementById('panelMusicaMobile').style.transition = 'opacity 0.5s ease';
-    document.getElementById('panelMusicaMobile').style.opacity = '0';
-    setTimeout(() => { document.getElementById('panelMusicaMobile').style.pointerEvents = 'none'; }, 500);
-    const subcats   = [...new Set(libros.filter(l => l.categoria === cat && l.subcategoria).map(l => l.subcategoria))];
-    const sinSubcat = libros.filter(l => l.categoria === cat && !l.subcategoria);
-    if (subcats.length > 0) {
-      _mostrarCategoria(cat, icon);
-      history.pushState({ nav: 'category', cat, icon }, '');
-      navState = 'category';
-    } else {
-      const filtrados = sinSubcat.length > 0 ? sinSubcat : libros.filter(l => l.categoria === cat);
-      document.getElementById('booksCatName').textContent = icon + '  ' + cat;
-      document.getElementById('booksCount').textContent = filtrados.length > 0
-        ? filtrados.length + (filtrados.length === 1 ? ' libro' : ' libros') : 'Próximamente';
-      mostrarLibros(filtrados);
-      history.pushState({ nav: 'category', cat, icon }, '');
-      navState = 'category';
-    }
-    panelCats.classList.add('slide-out');
-    panelBooks.classList.add('slide-in');
-    panelBooks.scrollTop = 0;
-  }
-
-  function abrirSubcategoria(cat, sub, catIcon, subIcon) {
-    const filtrados = libros.filter(l => l.subcategoria === sub);
-    document.getElementById('booksCatName').textContent = subIcon + '  ' + sub;
-    document.getElementById('booksCount').textContent = filtrados.length + (filtrados.length === 1 ? ' elemento' : ' elementos');
-    mostrarLibros(filtrados);
-    history.pushState({ nav: 'subcategory', cat, sub, catIcon, subIcon }, '');
-    navState = 'subcategory';
-    panelBooks.scrollTop = 0;
-  }
-
-  function mostrarLibros(filtrados) {
-    const grid = document.getElementById('booksInner');
-    if (filtrados.length === 0) {
-      grid.innerHTML = `<div class="empty-msg">Próximamente libros<br>en esta colección ✦</div>`;
-    } else {
-      grid.innerHTML = filtrados.map((l, i) => bookCardHTML(l, i)).join('');
-      requestAnimationFrame(() => {
-        const now = Date.now();
-        grid.querySelectorAll('.loto-spinner').forEach(s => { s._startTime = now; });
-      });
-    }
-  }
-
-  function volverInicio() {
-    history.pushState({ nav: 'home' }, '');
-    _irAInicio();
-  }
-
-  const LOTO_MIN = 1200;
-  function revelarPortada(img) {
-    const spinner = img.parentElement.querySelector('.loto-spinner');
-    if (!spinner) return;
-    const elapsed  = Date.now() - (spinner._startTime || Date.now());
-    const restante = Math.max(0, LOTO_MIN - elapsed);
-    setTimeout(() => { img.classList.add('img-loaded'); spinner.classList.add('hidden'); }, restante);
-  }
-  function ocultarLoto(spinner) {
-    if (!spinner) return;
-    const elapsed  = Date.now() - (spinner._startTime || Date.now());
-    const restante = Math.max(0, LOTO_MIN - elapsed);
-    setTimeout(() => { spinner.classList.add('hidden'); }, restante);
-  }
-
-  /* ══ Buscador ══ */
-  function highlight(texto, q) {
-    const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
-    return texto.replace(re, '<mark>$1</mark>');
-  }
-  const catIcons = {
-    'Ken Wilber':'🌊','Barbara Ann Brenan':'🌺','Biodescodificación':'🧬',
-    'Budismo':'🌿','Carolyne Myss':'🌸','Constelaciones Familiares':'🫧',
-    'Cristaloterapia':'💎','Filosofía y Religión':'🕊️','Geometría Sagrada':'🌀',
-    'Kabbalah':'🔮','Kryon':'✨','Libros Raros':'📜','Lobsang Rampa':'🏔️',
-    'Neville Goddard':'🌙','Nikola Tesla':'⚡','Teosofía':'🌌','Triguerinho':'🌟',
-    'Biología y comportamiento social':'🧬👥','Documentales':'🎬',
-    'Herramientas Prácticas para Sostener los Cambios':'🧰','Papa León XIV':'📜',
-  };
-
-  function buscarLibros() {
-    const q       = document.getElementById('searchInput').value.trim();
-    const results = document.getElementById('searchResults');
-    const catsWrap= document.getElementById('catsGridWrap');
-    const clearBtn= document.getElementById('searchClear');
-    clearBtn.classList.toggle('visible', q.length > 0);
-    if (!q) { results.classList.remove('visible'); catsWrap.classList.remove('hidden'); return; }
-    catsWrap.classList.add('hidden');
-    results.classList.add('visible');
-    const encontrados = libros.filter(l =>
-      l.titulo.toLowerCase().includes(q.toLowerCase()) ||
-      l.autor.toLowerCase().includes(q.toLowerCase()) ||
-      l.categoria.toLowerCase().includes(q.toLowerCase())
-    );
-    document.getElementById('srCount').textContent = encontrados.length + (encontrados.length === 1 ? ' resultado' : ' resultados');
-    document.getElementById('srQuery').textContent = `"${q}"`;
-    const grid = document.getElementById('srGrid');
-    if (encontrados.length === 0) {
-      grid.innerHTML = `<div class="sr-empty">No se encontró "<em>${q}</em>" ✦</div>`; return;
-    }
-    grid.innerHTML = encontrados.map((l, i) => {
-      const icon    = catIcons[l.categoria] || '📖';
-      const tieneImg= l.imagen && l.imagen.trim();
-      const esAudio = l.subcategoria && l.subcategoria.includes('Audio');
-      const tit     = (l.titulo || '').replace(/'/g,"\\'");
-      const aut     = (l.autor  || '').replace(/'/g,"\\'");
-      return `
-      <div class="sr-card" style="animation-delay:${i * 0.04}s">
-        <div class="sr-cover">
-          ${tieneImg ? `<img src="${l.imagen}" alt="${l.titulo}"
-            style="${l.imgContain ? 'object-fit:contain;' : ''}${l.imgPosition ? 'object-position:'+l.imgPosition+';' : ''}"
-            onload="this.classList.add('loaded')" onerror="this.style.display='none'">` : ''}
-          <div class="sr-cover-fallback" ${tieneImg ? 'style="opacity:0.35"' : ''}>
-            <span>${icon}</span><small>${l.titulo}</small>
-          </div>
-        </div>
-        <div class="sr-info">
-          <div class="sr-title">${highlight(l.titulo, q)}</div>
-          <div class="sr-author">${l.autor}</div>
-          <div class="sr-tag">${icon} ${l.categoria}</div>
-        </div>
-        ${l.url
-          ? (esAudio
-              ? `<button class="sr-btn" onclick="abrirVisor('${l.url}','${tit}','${aut}')">🎧 Escuchar</button>`
-              : `<button class="sr-btn" onclick="abrirVisor('${l.url}','${tit}','${aut}')">📖 Abrir libro</button>`)
-          : `<span class="sr-btn" style="opacity:0.35;cursor:default;">Próximamente</span>`}
-      </div>`;
-    }).join('');
-    if (window.innerWidth <= 768) {
-      setTimeout(() => { results.scrollIntoView({ behavior:'smooth', block:'start' }); }, 100);
-    }
-  }
-
-  function limpiarBusqueda() {
-    document.getElementById('searchInput').value = '';
-    buscarLibros();
-    document.getElementById('searchInput').focus();
-  }
-
-  document.getElementById('searchInput').addEventListener('focus', function() {
-    if (window.innerWidth <= 768) {
-      setTimeout(() => { this.scrollIntoView({ behavior:'smooth', block:'center' }); }, 350);
-    }
-  });
-
-  /* ══ Partículas ══ */
-  const cont = document.getElementById('particles');
-  for (let i = 0; i < 20; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.cssText = `left:${Math.random()*100}%;animation-duration:${10+Math.random()*18}s;animation-delay:${Math.random()*12}s;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;opacity:0.3;`;
-    cont.appendChild(p);
-  }
-
-  /* ══ Audio ══ */
-  const audio = document.getElementById('musicaFondo');
-  audio.volume = 0.5;
-  let isRepeating = true;
-
-  function iniciarMusica() {
-    audio.play();
-    const btnInicio = document.getElementById('inicioMusicaM');
-    if (btnInicio) btnInicio.style.display = 'none';
-    const playerM = document.getElementById('playerWidgetM');
-    if (playerM) playerM.style.display = 'flex';
-    const volRow = document.getElementById('mobileVolRow');
-    if (volRow) volRow.style.display = 'flex';
-  }
-  function toggleAudio() {
-    if (audio.paused) { audio.play(); document.getElementById('playPauseBtnM').textContent = '⏸'; }
-    else { audio.pause(); document.getElementById('playPauseBtnM').textContent = '▶'; }
-  }
-  function toggleRepeat() {
-    isRepeating = !isRepeating; audio.loop = isRepeating;
-    document.getElementById('repeatBtnM').style.color = isRepeating ? 'var(--gold)' : 'rgba(139,99,64,0.3)';
-  }
-  function seekAudio(e) {
-    const bar = e.currentTarget;
-    audio.currentTime = (e.offsetX / bar.offsetWidth) * audio.duration;
-  }
-  audio.addEventListener('timeupdate', () => {
-    if (!audio.duration) return;
-    document.getElementById('progressFillM').style.width = (audio.currentTime / audio.duration * 100) + '%';
-  });
-  function cambiarVolumen() {
-    const slider = document.getElementById('volumenM');
-    if (slider) audio.volume = slider.value;
-  }
-</script>
-</body>
-</html>
+  .sr-card {
+    background:var(--glass); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    border:1.5px solid var(--glass-border); border-radius:16px; overflow:hidden; cursor:pointer;
+    transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    animation:scaleIn 0.4s ease both; display:flex; flex-direction:column;
+    box-shadow:0 4px 16px rgba(0,0,0,0.07
