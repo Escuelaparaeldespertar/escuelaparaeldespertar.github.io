@@ -320,12 +320,13 @@
 
   .books-header {
     position:sticky; top:0; z-index:5;
-    display:flex; align-items:center; gap:16px; padding:16px 28px;
-    background: rgba(248,245,238,0.85);
+    display:flex; align-items:center; gap:12px; padding:14px 20px;
+    background: rgba(248,245,238,0.92);
     backdrop-filter: blur(24px) saturate(1.8);
     -webkit-backdrop-filter: blur(24px) saturate(1.8);
     border-bottom: 2px solid rgba(197,160,89,0.6);
     box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 4px 20px rgba(0,0,0,0.06);
+    flex-wrap:nowrap;
   }
   .back-logo {
     width:100px; height:100px; border-radius:50%; object-fit:cover;
@@ -499,8 +500,10 @@
     .cats-grid { grid-template-columns:repeat(5,1fr); }
   }
   @media(max-width:600px) {
-    .back-btn { padding:8px 14px; font-size:9px; }
-    .back-logo { width:80px; height:80px; }
+    .back-btn { padding:6px 10px; font-size:8px; letter-spacing:1px; }
+    .back-logo { width:64px; height:64px; }
+    .view-btn { width:28px; height:28px; font-size:13px; }
+    .books-cat-name { font-size:8px; letter-spacing:2px; }
     .app-header { position:sticky; top:0; z-index:20; padding-bottom:20px; }
     .search-results { padding-bottom:45vh; }
     .sr-grid { grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:10px; }
@@ -556,7 +559,7 @@
     border:1.5px solid rgba(255,255,255,0.8);
     border-radius:50px; padding:5px 6px;
     box-shadow:0 2px 12px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
-    position:absolute; right:28px; top:50%; transform:translateY(-50%);
+    flex-shrink:0;
   }
   .view-btn {
     width:32px; height:32px; border-radius:50px;
