@@ -225,23 +225,20 @@
     background: var(--card-bg);
     border: none;
     border-radius:20px;
-    padding:24px 14px 20px;
+    padding:24px 14px 22px;
     cursor:pointer;
     display:flex; flex-direction:column; align-items:center; gap:12px;
     position:relative; overflow:hidden;
-    /* Sombra Apple: capas múltiples */
+    transform-style: preserve-3d;
     box-shadow:
       0 1px 0 rgba(255,255,255,0.4) inset,
       0 4px 16px rgba(0,0,0,0.08),
       0 1px 4px rgba(0,0,0,0.06);
-    transition:
-      transform 0.5s cubic-bezier(0.34,1.56,0.64,1),
-      box-shadow 0.4s cubic-bezier(0.25,0.46,0.45,0.94),
-      background 0.3s ease;
+    transition: box-shadow 0.4s ease, background 0.3s ease;
     animation: scaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    will-change: transform;
   }
 
-  /* Brillo interno superior — efecto cristal Apple */
   .cat-card::before {
     content:'';
     position:absolute; top:0; left:0; right:0; height:50%;
@@ -250,61 +247,42 @@
     pointer-events:none;
   }
 
-  /* Reflejo sutil en hover */
-  .cat-card::after {
-    content:'';
-    position:absolute; inset:0;
-    background:radial-gradient(circle at 50% 0%, rgba(255,255,255,0.18) 0%, transparent 70%);
-    opacity:0;
-    transition:opacity 0.4s ease;
+  .cat-card .cat-shine {
+    position:absolute; inset:0; border-radius:20px;
     pointer-events:none;
-    border-radius:20px;
+    background:radial-gradient(circle at 50% 50%, rgba(255,255,255,0.35) 0%, transparent 60%);
+    opacity:0; transition:opacity 0.2s;
   }
-
-  .cat-card:hover {
-    transform: translateY(-8px) scale(1.04);
-    background: var(--card-hover);
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.4) inset,
-      0 20px 50px rgba(0,0,0,0.15),
-      0 8px 20px rgba(0,0,0,0.1),
-      0 0 0 0.5px rgba(255,255,255,0.3);
-  }
-  .cat-card:hover::after { opacity:1; }
 
   .cat-card:active {
-    transform: scale(0.96) translateY(-2px);
-    transition: transform 0.12s cubic-bezier(0.25,0.46,0.45,0.94);
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.3) inset,
-      0 6px 20px rgba(0,0,0,0.1);
+    transition: transform 0.1s ease;
   }
 
-  /* ══ Icono dorado → color original ══ */
+  /* ══ Icono dorado → color original con 3D ══ */
   .cat-icon {
     font-size:36px;
     display:block;
     filter: sepia(1) saturate(3.5) hue-rotate(5deg) brightness(0.88);
+    transform: translateZ(0px);
     transition:
-      filter 0.55s cubic-bezier(0.25,0.46,0.45,0.94),
-      transform 0.55s cubic-bezier(0.34,1.56,0.64,1);
-    transform-origin: center bottom;
+      filter 0.45s cubic-bezier(0.25,0.46,0.45,0.94),
+      transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
     will-change: filter, transform;
-  }
-  .cat-card:hover .cat-icon {
-    filter: none;
-    transform: scale(1.28) translateY(-4px) rotate(-3deg);
   }
 
   .cat-name {
     font-family:'Josefin Sans', sans-serif;
-    font-size:9px; letter-spacing:1.5px;
-    color:var(--text-dark); opacity:0.8;
+    font-size:10px; letter-spacing:2px;
+    color:var(--text-dark);
     text-transform:uppercase; text-align:center;
-    line-height:1.6; font-weight:600;
-    transition: opacity 0.3s, letter-spacing 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    line-height:1.7; font-weight:700;
+    transform: translateZ(0px);
+    transition:
+      letter-spacing 0.4s cubic-bezier(0.34,1.56,0.64,1),
+      transform 0.35s cubic-bezier(0.34,1.56,0.64,1),
+      color 0.3s ease;
+    opacity:0.85;
   }
-  .cat-card:hover .cat-name { opacity:1; letter-spacing:2px; }
 
   /* ══ Panel libros ══ */
   .panel-books {
@@ -1011,6 +989,95 @@
   function seekAudio(e){ audio.currentTime=(e.offsetX/e.currentTarget.offsetWidth)*audio.duration; }
   audio.addEventListener('timeupdate',()=>{ if(!audio.duration)return; document.getElementById('progressFillM').style.width=(audio.currentTime/audio.duration*100)+'%'; });
   function cambiarVolumen(){ const s=document.getElementById('volumenM'); if(s)audio.volume=s.value; }
+
+  /* ══ Tilt 3D en tarjetas de categorías ══ */
+  function initTilt() {
+    document.querySelectorAll('.cat-card').forEach(card => {
+      if (card.dataset.tilt) return;
+      card.dataset.tilt = '1';
+
+      if (!card.querySelector('.cat-shine')) {
+        const shine = document.createElement('div');
+        shine.className = 'cat-shine';
+        card.appendChild(shine);
+      }
+
+      card.addEventListener('mousemove', e => {
+        const r   = card.getBoundingClientRect();
+        const x   = e.clientX - r.left;
+        const y   = e.clientY - r.top;
+        const cx  = r.width  / 2;
+        const cy  = r.height / 2;
+        const rotY =  ((x - cx) / cx) * 16;
+        const rotX = -((y - cy) / cy) * 12;
+
+        card.style.transform = `perspective(700px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.06) translateY(-6px)`;
+        card.style.boxShadow = `
+          0 1px 0 rgba(255,255,255,0.4) inset,
+          ${-rotY*0.9}px ${rotX*0.9+22}px 50px rgba(0,0,0,0.16),
+          0 8px 20px rgba(0,0,0,0.1)
+        `;
+
+        const shine = card.querySelector('.cat-shine');
+        const px = (x / r.width)  * 100;
+        const py = (y / r.height) * 100;
+        shine.style.background = `radial-gradient(circle at ${px}% ${py}%, rgba(255,255,255,0.38) 0%, transparent 55%)`;
+        shine.style.opacity = '1';
+
+        const icon = card.querySelector('.cat-icon');
+        const name = card.querySelector('.cat-name');
+        if (icon) {
+          icon.style.filter = 'none';
+          icon.style.transform = `translateZ(45px) scale(1.2) translateY(-3px)`;
+        }
+        if (name) {
+          name.style.transform = `translateZ(25px)`;
+          name.style.letterSpacing = '2.5px';
+          name.style.opacity = '1';
+          name.style.color = 'rgba(30,20,5,1)';
+        }
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg) scale(1) translateY(0)';
+        card.style.boxShadow = '0 1px 0 rgba(255,255,255,0.4) inset, 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.06)';
+
+        const shine = card.querySelector('.cat-shine');
+        if (shine) shine.style.opacity = '0';
+
+        const icon = card.querySelector('.cat-icon');
+        const name = card.querySelector('.cat-name');
+        if (icon) {
+          icon.style.filter = 'sepia(1) saturate(3.5) hue-rotate(5deg) brightness(0.88)';
+          icon.style.transform = 'translateZ(0px)';
+        }
+        if (name) {
+          name.style.transform = 'translateZ(0px)';
+          name.style.letterSpacing = '2px';
+          name.style.opacity = '0.85';
+          name.style.color = '';
+        }
+      });
+
+      card.addEventListener('mousedown', () => {
+        card.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg) scale(0.96)';
+      });
+    });
+  }
+
+  initTilt();
+
+  const _origAbrirCat = abrirCategoria;
+  const _origVolverInicio = volverInicio;
+  const origVolverInicio = volverInicio;
+
+  const _panelObserver = new MutationObserver(() => {
+    if (!document.getElementById('panelCats').classList.contains('slide-out')) {
+      setTimeout(initTilt, 100);
+    }
+  });
+  _panelObserver.observe(document.getElementById('panelCats'), { attributes:true, attributeFilter:['class'] });
+
 
   /* ══ Cover Flow JS ══ */
   let cfBooks = [];
