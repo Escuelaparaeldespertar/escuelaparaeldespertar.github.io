@@ -25,7 +25,7 @@
     { categoria:'Ken Wilber', titulo:'Ascendencia y Trascendencia', autor:'Ken Wilber', imagen:'Libros/Ken wilber/ascendenciatrascen.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ9pld5Zu5A9xqpu7MyXKl1ky6b4uYU1TVtV' },
     { categoria:'Ken Wilber', titulo:'Eros, Buda y el Espectro del Amor', autor:'Ken Wilber', imagen:'Libros/Ken wilber/erosbudawilber.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZTpld5ZyxJK6H6nS5SSWz2jSr0MpmIjLIok' },
     // Barbara Ann Brenan
-    { categoria:'Barbara Ann Brenan', titulo:'Manos que Curan', autor:'Barbara Ann Brennan', imagen:'Libros/Barbara_ann_brenan/manosquecuranjpg.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZHoTd5ZnvPkuvbNRmSjzcFpLaoGbyQ0EkU7' },
+    { categoria:'Barbara Ann Brenan', titulo:'Manos que Curan', autor:'Barbara Ann Brennan', imagen:'Libros/Barbara_ann_brenan/manosquecuranjpg.jpg', imgContain:true, url:'https://online.fliphtml5.com/escuelaparaeldespertar/Manos-que-curan-Barbara-Ann-Brennan/#p=1' },
     { categoria:'Barbara Ann Brenan', titulo:'Hágase la Luz', autor:'Barbara Ann Brennan', imagen:'Libros/Barbara_ann_brenan/hagaselaluzjpg.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZHUTd5Zl1IadvWmNWLSD2lm7h8zQbtyRRRk' },
     // Biodescodificación
     { categoria:'Biodescodificación', titulo:'La Descodificación Biológica de las Enfermedades', autor:'Enric Corbera', imagen:'Libros/Biodescodificacion/Biodescodificacion.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZO5gd5ZFLTyhtHflOBiWd4jcqEDPbfNbaWy' },
