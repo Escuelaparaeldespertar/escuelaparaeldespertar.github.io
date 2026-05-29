@@ -91,7 +91,7 @@
   .search-box-clear.visible { display:block; }
   .search-box-clear:hover { color:var(--gold); }
 
-  .hero-bar { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='38' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1'/%3E%3C/svg%3E"); border-radius:12px; padding:20px 24px; margin-bottom:28px; position:relative; overflow:hidden; cursor:default; }
+  .hero-bar { background:#1C1C1E; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Ccircle cx='40' cy='40' r='38' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1'/%3E%3C/svg%3E"); border-radius:12px; padding:20px 24px; margin-bottom:28px; position:relative; overflow:hidden; cursor:default; }
   .hero-bar::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(197,160,89,0.06) 0%, transparent 50%); pointer-events:none; }
   .hero-bar::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, rgba(197,160,89,0.4), transparent); }
   .hero-ornament { font-size:9px; letter-spacing:0.3em; color:rgba(197,160,89,0.6); text-transform:uppercase; margin-bottom:8px; position:relative; z-index:1; transition:transform 0.15s ease; }
@@ -289,7 +289,7 @@
     <div class="app-header">
       <img class="app-logo" src="Fondo/Escuela.png" alt="Logo" onclick="volverInicio()" onerror="this.style.display='none'">
       <div class="app-title">Biblioteca<br>Virtual</div>
-      <div class="app-quote">Pensamiento profundo para tiempos extraordinarios</div>
+      <div class="app-quote">Un refugio para el alma que busca</div>
       <div class="gold-divider"></div>
       <div class="search-box-wrap">
         <div class="search-box">
@@ -307,8 +307,9 @@
       <div class="cats-grid-wrap" id="catsGridWrap">
         <div class="cats-label"><span>✦ &nbsp; Colecciones</span></div>
         <div class="hero-bar" id="heroBar" style="margin:0 0 24px;">
+          <div class="hero-ornament" id="hOrnament">✦ &nbsp; Escuela para el Despertar &nbsp; ✦</div>
           <div class="hero-title" id="hTitle">Biblioteca Virtual</div>
-          <div class="hero-sub" id="hSub">Pensamiento profundo para tiempos extraordinarios</div>
+          <div class="hero-sub" id="hSub">Despertar es interrumpir el automático. Integrar es habitarlo conscientemente.</div>
         </div>
         <div class="cats-grid" id="catsGrid">
           <!-- Las tarjetas se generan via JS con iconos SVG -->
@@ -427,28 +428,8 @@
     heroBar.addEventListener('mouseleave', () => { heroBar.style.backgroundPosition='50% 50%'; hOrn.style.transform=hTit.style.transform=hSub.style.transform=''; });
   }
 
-  /* ══ Parallax hero bar ══ */
-  const heroBar = document.getElementById('heroBar');
-  const hTit = document.getElementById('hTitle');
-  const hSub = document.getElementById('hSub');
-  if (heroBar) {
-    heroBar.addEventListener('mousemove', e => {
-      const r=heroBar.getBoundingClientRect(), x=(e.clientX-r.left)/r.width-0.5, y=(e.clientY-r.top)/r.height-0.5;
-      hTit.style.transform=`translateX(${x*7}px) translateY(${y*3}px)`;
-      hSub.style.transform=`translateX(${x*5}px)`;
-    });
-    heroBar.addEventListener('mouseleave', () => { hTit.style.transform=hSub.style.transform=''; });
-  }
-
   /* ══ Visor ══ */
   function abrirVisor(url,titulo,autor) {
-    // PDFs del R2 → flipbook
-    if (url && url.includes('r2.dev') && url.toLowerCase().endsWith('.pdf')) {
-      window.location.href = 'flipbook.html?url=' + encodeURIComponent(url)
-        + '&titulo=' + encodeURIComponent(titulo||'')
-        + '&autor='  + encodeURIComponent(autor||'');
-      return;
-    }
     document.getElementById('visorTitulo').textContent=titulo||'Libro';
     document.getElementById('visorAutor').textContent=autor||'';
     document.getElementById('visorEstado').classList.remove('oculto');
