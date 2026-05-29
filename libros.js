@@ -1,7 +1,7 @@
 // Datos de la biblioteca - libros.js
   const libros = [
     // Ken Wilber
-    { categoria:'Ken Wilber', titulo:'Gracia y Coraje', autor:'Ken Wilber', imagen:'Libros/Ken wilber/graciaycoraje.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZNMld5ZE79GcV02YqmRfbVEKPwGgbVTgSuy' },
+    { categoria:'Ken Wilber', titulo:'Gracia y Coraje', autor:'Ken Wilber', imagen:'Libros/Ken wilber/graciaycoraje.jpg', imgContain:true, url:'https://online.fliphtml5.com/escuelaparaeldespertar/Ken-Wilber-Gracia-Y-Coraje--cXUN/#p=1' },
     { categoria:'Ken Wilber', titulo:'Antología - Textos Escogidos', autor:'Ken Wilber', imagen:'Libros/Ken wilber/Antologia.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ7Jld5Z47cReRSqgLyCVkDxb88HFXe64lO7' },
     { categoria:'Ken Wilber', titulo:'Práctica Integral de Vida', autor:'Ken Wilber', imagen:'Libros/Ken wilber/practicaintegral.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ5Jld5ZNNvsqFSFSJ8VDRRrNIMtnSCFzYb7' },
     { categoria:'Ken Wilber', titulo:'El Espectro de la Conciencia', autor:'Ken Wilber', imagen:'Libros/Ken wilber/espectroconciencia.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZzJld5ZHRUMjB7ICjf6t6Wfu8DUgH21xz5y' },
