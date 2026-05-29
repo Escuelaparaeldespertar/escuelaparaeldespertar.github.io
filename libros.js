@@ -28,8 +28,8 @@
     { categoria:'Barbara Ann Brenan', titulo:'Manos que Curan', autor:'Barbara Ann Brennan', imagen:'Libros/Barbara_ann_brenan/manosquecuranjpg.jpg', imgContain:true, url:'https://online.fliphtml5.com/escuelaparaeldespertar/Manos-que-curan-Barbara-Ann-Brennan/' },
     { categoria:'Barbara Ann Brenan', titulo:'Hágase la Luz', autor:'Barbara Ann Brennan', imagen:'Libros/Barbara_ann_brenan/hagaselaluzjpg.jpg', imgContain:true, url:'https://online.fliphtml5.com/escuelaparaeldespertar/jywt/' },
     // Biodescodificación
-    { categoria:'Biodescodificación', titulo:'La Descodificación Biológica de las Enfermedades', autor:'Enric Corbera', imagen:'Libros/Biodescodificacion/Biodescodificacion.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZO5gd5ZFLTyhtHflOBiWd4jcqEDPbfNbaWy' },
-    { categoria:'Biodescodificación', titulo:'Causas Emocionales de las Enfermedades', autor:'Jacques Martel', imagen:'Libros/Biodescodificacion/Causasdolencias.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZe5gd5ZtehBnQBbR0QH5ogck4PJeY1TOpuy' },
+    { categoria:'Biodescodificación', titulo:'La Descodificación Biológica de las Enfermedades', autor:'Enric Corbera', imagen:'Libros/Biodescodificacion/Biodescodificacion.jpg', imgContain:true, url:'https://online.fliphtml5.com/escuelaparaeldespertar/DescodificacinBiolgicadelasenfermedades/' },
+    { categoria:'Biodescodificación', titulo:'Causas Emocionales de las Enfermedades', autor:'Jacques Martel', imagen:'Libros/Biodescodificacion/Causasdolencias.jpg', imgContain:true, url:'https://online.fliphtml5.com/escuelaparaeldespertar/hyje/' },
     // Budismo
     { categoria:'Budismo', titulo:'El Libro Tibetano de los Muertos', autor:'Timothy Leary', imagen:'Libros/Budismo/librotibetanomuertos.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ6Jgd5ZQMk7RjVC3h0sR3lbz3J1QuuAVyB7' },
     { categoria:'Budismo', titulo:'Budismo Esotérico', autor:'Alfred Percy Sinnett', imagen:'Libros/Budismo/Budismoesoterico.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ5Fgd5ZPXfqBv8PkyV3X5JcuIgpu7Slbnfy' },
