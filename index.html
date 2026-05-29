@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biblioteca Virtual</title>
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<!-- ══ DearFlip CSS ══ -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/dearflip@2.3.5/dist/dearflip.min.css"/>
 <style>
   :root {
     --bg: #F8F5EE;
@@ -104,35 +106,15 @@
   .cats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:0 20px 32px; width:100%; animation:fadeUp 0.7s ease 0.3s both; }
   .cats-grid-wrap.hidden { display:none; }
 
-  /* ══ Tarjeta con icono SVG lineal ══ */
-  .cat-card {
-    background:#FFFFFF; border:none; border-radius:12px;
-    padding:22px 14px 18px; cursor:pointer;
-    display:flex; flex-direction:column; align-items:center; gap:10px;
-    position:relative; overflow:hidden;
-    box-shadow:0 1px 4px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.04);
-    transition:all 0.35s cubic-bezier(0.34,1.2,0.64,1);
-    animation:scaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
-  }
+  .cat-card { background:#FFFFFF; border:none; border-radius:12px; padding:22px 14px 18px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:10px; position:relative; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.04); transition:all 0.35s cubic-bezier(0.34,1.2,0.64,1); animation:scaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
   .cat-card::before { content:''; position:absolute; bottom:0; left:20%; right:20%; height:2px; background:linear-gradient(90deg, transparent, rgba(197,160,89,0.5), transparent); opacity:0; transition:opacity 0.3s; border-radius:1px; }
   .cat-card:hover { transform:translateY(-5px); box-shadow:0 2px 6px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.09), 0 0 0 1px rgba(197,160,89,0.12); }
   .cat-card:hover::before { opacity:1; }
   .cat-card:active { transform:scale(0.97); }
-
-  /* Icono SVG lineal — dorado siempre, sin transformaciones de color */
-  .cat-icon {
-    width:36px; height:36px; display:block; flex-shrink:0;
-    transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
-  }
-  .cat-icon svg {
-    width:100%; height:100%;
-    stroke:var(--gold); fill:none;
-    stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round;
-    transition:stroke 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
-  }
+  .cat-icon { width:36px; height:36px; display:block; flex-shrink:0; transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease; }
+  .cat-icon svg { width:100%; height:100%; stroke:var(--gold); fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; transition:stroke 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1); }
   .cat-card:hover .cat-icon { transform:translateY(-3px) scale(1.15); }
   .cat-card:hover .cat-icon svg { stroke:var(--gold-dark); }
-
   .cat-name { font-family:'Josefin Sans', sans-serif; font-size:9px; letter-spacing:1.5px; color:var(--text-mid); text-transform:uppercase; text-align:center; line-height:1.7; font-weight:600; transition:color 0.3s ease; }
   .cat-card:hover .cat-name { color:var(--text-dark); }
 
@@ -202,20 +184,44 @@
   @media(min-width:1200px) { .app-header { width:280px; min-width:280px; } .cats-grid { grid-template-columns:repeat(5,1fr); } }
   @media(max-width:600px) { .back-btn { padding:6px 12px; font-size:8px; } .back-logo { width:60px; height:60px; } .books-cat-name { font-size:8px; } .app-header { position:sticky; top:0; z-index:20; padding-bottom:20px; } .search-results { padding-bottom:45vh; } .sr-grid { grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:10px; } }
 
-  #visorOverlay { position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:2000; opacity:0; pointer-events:none; transition:opacity 0.4s ease; backdrop-filter:blur(6px); }
+  /* ══ Visor con DearFlip ══ */
+  #visorOverlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:2000; opacity:0; pointer-events:none; transition:opacity 0.4s ease; backdrop-filter:blur(8px); }
   #visorOverlay.visible { opacity:1; pointer-events:auto; }
-  #visorPanel { position:fixed; top:0; right:0; width:100vw; height:100vh; background:rgba(248,245,238,0.95); backdrop-filter:blur(28px) saturate(1.8); -webkit-backdrop-filter:blur(28px) saturate(1.8); border-left:1px solid rgba(197,160,89,0.3); box-shadow:-8px 0 48px rgba(0,0,0,0.1); z-index:2100; display:flex; flex-direction:column; transform:translateX(100%); transition:transform 0.5s cubic-bezier(0.77,0,0.18,1); }
+  #visorPanel {
+    position:fixed; top:0; right:0; width:100vw; height:100vh;
+    background:#1a1714;
+    z-index:2100; display:flex; flex-direction:column;
+    transform:translateX(100%);
+    transition:transform 0.5s cubic-bezier(0.77,0,0.18,1);
+  }
   #visorPanel.open { transform:translateX(0); }
-  #visorHeader { display:flex; align-items:center; gap:14px; padding:12px 20px; border-bottom:1px solid rgba(197,160,89,0.3); background:rgba(248,245,238,0.95); flex-shrink:0; }
-  #visorTitulo { flex:1; font-family:'Josefin Sans',sans-serif; font-size:13px; color:var(--text-dark); font-weight:700; letter-spacing:0.5px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; }
-  #visorAutor { font-size:11px; color:var(--text-light); font-style:italic; font-family:'Cormorant Garamond',serif; }
-  #visorCerrar { width:34px; height:34px; border-radius:50%; background:rgba(255,255,255,0.7); border:1px solid rgba(197,160,89,0.25); color:var(--text-mid); font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1); flex-shrink:0; }
+  #visorHeader {
+    display:flex; align-items:center; gap:14px; padding:12px 20px;
+    background:rgba(26,23,20,0.97);
+    border-bottom:1px solid rgba(197,160,89,0.2);
+    flex-shrink:0; z-index:10;
+  }
+  #visorTitulo { flex:1; font-family:'Josefin Sans',sans-serif; font-size:13px; color:#F8F5EE; font-weight:700; letter-spacing:0.5px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; }
+  #visorAutor { font-size:11px; color:rgba(197,160,89,0.75); font-style:italic; font-family:'Cormorant Garamond',serif; }
+  #visorCerrar { width:34px; height:34px; border-radius:50%; background:rgba(197,160,89,0.15); border:1px solid rgba(197,160,89,0.3); color:#C5A059; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1); flex-shrink:0; }
   #visorCerrar:hover { background:var(--gold); color:white; border-color:transparent; transform:rotate(90deg) scale(1.1); }
-  #visorArea { flex:1; overflow:hidden; position:relative; background:#eceae4; }
-  #visorEstado { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; color:var(--text-light); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; z-index:5; background:#eceae4; pointer-events:none; }
+  #visorArea { flex:1; overflow:hidden; position:relative; background:#1a1714; }
+  #visorEstado { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; color:rgba(197,160,89,0.7); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:16px; z-index:5; background:#1a1714; pointer-events:none; }
   #visorEstado.oculto { display:none; }
-  #visorIframe { width:100%; height:100%; border:none; display:block; }
-  @media(max-width:600px) { #visorPanel { width:100vw; height:90vh; border-left:none; } #visorHeader { padding:10px 14px; } #visorTitulo { font-size:12px; } }
+
+  /* Contenedor DearFlip */
+  #df-flipbook-container { width:100%; height:100%; display:none; }
+  #df-flipbook-container.activo { display:block; }
+
+  /* Iframe para audios y videos */
+  #visorIframe { width:100%; height:100%; border:none; display:none; }
+  #visorIframe.activo { display:block; }
+
+  /* Ocultar botones de descarga e imprimir de DearFlip */
+  .df-btn-sound, .df-btn-download, .df-btn-print { display:none !important; }
+  .df-container { background:#1a1714 !important; }
+
+  @media(max-width:600px) { #visorPanel { width:100vw; height:90vh; } #visorHeader { padding:10px 14px; } #visorTitulo { font-size:12px; } }
 
   .view-toggle { display:flex; align-items:center; gap:5px; background:rgba(255,255,255,0.7); border:1px solid rgba(197,160,89,0.2); border-radius:50px; padding:4px 5px; box-shadow:0 2px 8px rgba(0,0,0,0.05); flex-shrink:0; }
   .view-btn { width:30px; height:30px; border-radius:50px; border:none; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1); background:transparent; color:var(--text-light); }
@@ -280,6 +286,7 @@
       <div style="width:60px;height:60px;"><div class="loto-petals" style="width:60px;height:60px;"><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="loto-center"></div></div></div>
       <span>Abriendo libro...</span>
     </div>
+    <div id="df-flipbook-container"></div>
     <iframe id="visorIframe" src="about:blank" allowfullscreen></iframe>
   </div>
 </div>
@@ -305,15 +312,13 @@
         <div class="sr-grid" id="srGrid"></div>
       </div>
       <div class="cats-grid-wrap" id="catsGridWrap">
-          <div class="hero-bar" id="heroBar" style="margin:0 0 24px;">
-          <div class="cats-label"><span>✦ &nbsp; Colecciones</span></div>
-          <div class="hero-ornament" id="hOrnament"> </div>
+        <div class="cats-label"><span>✦ &nbsp; Colecciones</span></div>
+        <div class="hero-bar" id="heroBar" style="margin:0 0 24px;">
+          <div class="hero-ornament" id="hOrnament">✦ &nbsp; Escuela para el Despertar &nbsp; ✦</div>
           <div class="hero-title" id="hTitle">Biblioteca Virtual</div>
           <div class="hero-sub" id="hSub">Pensamiento profundo para tiempos extraordinarios</div>
-          div>
-        <div class="cats-grid" id="catsGrid">
-          <!-- Las tarjetas se generan via JS con iconos SVG -->
         </div>
+        <div class="cats-grid" id="catsGrid"></div>
       </div>
     </div>
   </div>
@@ -346,6 +351,8 @@
   </div>
 </div>
 
+<!-- ══ DearFlip JS ══ -->
+<script src="https://cdn.jsdelivr.net/npm/dearflip@2.3.5/dist/dearflip.min.js"></script>
 <script src="libros.js"></script>
 <script>
 
@@ -376,35 +383,24 @@
   };
 
   const catData = [
-    {name:'Barbara Ann Brenan', icon:'🌺'},
-    {name:'Biodescodificación', icon:'🧬'},
-    {name:'Budismo', icon:'🌿'},
-    {name:'Carolyne Myss', icon:'🌸'},
-    {name:'Constelaciones Familiares', icon:'🫧'},
-    {name:'Cristaloterapia', icon:'💎'},
-    {name:'Filosofía y Religión', icon:'🕊️'},
-    {name:'Geometría Sagrada', icon:'🌀'},
-    {name:'Kabbalah', icon:'🔮'},
-    {name:'Ken Wilber', icon:'🌊'},
-    {name:'Kryon', icon:'✨'},
-    {name:'Libros Raros', icon:'📜'},
-    {name:'Lobsang Rampa', icon:'🏔️'},
-    {name:'Neville Goddard', icon:'🌙'},
-    {name:'Nikola Tesla', icon:'⚡'},
-    {name:'Teosofía', icon:'🌌'},
-    {name:'Triguerinho', icon:'🌟'},
-    {name:'Biología y comportamiento social', icon:'🧬👥'},
-    {name:'Documentales', icon:'🎬'},
-    {name:'Inteligencia Artificial en lo Humano', icon:'🤖'},
-    {name:'Herramientas Prácticas para Sostener los Cambios', icon:'🧰'},
-    {name:'Papa León XIV', icon:'📜'},
+    {name:'Barbara Ann Brenan'},{name:'Biodescodificación'},{name:'Budismo'},
+    {name:'Carolyne Myss'},{name:'Constelaciones Familiares'},{name:'Cristaloterapia'},
+    {name:'Filosofía y Religión'},{name:'Geometría Sagrada'},{name:'Kabbalah'},
+    {name:'Ken Wilber'},{name:'Kryon'},{name:'Libros Raros'},{name:'Lobsang Rampa'},
+    {name:'Neville Goddard'},{name:'Nikola Tesla'},{name:'Teosofía'},{name:'Triguerinho'},
+    {name:'Biología y comportamiento social'},{name:'Documentales'},
+    {name:'Inteligencia Artificial en lo Humano'},
+    {name:'Herramientas Prácticas para Sostener los Cambios'},{name:'Papa León XIV'},
   ];
+
+  const catIconsEmoji = {'Ken Wilber':'🌊','Barbara Ann Brenan':'🌺','Biodescodificación':'🧬','Budismo':'🌿','Carolyne Myss':'🌸','Constelaciones Familiares':'🫧','Cristaloterapia':'💎','Filosofía y Religión':'🕊️','Geometría Sagrada':'🌀','Kabbalah':'🔮','Kryon':'✨','Libros Raros':'📜','Lobsang Rampa':'🏔️','Neville Goddard':'🌙','Nikola Tesla':'⚡','Teosofía':'🌌','Triguerinho':'🌟','Biología y comportamiento social':'🧬👥','Documentales':'🎬','Inteligencia Artificial en lo Humano':'🤖','Herramientas Prácticas para Sostener los Cambios':'🧰','Papa León XIV':'📜'};
 
   function buildCatsGrid() {
     const grid = document.getElementById('catsGrid');
     grid.innerHTML = catData.map((c, i) => {
       const svg = catSVGs[c.name] || `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`;
-      return `<div class="cat-card" onclick="abrirCategoria('${c.name}','${c.icon}')" style="animation-delay:${0.05+i*0.03}s">
+      const icon = catIconsEmoji[c.name] || '📖';
+      return `<div class="cat-card" onclick="abrirCategoria('${c.name.replace(/'/g,"\\'")}','${icon}')" style="animation-delay:${0.05+i*0.03}s">
         <span class="cat-icon">${svg}</span>
         <span class="cat-name">${c.name}</span>
       </div>`;
@@ -428,26 +424,77 @@
     heroBar.addEventListener('mouseleave', () => { heroBar.style.backgroundPosition='50% 50%'; hOrn.style.transform=hTit.style.transform=hSub.style.transform=''; });
   }
 
-  /* ══ Visor ══ */
-  function abrirVisor(url,titulo,autor) {
-    document.getElementById('visorTitulo').textContent=titulo||'Libro';
-    document.getElementById('visorAutor').textContent=autor||'';
+  /* ══ Visor con DearFlip ══ */
+  let dfInstance = null;
+
+  function esPDF(url) {
+    return url && url.toLowerCase().includes('.pdf');
+  }
+
+  function abrirVisor(url, titulo, autor) {
+    document.getElementById('visorTitulo').textContent = titulo || 'Libro';
+    document.getElementById('visorAutor').textContent  = autor  || '';
     document.getElementById('visorEstado').classList.remove('oculto');
-    const iframe=document.getElementById('visorIframe');
-    iframe.src='about:blank';
-    iframe.onload=function(){ if(iframe.src!=='about:blank') document.getElementById('visorEstado').classList.add('oculto'); };
-    setTimeout(()=>{ iframe.src=url; },300);
     document.getElementById('visorOverlay').classList.add('visible');
     document.getElementById('visorPanel').classList.add('open');
-    document.body.style.overflow='hidden';
+    document.body.style.overflow = 'hidden';
+
+    const dfContainer = document.getElementById('df-flipbook-container');
+    const iframe      = document.getElementById('visorIframe');
+
+    dfContainer.classList.remove('activo');
+    iframe.classList.remove('activo');
+    iframe.src = 'about:blank';
+
+    if (esPDF(url)) {
+      setTimeout(() => {
+        if (dfInstance) { try { dfInstance.dispose(); } catch(e){} dfInstance = null; }
+        dfContainer.innerHTML = '';
+        dfContainer.classList.add('activo');
+        document.getElementById('visorEstado').classList.add('oculto');
+        dfInstance = new DearFlip(dfContainer, {
+          source: url,
+          height: '100%',
+          duration: 800,
+          direction: 1,
+          controlsPosition: 'bottom',
+          paddingTop: 20,
+          paddingBottom: 20,
+          enableDownload: false,
+          enablePrint: false,
+          singlePageMode: false,
+          backgroundColor: '#1a1714',
+          backgroundGradient: false,
+          primaryColor: '#C5A059',
+        });
+      }, 400);
+    } else {
+      iframe.classList.add('activo');
+      iframe.onload = function() {
+        if (iframe.src !== 'about:blank') document.getElementById('visorEstado').classList.add('oculto');
+      };
+      setTimeout(() => { iframe.src = url; }, 300);
+    }
   }
+
   function cerrarVisor() {
     document.getElementById('visorOverlay').classList.remove('visible');
     document.getElementById('visorPanel').classList.remove('open');
-    document.body.style.overflow='';
-    setTimeout(()=>{ document.getElementById('visorIframe').src='about:blank'; document.getElementById('visorEstado').classList.remove('oculto'); },450);
+    document.body.style.overflow = '';
+    setTimeout(() => {
+      if (dfInstance) { try { dfInstance.dispose(); } catch(e){} dfInstance = null; }
+      const dfContainer = document.getElementById('df-flipbook-container');
+      dfContainer.classList.remove('activo');
+      dfContainer.innerHTML = '';
+      document.getElementById('visorIframe').classList.remove('activo');
+      document.getElementById('visorIframe').src = 'about:blank';
+      document.getElementById('visorEstado').classList.remove('oculto');
+    }, 500);
   }
-  document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.getElementById('visorPanel').classList.contains('open')) cerrarVisor(); });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('visorPanel').classList.contains('open')) cerrarVisor();
+  });
 
   /* ══ Book card ══ */
   function bookCardHTML(l,i) {
@@ -509,7 +556,7 @@
       return `<div class="book-card" style="animation-delay:${i*0.1}s;cursor:pointer;" onclick="abrirSubcategoria('${cat}','${sub}','${icon}','${subIcon}')">
         <div class="book-cover-wrap">
           <div class="loto-spinner"><div class="loto-petals"><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="petal"></div><div class="loto-center"></div></div></div>
-          ${primerImg?`<img src="${primerImg}" alt="${sub}" style="object-fit:contain;background:#f5f0e8;" onload="this.classList.add('img-loaded');const s=this.parentElement.querySelector('.loto-spinner');if(s)s.classList.add('hidden');" onerror="this.style.display='none';const s=this.parentElement.querySelector('.loto-spinner');if(s)s.classList.add('hidden');">`:`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0.4;"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="${catSVGs[cat]?'#C5A059':'#C5A059'}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>`}
+          ${primerImg?`<img src="${primerImg}" alt="${sub}" style="object-fit:contain;background:#f5f0e8;" onload="this.classList.add('img-loaded');const s=this.parentElement.querySelector('.loto-spinner');if(s)s.classList.add('hidden');" onerror="this.style.display='none';const s=this.parentElement.querySelector('.loto-spinner');if(s)s.classList.add('hidden');">`:`<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0.4;"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#C5A059" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>`}
         </div>
         <div class="book-info"><div class="book-title">${subIcon} ${sub}</div><div class="book-author">${subLibros.length} ${subLibros.length===1?'elemento':'elementos'}</div></div>
       </div>`;
@@ -558,7 +605,6 @@
 
   /* ══ Buscador ══ */
   function highlight(t,q){return t.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'),'<mark>$1</mark>');}
-  const catIcons={'Ken Wilber':'🌊','Barbara Ann Brenan':'🌺','Biodescodificación':'🧬','Budismo':'🌿','Carolyne Myss':'🌸','Constelaciones Familiares':'🫧','Cristaloterapia':'💎','Filosofía y Religión':'🕊️','Geometría Sagrada':'🌀','Kabbalah':'🔮','Kryon':'✨','Libros Raros':'📜','Lobsang Rampa':'🏔️','Neville Goddard':'🌙','Nikola Tesla':'⚡','Teosofía':'🌌','Triguerinho':'🌟','Biología y comportamiento social':'🧬👥','Documentales':'🎬','Herramientas Prácticas para Sostener los Cambios':'🧰','Papa León XIV':'📜'};
 
   function buscarLibros(){
     const q=document.getElementById('searchInput').value.trim();
