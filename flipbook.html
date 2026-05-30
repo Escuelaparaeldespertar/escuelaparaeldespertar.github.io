@@ -298,7 +298,10 @@
     <div class="fb-author">Ken Wilber</div>
   </div>
   <div class="fb-pages" id="fbPagesInfo">— / —</div>
-  <button class="fb-fullscreen" onclick="toggleFullscreen()" title="Pantalla completa">⛶</button>
+  <button class="fb-fullscreen" onclick="zoomOut()" title="Alejar">−</button>
+<button class="fb-fullscreen" onclick="zoomReset()" title="Zoom normal">⊙</button>
+<button class="fb-fullscreen" onclick="zoomIn()" title="Acercar">+</button>
+<button class="fb-fullscreen" onclick="toggleFullscreen()" title="Pantalla completa">⛶</button>
 </div>
 
 <!-- Área del libro -->
@@ -610,8 +613,15 @@
         </div>`;
     }
   }
+/* ══ Zoom ══ */
+let zoomLevel = 1.0;
 
+function zoomIn() { ... }
+function zoomOut() { ... }
+function zoomReset() { ... }
+function applyZoom() { ... }
   loadPDF();
+  
 </script>
 </body>
 </html>
