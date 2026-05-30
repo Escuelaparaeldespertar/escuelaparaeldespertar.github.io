@@ -386,9 +386,9 @@
   
  if (isMobile) {
     // Una sola página en móvil
-    let w = (sw - 40) * zoomLevel;
+    let w = sw - 20;
     let h = w * ratio;
-    if (h > sh * zoomLevel) { h = sh * zoomLevel; w = h / ratio; }
+    if (h > sh - 20) { h = sh - 20; w = h / ratio; }
     return { w: Math.floor(w), h: Math.floor(h), mobile: true };
   } else {
     // Dos páginas en escritorio
