@@ -374,16 +374,27 @@
   const bookCont  = document.getElementById('bookContainer');
 
   /* ══ Calcular tamaño ══ */
-  function calcSize() {
-    const stage = document.getElementById('fbStage');
-    const sw = stage.clientWidth - 120;
-    const sh = stage.clientHeight - 40;
-    const ratio = pageHeight / pageWidth;
-    let w = Math.min(sw / 2, sh / ratio);
+ function calcSize() {
+  const stage = document.getElementById('fbStage');
+  const sw = stage.clientWidth;
+  const sh = stage.clientHeight - 40;
+  const ratio = pageHeight / pageWidth;
+  const isMobile = sw < 768;
+  
+  if (isMobile) {
+    // Una sola página en móvil
+    let w = sw - 40;
     let h = w * ratio;
     if (h > sh) { h = sh; w = h / ratio; }
-    return { w: Math.floor(w), h: Math.floor(h) };
+    return { w: Math.floor(w), h: Math.floor(h), mobile: true };
+  } else {
+    // Dos páginas en escritorio
+    let w = Math.min((sw - 120) / 2, sh / ratio);
+    let h = w * ratio;
+    if (h > sh) { h = sh; w = h / ratio; }
+    return { w: Math.floor(w), h: Math.floor(h), mobile: false };
   }
+}
 
   /* ══ Renderizar página en canvas ══ */
   async function renderPage(pageNum, canvas) {
@@ -406,23 +417,33 @@
   }
 
   /* ══ Mostrar spread actual ══ */
-  async function renderSpread(spread) {
-    const { w, h } = calcSize();
+ async function renderSpread(spread) {
+  const { w, h, mobile } = calcSize();
+  
+  if (mobile) {
+    // Ocultar página izquierda y lomo en móvil
+    pageLeft.style.display = 'none';
+    document.querySelector('.book-spine').style.display = 'none';
+    pageRight.style.width  = w + 'px';
+    pageRight.style.height = h + 'px';
+    const rightPage = spread === 1 ? 1 : spread;
+    await renderPage(rightPage <= totalPages ? rightPage : 0, canvasR);
+  } else {
+    pageLeft.style.display = 'block';
+    document.querySelector('.book-spine').style.display = 'block';
     pageLeft.style.width  = w + 'px';
     pageLeft.style.height = h + 'px';
     pageRight.style.width  = w + 'px';
     pageRight.style.height = h + 'px';
-
     const leftPage  = spread === 1 ? 0 : spread;
     const rightPage = spread === 1 ? 1 : spread + 1;
-
     await Promise.all([
-      renderPage(leftPage  > 0 ? leftPage  : 0, canvasL),
+      renderPage(leftPage > 0 ? leftPage : 0, canvasL),
       renderPage(rightPage <= totalPages ? rightPage : 0, canvasR)
     ]);
-
-    updateControls();
   }
+  updateControls();
+}
 
   /* ══ Actualizar controles ══ */
   function updateControls() {
