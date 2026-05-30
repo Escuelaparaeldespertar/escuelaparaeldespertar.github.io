@@ -629,33 +629,46 @@ function zoomReset() {
 }
 function applyZoom() {
   if (zoomLevel === 1) { translateX = 0; translateY = 0; }
-  document.getElementById('stage').style.cursor = zoomLevel > 1 ? 'grab' : 'default';
+  fbStageEl.style.cursor = zoomLevel > 1 ? 'grab' : 'default';
   applyTransform();
   renderScale = window.innerWidth < 768
     ? window.devicePixelRatio * 3 * zoomLevel
     : (window.devicePixelRatio * 2) + (zoomLevel - 1) * 4;
   renderSpread(currentSpread);
 }
-  /* ══ Drag para mover libro con zoom ══ */
+/* ══ Drag para mover libro con zoom ══ */
 let isDragging = false;
 let dragStartX = 0, dragStartY = 0;
 let translateX = 0, translateY = 0;
 
-const stage = document.getElementById('fbStage');
+const fbStageEl = document.getElementById('fbStage');
 
-stage.addEventListener('mousedown', e => {
+fbStageEl.addEventListener('mousedown', e => {
   if (zoomLevel <= 1) return;
+  e.preventDefault();
   isDragging = true;
   dragStartX = e.clientX - translateX;
   dragStartY = e.clientY - translateY;
-  stage.style.cursor = 'grabbing';
+  fbStageEl.style.cursor = 'grabbing';
 });
 
 window.addEventListener('mousemove', e => {
   if (!isDragging) return;
+  e.preventDefault();
   translateX = e.clientX - dragStartX;
   translateY = e.clientY - dragStartY;
   applyTransform();
+});
+
+window.addEventListener('mouseup', () => {
+  if (!isDragging) return;
+  isDragging = false;
+  fbStageEl.style.cursor = zoomLevel > 1 ? 'grab' : 'default';
+});
+
+function applyTransform() {
+  document.getElementById('book3d').style.transform =
+    `scale(${zoomLevel}) translate(${translateX / zoomLevel}px, ${translateY / zoomLevel}px)`;
 });
 
 window.addEventListener('mouseup', () => {
