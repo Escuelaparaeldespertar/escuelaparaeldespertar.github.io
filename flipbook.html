@@ -628,11 +628,14 @@ function zoomReset() {
   applyZoom();
 }
 function applyZoom() {
-  renderScale = window.innerWidth < 768 
-    ? window.devicePixelRatio * 2 * zoomLevel 
+  // Quitar el scale CSS
+  document.getElementById('book3d').style.transform = '';
+  // Aumentar renderScale y volver a dibujar
+  renderScale = window.innerWidth < 768
+    ? window.devicePixelRatio * 2 * zoomLevel
     : 1.5 * zoomLevel;
-  document.getElementById('book3d').style.transform = `scale(${zoomLevel})`;
-  document.getElementById('book3d').style.transformOrigin = 'center center';
+  // Recalcular tamaño con zoom
+  pageWidth = pageWidth / (zoomLevel > 1 ? 1 : 1); // mantener ratio
   renderSpread(currentSpread);
 }
   loadPDF();
