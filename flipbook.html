@@ -396,23 +396,7 @@
     return { w: Math.floor(w), h: Math.floor(h), mobile: false };
   }
 }
-  
- if (isMobile) {
-    // Una sola página en móvil
-    let w = sw - 20;
-    let h = w * ratio;
-    if (h > sh - 20) { h = sh - 20; w = h / ratio; }
-    return { w: Math.floor(w), h: Math.floor(h), mobile: true };
-  } else {
-    // Dos páginas en escritorio
-    let w = Math.min((sw - 120) / 2, sh / ratio) * zoomLevel;
-    let h = w * ratio;
-    if (h > sh) { h = sh; w = h / ratio; }
-    return { w: Math.floor(w), h: Math.floor(h), mobile: false };
-  }
-}
-
-  /* ══ Renderizar página en canvas ══ */
+   /* ══ Renderizar página en canvas ══ */
   async function renderPage(pageNum, canvas) {
     if (pageNum < 1 || pageNum > totalPages) {
       const ctx = canvas.getContext('2d');
