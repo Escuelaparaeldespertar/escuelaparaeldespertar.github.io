@@ -380,14 +380,15 @@
  function calcSize() {
   const stage = document.getElementById('fbStage');
   const sw = stage.clientWidth;
-  const sh = stage.clientHeight - 40;
+  const sh = stage.clientHeight;
   const ratio = pageHeight / pageWidth;
   const isMobile = window.matchMedia('(max-width: 1024px)').matches || sw < 1024;
   
-  if (isMobile) {
+ if (isMobile) {
     // Dos páginas pequeñas en móvil (PDF apaisado)
     let w = Math.min((sw - 20) / 2, sh / ratio);
     let h = w * ratio;
+    if (h > sh) { h = sh; w = h / ratio; }
     return { w: Math.floor(w), h: Math.floor(h), mobile: false };
   } else {
     let w = Math.min((sw - 120) / 2, sh / ratio) * zoomLevel;
