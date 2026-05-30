@@ -421,13 +421,13 @@
   const { w, h, mobile } = calcSize();
   
  if (mobile) {
-    document.getElementById('book3d').style.display = 'none';
-    const iframe = document.getElementById('pdfIframe');
-    iframe.style.display = 'block';
-    if (!iframe.src) iframe.src = PDF_URL;
-    updateControls();
-    return;
-  } else {
+  pageLeft.style.display = 'none';
+  document.querySelector('.book-spine').style.display = 'none';
+  pageRight.style.width  = w + 'px';
+  pageRight.style.height = h + 'px';
+  const rightPage = spread === 1 ? 1 : spread;
+  await renderPage(rightPage <= totalPages ? rightPage : 0, canvasR);
+} else {
     pageLeft.style.display = 'block';
     document.querySelector('.book-spine').style.display = 'block';
     pageLeft.style.width  = w + 'px';
