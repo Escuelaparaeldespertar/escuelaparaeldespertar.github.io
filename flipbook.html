@@ -613,7 +613,17 @@
         </div>`;
     }
   }
- let zoomLevel = 1.0;
+let zoomLevel = 1.0;
+let isDragging = false;
+let dragStartX = 0, dragStartY = 0;
+let translateX = 0, translateY = 0;
+
+const fbStageEl = document.getElementById('fbStage');
+
+function applyTransform() {
+  document.getElementById('book3d').style.transform =
+    `scale(${zoomLevel}) translate(${translateX / zoomLevel}px, ${translateY / zoomLevel}px)`;
+}
 
 function zoomIn() {
   zoomLevel = Math.min(zoomLevel + 0.2, 2.5);
@@ -636,13 +646,8 @@ function applyZoom() {
     : (window.devicePixelRatio * 2) + (zoomLevel - 1) * 4;
   renderSpread(currentSpread);
 }
-/* ══ Drag para mover libro con zoom ══ */
-let isDragging = false;
-let dragStartX = 0, dragStartY = 0;
-let translateX = 0, translateY = 0;
 
-const fbStageEl = document.getElementById('fbStage');
-
+/* ══ Drag mouse ══ */
 fbStageEl.addEventListener('mousedown', e => {
   if (zoomLevel <= 1) return;
   e.preventDefault();
@@ -666,39 +671,24 @@ window.addEventListener('mouseup', () => {
   fbStageEl.style.cursor = zoomLevel > 1 ? 'grab' : 'default';
 });
 
-function applyTransform() {
-  document.getElementById('book3d').style.transform =
-    `scale(${zoomLevel}) translate(${translateX / zoomLevel}px, ${translateY / zoomLevel}px)`;
-});
-
-window.addEventListener('mouseup', () => {
-  isDragging = false;
-  stage.style.cursor = zoomLevel > 1 ? 'grab' : 'default';
-});
-
-// Touch
-stage.addEventListener('touchstart', e => {
+/* ══ Drag touch ══ */
+fbStageEl.addEventListener('touchstart', e => {
   if (zoomLevel <= 1 || e.touches.length !== 1) return;
   isDragging = true;
   dragStartX = e.touches[0].clientX - translateX;
   dragStartY = e.touches[0].clientY - translateY;
 }, { passive: true });
 
-stage.addEventListener('touchmove', e => {
+fbStageEl.addEventListener('touchmove', e => {
   if (!isDragging || e.touches.length !== 1) return;
   translateX = e.touches[0].clientX - dragStartX;
   translateY = e.touches[0].clientY - dragStartY;
   applyTransform();
 }, { passive: true });
 
-stage.addEventListener('touchend', () => { isDragging = false; });
+fbStageEl.addEventListener('touchend', () => { isDragging = false; });
 
-function applyTransform() {
-  document.getElementById('book3d').style.transform = 
-    `scale(${zoomLevel}) translate(${translateX / zoomLevel}px, ${translateY / zoomLevel}px)`;
-}
-  loadPDF();
-  
+loadPDF();
 </script>
 </body>
 </html>
