@@ -613,13 +613,22 @@
         </div>`;
     }
   }
-/* ══ Zoom ══ */
-let zoomLevel = 1.0;
-
-function zoomIn() { ... }
-function zoomOut() { ... }
-function zoomReset() { ... }
-function applyZoom() { ... }
+function zoomIn() {
+  zoomLevel = Math.min(zoomLevel + 0.2, 2.5);
+  applyZoom();
+}
+function zoomOut() {
+  zoomLevel = Math.max(zoomLevel - 0.2, 0.5);
+  applyZoom();
+}
+function zoomReset() {
+  zoomLevel = 1.0;
+  applyZoom();
+}
+function applyZoom() {
+  document.getElementById('book3d').style.transform = `scale(${zoomLevel})`;
+  document.getElementById('book3d').style.transformOrigin = 'center center';
+}
   loadPDF();
   
 </script>
