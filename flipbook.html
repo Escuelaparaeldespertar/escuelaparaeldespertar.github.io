@@ -363,7 +363,7 @@
   let currentSpread = 1; // número de página izquierda (siempre impar o 0 para portada)
   let pageWidth = 0, pageHeight = 0;
   let isFlipping = false;
-  let renderScale = window.innerWidth < 1024 ? window.devicePixelRatio * 6 : window.devicePixelRatio * 2;
+  let renderScale = window.innerWidth < 1024 ? window.devicePixelRatio * 15 : window.devicePixelRatio * 2;
 
   const loading   = document.getElementById('fbLoading');
   const book3d    = document.getElementById('book3d');
@@ -639,7 +639,7 @@ function applyZoom() {
   fbStageEl.style.cursor = zoomLevel > 1 ? 'grab' : 'default';
   applyTransform();
   renderScale = window.innerWidth < 1024
-    ? window.devicePixelRatio * 6 * zoomLevel
+    ? window.devicePixelRatio * 10 * zoomLevel
     : (window.devicePixelRatio * 2) + (zoomLevel - 1) * 4;
   renderSpread(currentSpread);
 }
