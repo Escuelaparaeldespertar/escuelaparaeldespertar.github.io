@@ -631,8 +631,8 @@ function applyZoom() {
   document.getElementById('book3d').style.transform = `scale(${zoomLevel})`;
   document.getElementById('book3d').style.transformOrigin = 'center center';
   renderScale = window.innerWidth < 768
-    ? window.devicePixelRatio * 2
-    : 1.5 + (zoomLevel - 1) * 2;
+    ? window.devicePixelRatio * 3 * zoomLevel
+    : 1.5 + (zoomLevel - 1) * 4;
   renderSpread(currentSpread);
 }
   loadPDF();
