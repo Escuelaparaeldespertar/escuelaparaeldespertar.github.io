@@ -628,12 +628,61 @@ function zoomReset() {
   applyZoom();
 }
 function applyZoom() {
-  document.getElementById('book3d').style.transform = `scale(${zoomLevel})`;
-  document.getElementById('book3d').style.transformOrigin = 'center center';
+  if (zoomLevel === 1) { translateX = 0; translateY = 0; }
+  document.getElementById('stage').style.cursor = zoomLevel > 1 ? 'grab' : 'default';
+  applyTransform();
   renderScale = window.innerWidth < 768
     ? window.devicePixelRatio * 3 * zoomLevel
-    : 1.5 + (zoomLevel - 1) * 4;
+    : (window.devicePixelRatio * 2) + (zoomLevel - 1) * 4;
   renderSpread(currentSpread);
+}
+  /* ══ Drag para mover libro con zoom ══ */
+let isDragging = false;
+let dragStartX = 0, dragStartY = 0;
+let translateX = 0, translateY = 0;
+
+const stage = document.getElementById('fbStage');
+
+stage.addEventListener('mousedown', e => {
+  if (zoomLevel <= 1) return;
+  isDragging = true;
+  dragStartX = e.clientX - translateX;
+  dragStartY = e.clientY - translateY;
+  stage.style.cursor = 'grabbing';
+});
+
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  translateX = e.clientX - dragStartX;
+  translateY = e.clientY - dragStartY;
+  applyTransform();
+});
+
+window.addEventListener('mouseup', () => {
+  isDragging = false;
+  stage.style.cursor = zoomLevel > 1 ? 'grab' : 'default';
+});
+
+// Touch
+stage.addEventListener('touchstart', e => {
+  if (zoomLevel <= 1 || e.touches.length !== 1) return;
+  isDragging = true;
+  dragStartX = e.touches[0].clientX - translateX;
+  dragStartY = e.touches[0].clientY - translateY;
+}, { passive: true });
+
+stage.addEventListener('touchmove', e => {
+  if (!isDragging || e.touches.length !== 1) return;
+  translateX = e.touches[0].clientX - dragStartX;
+  translateY = e.touches[0].clientY - dragStartY;
+  applyTransform();
+}, { passive: true });
+
+stage.addEventListener('touchend', () => { isDragging = false; });
+
+function applyTransform() {
+  document.getElementById('book3d').style.transform = 
+    `scale(${zoomLevel}) translate(${translateX / zoomLevel}px, ${translateY / zoomLevel}px)`;
 }
   loadPDF();
   
