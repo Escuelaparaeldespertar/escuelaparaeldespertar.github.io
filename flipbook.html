@@ -385,10 +385,10 @@
   const isMobile = window.matchMedia('(max-width: 1024px)').matches || sw < 1024;
   
   if (isMobile) {
-    let w = sw - 20;
+    // Dos páginas pequeñas en móvil (PDF apaisado)
+    let w = Math.min((sw - 20) / 2, sh / ratio);
     let h = w * ratio;
-    if (h > sh - 20) { h = sh - 20; w = h / ratio; }
-    return { w: Math.floor(w), h: Math.floor(h), mobile: true };
+    return { w: Math.floor(w), h: Math.floor(h), mobile: false };
   } else {
     let w = Math.min((sw - 120) / 2, sh / ratio) * zoomLevel;
     let h = w * ratio;
