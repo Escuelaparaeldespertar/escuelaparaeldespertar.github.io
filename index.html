@@ -432,6 +432,14 @@
   }
 
   function abrirVisor(url, titulo, autor) {
+  if (esPDF(url)) {
+    const params = new URLSearchParams({ 
+      url, 
+      titulo: titulo || '', 
+      autor: autor || '' 
+    });
+    window.open('flipbook.html?' + params.toString(), '_blank');
+  } else {
     document.getElementById('visorTitulo').textContent = titulo || 'Libro';
     document.getElementById('visorAutor').textContent  = autor  || '';
     document.getElementById('visorEstado').classList.remove('oculto');
@@ -439,43 +447,18 @@
     document.getElementById('visorPanel').classList.add('open');
     document.body.style.overflow = 'hidden';
 
-    const dfContainer = document.getElementById('df-flipbook-container');
-    const iframe      = document.getElementById('visorIframe');
-
-    dfContainer.classList.remove('activo');
+    const iframe = document.getElementById('visorIframe');
+    document.getElementById('df-flipbook-container').classList.remove('activo');
     iframe.classList.remove('activo');
     iframe.src = 'about:blank';
-
-    if (esPDF(url)) {
-      setTimeout(() => {
-        if (dfInstance) { try { dfInstance.dispose(); } catch(e){} dfInstance = null; }
-        dfContainer.innerHTML = '';
-        dfContainer.classList.add('activo');
+    iframe.classList.add('activo');
+    iframe.onload = function() {
+      if (iframe.src !== 'about:blank') 
         document.getElementById('visorEstado').classList.add('oculto');
-        dfInstance = new DearFlip(dfContainer, {
-          source: url,
-          height: '100%',
-          duration: 800,
-          direction: 1,
-          controlsPosition: 'bottom',
-          paddingTop: 20,
-          paddingBottom: 20,
-          enableDownload: false,
-          enablePrint: false,
-          singlePageMode: false,
-          backgroundColor: '#1a1714',
-          backgroundGradient: false,
-          primaryColor: '#C5A059',
-        });
-      }, 400);
-    } else {
-      iframe.classList.add('activo');
-      iframe.onload = function() {
-        if (iframe.src !== 'about:blank') document.getElementById('visorEstado').classList.add('oculto');
-      };
-      setTimeout(() => { iframe.src = url; }, 300);
-    }
+    };
+    setTimeout(() => { iframe.src = url; }, 300);
   }
+}
 
   function cerrarVisor() {
     document.getElementById('visorOverlay').classList.remove('visible');
