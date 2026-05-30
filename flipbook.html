@@ -669,7 +669,7 @@ window.addEventListener('mouseup', () => {
   if (!isDragging) return;
   isDragging = false;
   fbStageEl.style.cursor = zoomLevel > 1 ? 'grab' : 'default';
-});
+}
 
 /* ══ Drag touch ══ */
 fbStageEl.addEventListener('touchstart', e => {
