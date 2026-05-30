@@ -363,7 +363,7 @@
   let currentSpread = 1; // número de página izquierda (siempre impar o 0 para portada)
   let pageWidth = 0, pageHeight = 0;
   let isFlipping = false;
-  let renderScale = window.innerWidth < 768 ? window.devicePixelRatio * 4 : 1.5;
+  let renderScale = window.innerWidth < 768 ? window.devicePixelRatio * 3 : window.devicePixelRatio * 2;
 
   const loading   = document.getElementById('fbLoading');
   const book3d    = document.getElementById('book3d');
