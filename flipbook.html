@@ -623,9 +623,8 @@ document.addEventListener('touchend', e => {
      loading.classList.add('hidden');
 const { mobile } = calcSize();
 if (mobile) {
-  document.getElementById('pdfIframe').src = PDF_URL;
-  document.getElementById('pdfIframe').style.display = 'block';
-  updateControls();
+  window.location.href = PDF_URL;
+  return;
 } else {
   book3d.style.display = 'block';
   currentSpread = 1;
