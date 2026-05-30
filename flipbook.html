@@ -613,7 +613,8 @@
         </div>`;
     }
   }
-  let zoomLevel = 1.0;
+ let zoomLevel = 1.0;
+
 function zoomIn() {
   zoomLevel = Math.min(zoomLevel + 0.2, 2.5);
   applyZoom();
@@ -627,8 +628,12 @@ function zoomReset() {
   applyZoom();
 }
 function applyZoom() {
+  renderScale = window.innerWidth < 768 
+    ? window.devicePixelRatio * 2 * zoomLevel 
+    : 1.5 * zoomLevel;
   document.getElementById('book3d').style.transform = `scale(${zoomLevel})`;
   document.getElementById('book3d').style.transformOrigin = 'center center';
+  renderSpread(currentSpread);
 }
   loadPDF();
   
