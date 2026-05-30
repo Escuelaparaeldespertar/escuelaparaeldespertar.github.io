@@ -384,15 +384,15 @@
   const ratio = pageHeight / pageWidth;
   const isMobile = sw < 768;
   
-  if (isMobile) {
+ if (isMobile) {
     // Una sola página en móvil
-    let w = sw - 40;
+    let w = (sw - 40) * zoomLevel;
     let h = w * ratio;
-    if (h > sh) { h = sh; w = h / ratio; }
+    if (h > sh * zoomLevel) { h = sh * zoomLevel; w = h / ratio; }
     return { w: Math.floor(w), h: Math.floor(h), mobile: true };
   } else {
     // Dos páginas en escritorio
-    let w = Math.min((sw - 120) / 2, sh / ratio);
+    let w = Math.min((sw - 120) / 2, sh / ratio) * zoomLevel;
     let h = w * ratio;
     if (h > sh) { h = sh; w = h / ratio; }
     return { w: Math.floor(w), h: Math.floor(h), mobile: false };
