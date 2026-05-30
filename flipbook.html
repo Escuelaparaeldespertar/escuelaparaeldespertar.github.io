@@ -363,7 +363,7 @@
   let currentSpread = 1; // número de página izquierda (siempre impar o 0 para portada)
   let pageWidth = 0, pageHeight = 0;
   let isFlipping = false;
-  let renderScale = window.innerWidth < 1400 ? window.devicePixelRatio * 3 : window.devicePixelRatio * 2;
+  let renderScale = window.innerWidth < 1024 ? window.devicePixelRatio * 6 : window.devicePixelRatio * 2;
 
   const loading   = document.getElementById('fbLoading');
   const book3d    = document.getElementById('book3d');
@@ -385,11 +385,10 @@
   const isMobile = window.matchMedia('(max-width: 1024px)').matches || sw < 1024;
   
  if (isMobile) {
-    // Dos páginas pequeñas en móvil (PDF apaisado)
-    let w = Math.min((sw - 20) / 2, sh / ratio);
+    let w = sw - 10;
     let h = w * ratio;
     if (h > sh) { h = sh; w = h / ratio; }
-    return { w: Math.floor(w), h: Math.floor(h), mobile: false };
+    return { w: Math.floor(w), h: Math.floor(h), mobile: true };
   } else {
     let w = Math.min((sw - 120) / 2, sh / ratio) * zoomLevel;
     let h = w * ratio;
@@ -639,8 +638,8 @@ function applyZoom() {
   if (zoomLevel === 1) { translateX = 0; translateY = 0; }
   fbStageEl.style.cursor = zoomLevel > 1 ? 'grab' : 'default';
   applyTransform();
-  renderScale = window.innerWidth < 1400
-    ? window.devicePixelRatio * 3 * zoomLevel
+  renderScale = window.innerWidth < 1024
+    ? window.devicePixelRatio * 6 * zoomLevel
     : (window.devicePixelRatio * 2) + (zoomLevel - 1) * 4;
   renderSpread(currentSpread);
 }
