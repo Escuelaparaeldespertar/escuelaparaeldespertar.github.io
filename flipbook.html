@@ -330,7 +330,7 @@
       </div>
     </div>
   </div>
-
+<iframe id="pdfIframe" style="display:none; position:absolute; inset:0; width:100%; height:100%; border:none;" allowfullscreen></iframe>
   <div class="zoom-hint">usa las flechas o teclas ← → para navegar</div>
 </div>
 
@@ -421,13 +421,13 @@
   const { w, h, mobile } = calcSize();
   
   if (mobile) {
-    // Ocultar página izquierda y lomo en móvil
-    pageLeft.style.display = 'none';
-    document.querySelector('.book-spine').style.display = 'none';
-    pageRight.style.width  = w + 'px';
-    pageRight.style.height = h + 'px';
-    const rightPage = spread === 1 ? 1 : spread;
-    await renderPage(rightPage <= totalPages ? rightPage : 0, canvasR);
+    document.getElementById('book3d').style.display = 'none';
+    const iframe = document.getElementById('pdfIframe');
+    iframe.style.display = 'block';
+    if (!iframe.src) iframe.src = PDF_URL;
+    updateControls();
+    return;
+  }
   } else {
     pageLeft.style.display = 'block';
     document.querySelector('.book-spine').style.display = 'block';
@@ -621,11 +621,17 @@ document.addEventListener('touchend', e => {
       pageHeight = vp.height;
 
       // Mostrar libro
-      loading.classList.add('hidden');
-      book3d.style.display = 'block';
-
-      currentSpread = 1;
-      await renderSpread(1);
+     loading.classList.add('hidden');
+const { mobile } = calcSize();
+if (mobile) {
+  document.getElementById('pdfIframe').src = PDF_URL;
+  document.getElementById('pdfIframe').style.display = 'block';
+  updateControls();
+} else {
+  book3d.style.display = 'block';
+  currentSpread = 1;
+  await renderSpread(1);
+}
 
     } catch (err) {
       console.error('Error cargando PDF:', err);
