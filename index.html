@@ -438,7 +438,7 @@
       titulo: titulo || '', 
       autor: autor || '' 
     });
-    window.open('flipbook.html?' + params.toString(), '_blank');
+    window.location.href = 'flipbook.html?' + params.toString();
   } else {
     document.getElementById('visorTitulo').textContent = titulo || 'Libro';
     document.getElementById('visorAutor').textContent  = autor  || '';
