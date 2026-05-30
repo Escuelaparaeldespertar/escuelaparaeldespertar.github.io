@@ -420,13 +420,14 @@
  async function renderSpread(spread) {
   const { w, h, mobile } = calcSize();
   
-  if (mobile) {
+ if (mobile) {
     document.getElementById('book3d').style.display = 'none';
     const iframe = document.getElementById('pdfIframe');
     iframe.style.display = 'block';
     if (!iframe.src) iframe.src = PDF_URL;
     updateControls();
     return;
+  } else {
   }
   } else {
     pageLeft.style.display = 'block';
