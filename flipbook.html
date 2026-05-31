@@ -293,7 +293,7 @@
   async function renderAllPages() {
     const { w, h, mobile } = calcBookSize();
     const dpr = window.devicePixelRatio || 1;
-    const renderScale = dpr * 2;
+    const renderScale = dpr * 1;
     const canvases = [];
 
     for (let i = 1; i <= totalPages; i++) {
