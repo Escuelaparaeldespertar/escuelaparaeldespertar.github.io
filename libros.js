@@ -203,4 +203,5 @@
    { categoria:'Herramientas Prácticas para Sostener los Cambios', titulo:'Autodisciplina Automática - El Poder de la Mente Subconsciente', autor:'Russel C. James', imagen:'Libros/Herramientas/autodisciplina.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZzLLI5Z8RWB6QVBaXYqAJaDz9CR0pfcgJwk' },
     // Papa León XIV
    { categoria:'Papa León XIV', titulo:'Carta Encíclica Magnifica Humanitas', autor:'Papa León XIV', imagen:'Libros/Papa León XIV/Magnifica.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZj8LI5ZDNuF77D8e0prfJq6QWguFXGMlm3X' },
+    
   ];
