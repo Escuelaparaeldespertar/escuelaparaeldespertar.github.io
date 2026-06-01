@@ -193,7 +193,7 @@
     { categoria:'Teosofía', titulo:'Tratado Sobre Fuego Cósmico', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/tratado.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZL2Ed5ZmSFXeFDXDW4L531cga5PtYswGbIk' },
     { categoria:'Teosofía', titulo:'Una Gran Aventura - La Muerte', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/aventuramuerte.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZ82Ed5Ze2aVLCzOm4jHq5KwIWl5wJq5BGU7' },
     // Biología y comportamiento social
-    { categoria:'Biología y comportamiento social', titulo:'El gen egoísta Las bases biológicas de nuestra conducta',autor:'Richard Dawkins',imagen:'Libros/Biologia/Gen_egoista.jpg',imgContain:true,url:'https://u.pcloud.link/publink/show?code=XZ05iE5Zl8EPMi4uDwHPsK0KFNSRB5KrQ05k' },
+    { categoria:'Biología y comportamiento social', titulo:'El gen egoísta Las bases biológicas de nuestra conducta',autor:'Richard Dawkins',imagen:'Libros/Biologia/Gen_egoista.jpg',imgContain:true,url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/Biolog%C3%ADa%20y%20comportamiento%20social/El-Gen-Ego%C3%ADsta-Las-Bases-Biol%C3%B3gicas-de-Nuestra-Conducta-Richard-Dawkins.pdf' },
     // Documentales
     { categoria:'Documentales', titulo:'Despierta', autor:'', imagen:'Documentales/Despierta.jpg', imgContain:true, video:'https://mega.nz/embed/sqV02ahJ#2rv89EsBHR2gZ7h2Gg0UXwQNFCZHHfoVle7UtZvpw98!1a' },
    // INTELIGENCIA ARTIFICIAL EN LO HUMANO
