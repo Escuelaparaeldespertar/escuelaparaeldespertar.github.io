@@ -553,15 +553,15 @@ async function renderRestInBackground(w, h) {
       readerEl.innerHTML = '';
       const shield = document.createElement('div');
       shield.className = 'reader-page-shield';
-      readerEl.appendChild(canvases[i].cloneNode(true));
-      readerEl.appendChild(shield);
+      readerEl.appendChild(canvases[i]);
+readerEl.appendChild(shield);
     }
 
     // Actualizar flipbook en tiempo real
     const flipEl = document.querySelector(`.flip-page[data-idx="${i}"]`);
     if (flipEl) {
       flipEl.innerHTML = '';
-      flipEl.appendChild(canvases[i].cloneNode(true));
+      flipEl.appendChild(canvases[i]);
     }
   }
 }
@@ -581,7 +581,7 @@ function buildReader(w, h) {
 
     if (canvases[i]) {
       const c = canvases[i].cloneNode(true);
-      wrap.appendChild(c);
+      wrap.appendChild(canvases[i]);
     } else {
       // Placeholder spinner
       wrap.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
@@ -615,7 +615,7 @@ function buildFlipbook(w, h, mobile) {
     page.style.cssText = `width:${w}px;height:${h}px;background:#f5f0e8;overflow:hidden;`;
 
     if (canvases[i]) {
-      page.appendChild(canvases[i].cloneNode(true));
+      page.appendChild(canvases[i]);
     } else {
       page.innerHTML = `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
         <div style="width:24px;height:24px;border:2px solid rgba(197,160,89,0.2);border-top-color:#C5A059;border-radius:50%;animation:loto-rotate 1s linear infinite;"></div>
