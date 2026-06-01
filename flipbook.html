@@ -439,6 +439,7 @@
     pageFlip.setting.swipeDistance = zoomLevel > 1 ? 99999 : 120;
     pageFlip.setting.disableFlipByClick = zoomLevel > 1;
   }
+  }
   function zoomIn() {
     zoomLevel = Math.min(zoomLevel + 0.25, 3.0);
     fbStageEl.style.cursor = 'grab';
