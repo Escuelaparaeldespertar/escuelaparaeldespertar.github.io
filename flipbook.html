@@ -294,33 +294,34 @@
   }
 
   /* ══ Renderizar todas las páginas del PDF a canvases ══ */
-  async function renderAllPages() {
-    const { w, h, mobile } = calcBookSize();
-    const dpr = window.devicePixelRatio || 1;
-    const renderScale = mobile ? dpr * 1 : dpr * 2;
-    const canvases = [];
+async function renderAllPages() {
+  const { w, h, mobile } = calcBookSize();
+  const dpr = window.devicePixelRatio || 1;
+  const renderScale = mobile ? dpr * 1 : dpr * 2;
+  const canvases = new Array(totalPages).fill(null);
 
-    for (let i = 1; i <= totalPages; i++) {
-      loadText.textContent = `Renderizando página ${i} de ${totalPages}...`;
-      loadBar.style.width = Math.round((i / totalPages) * 100) + '%';
-
-      const page     = await pdfDoc.getPage(i);
-      const vp       = page.getViewport({ scale: 1 });
-      const scale    = (w * renderScale) / vp.width;
-      const viewport = page.getViewport({ scale });
-
-      const canvas  = document.createElement('canvas');
-      canvas.width  = viewport.width;
-      canvas.height = viewport.height;
-      canvas.style.width  = w + 'px';
-      canvas.style.height = h + 'px';
-
-      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-      canvases.push(canvas);
-    }
-
-    return { canvases, w, h, mobile };
+  async function renderOnePage(i) {
+    const page     = await pdfDoc.getPage(i + 1);
+    const vp       = page.getViewport({ scale: 1 });
+    const scale    = (w * renderScale) / vp.width;
+    const viewport = page.getViewport({ scale });
+    const canvas   = document.createElement('canvas');
+    canvas.width   = viewport.width;
+    canvas.height  = viewport.height;
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    return canvas;
   }
+
+  const firstBatch = Math.min(10, totalPages);
+  for (let i = 0; i < firstBatch; i++) {
+    loadBar.style.width = Math.round((i / firstBatch) * 100) + '%';
+    canvases[i] = await renderOnePage(i);
+  }
+
+  return { canvases, w, h, mobile, renderOnePage };
+}
 
   /* ══ Inicializar StPageFlip ══ */
   function initFlipbook(canvases, w, h, mobile) {
@@ -336,7 +337,14 @@
         background:#f5f0e8;
         overflow:hidden;
       `;
-      page.appendChild(canvas);
+     if (canvas) {
+        page.appendChild(canvas);
+      } else {
+        page.style.display = 'flex';
+        page.style.alignItems = 'center';
+        page.style.justifyContent = 'center';
+        page.innerHTML = '<div style="width:30px;height:30px;border:2px solid rgba(197,160,89,0.3);border-top-color:#C5A059;border-radius:50%;animation:spin 1s linear infinite;"></div>';
+      }
       flipbookEl.appendChild(page);
     });
 
@@ -562,17 +570,29 @@
       pageHeight      = vp.height;
 
       // Renderizar todas las páginas
-      const { canvases, w, h, mobile } = await renderAllPages();
+    const { canvases, w, h, mobile, renderOnePage } = await renderAllPages();
 
-      // Inicializar flipbook
-      initFlipbook(canvases, w, h, mobile);
+// Inicializar flipbook
+initFlipbook(canvases, w, h, mobile);
 
-      document.getElementById('fbLoading').classList.add('hidden');
+document.getElementById('fbLoading').classList.add('hidden');
 
-      // Habilitar controles
-      document.getElementById('btnNext').disabled   = false;
-      document.getElementById('btnLast').disabled   = false;
-      document.getElementById('arrowRight').disabled = false;
+// Habilitar controles
+document.getElementById('btnNext').disabled   = false;
+document.getElementById('btnLast').disabled   = false;
+document.getElementById('arrowRight').disabled = false;
+
+// Renderizar resto en segundo plano
+(async () => {
+  for (let i = 10; i < totalPages; i++) {
+    canvases[i] = await renderOnePage(i);
+    const pageEl = document.querySelectorAll('.flip-page')[i];
+    if (pageEl) {
+      pageEl.innerHTML = '';
+      pageEl.appendChild(canvases[i]);
+    }
+  }
+})();
 
     } catch (err) {
       console.error('Error cargando PDF:', err);
