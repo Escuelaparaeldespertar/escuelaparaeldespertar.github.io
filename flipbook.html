@@ -365,7 +365,7 @@
       mobileScrollSupport: false,
       clickEventForward: true,
       useMouseEvents: true,
-      swipeDistance: 120,
+      swipeDistance: zoomLevel > 1 ? 99999 : 120,
       showPageCorners: true,
       disableFlipByClick: false,
     });
@@ -430,12 +430,15 @@
   });
 
   /* ══ Zoom ══ */
-  function applyTransform() {
-    flipbookContainer.style.transform =
-      `scale(${zoomLevel}) translate(${translateX / zoomLevel}px, ${translateY / zoomLevel}px)`;
-    flipbookContainer.style.transformOrigin = 'center center';
+ function applyTransform() {
+  flipbookContainer.style.transform =
+    `scale(${zoomLevel}) translate(${translateX / zoomLevel}px, ${translateY / zoomLevel}px)`;
+  flipbookContainer.style.transformOrigin = 'center center';
+  
+  if (pageFlip) {
+    pageFlip.setting.swipeDistance = zoomLevel > 1 ? 99999 : 120;
+    pageFlip.setting.disableFlipByClick = zoomLevel > 1;
   }
-
   function zoomIn() {
     zoomLevel = Math.min(zoomLevel + 0.25, 3.0);
     fbStageEl.style.cursor = 'grab';
