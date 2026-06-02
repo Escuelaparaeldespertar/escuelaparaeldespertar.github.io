@@ -3,14 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gracia y Coraje — Ken Wilber</title>
+<title>Biblioteca Virtual — Visor</title>
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
     --gold: #C5A059;
     --gold-dark: #A07838;
+    --gold-light: #D4B06A;
     --bg: #1a1410;
     --bg2: #120e0a;
+    --header-h: 58px;
+    --controls-h: 72px;
   }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
 
@@ -25,33 +28,75 @@
     user-select: none;
   }
 
-  /* ══ Header ══ */
   .fb-header {
-    display: flex; align-items: center; gap: 14px;
-    padding: 12px 20px;
-    background: rgba(26,20,16,0.95);
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 16px;
+    height: var(--header-h);
+    background: rgba(18,14,10,0.97);
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(197,160,89,0.25);
+    border-bottom: 1px solid rgba(197,160,89,0.2);
     flex-shrink: 0;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.4);
-    z-index: 10;
+    box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+    z-index: 100;
   }
   .fb-back {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: rgba(197,160,89,0.1);
-    border: 1px solid rgba(197,160,89,0.3);
-    color: var(--gold); font-size: 16px; cursor: pointer;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(197,160,89,0.08);
+    border: 1px solid rgba(197,160,89,0.25);
+    color: var(--gold); font-size: 15px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
     flex-shrink: 0;
   }
   .fb-back:hover { background: var(--gold); color: #1a1410; transform: scale(1.1); }
-  .fb-info { flex: 1; }
-  .fb-title { font-size: 12px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; font-weight: 700; }
-  .fb-author { font-size: 11px; color: rgba(197,160,89,0.5); font-style: italic; font-family: 'Cormorant Garamond', serif; margin-top: 2px; }
-  .fb-pages { font-size: 10px; letter-spacing: 2px; color: rgba(197,160,89,0.4); font-weight: 600; }
+  .fb-info { flex: 1; min-width: 0; }
+  .fb-title {
+    font-size: 11px; letter-spacing: 2.5px; color: var(--gold);
+    text-transform: uppercase; font-weight: 700;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .fb-author {
+    font-size: 10px; color: rgba(197,160,89,0.45);
+    font-style: italic; font-family: 'Cormorant Garamond', serif; margin-top: 1px;
+  }
+  .mode-toggle {
+    display: flex; align-items: center;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(197,160,89,0.2);
+    border-radius: 50px; padding: 3px;
+    gap: 2px; flex-shrink: 0;
+  }
+  .mode-btn {
+    padding: 5px 12px; border-radius: 50px; border: none;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 8px; letter-spacing: 1.5px; font-weight: 700;
+    text-transform: uppercase; cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    color: rgba(197,160,89,0.4);
+    background: transparent;
+    white-space: nowrap;
+  }
+  .mode-btn.active {
+    background: var(--gold);
+    color: #1a1410;
+    box-shadow: 0 2px 12px rgba(197,160,89,0.4);
+  }
+  .mode-btn:not(.active):hover { color: var(--gold); }
+  .hdr-btn {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: rgba(197,160,89,0.06);
+    border: 1px solid rgba(197,160,89,0.18);
+    color: rgba(197,160,89,0.45); font-size: 13px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s ease; flex-shrink: 0;
+  }
+  .hdr-btn:hover { color: var(--gold); background: rgba(197,160,89,0.12); }
+  .fb-pages {
+    font-size: 9px; letter-spacing: 2px;
+    color: rgba(197,160,89,0.35); font-weight: 600;
+    white-space: nowrap; flex-shrink: 0;
+  }
 
-  /* ══ Área del libro ══ */
   .fb-stage {
     flex: 1;
     display: flex;
@@ -59,554 +104,719 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
-    background: url('Fondo/Tramado.png') center center / cover no-repeat;
+    background:
+      url('Fondo/Tramado.png') repeat,
+      radial-gradient(ellipse at center, #2a1e14 0%, #120e0a 100%);
+    background-size: 300px 300px, cover;
+    background-blend-mode: overlay;
   }
 
-  /* ══ Loading ══ */
   .fb-loading {
     position: absolute; inset: 0;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    gap: 20px; z-index: 20;
+    gap: 20px; z-index: 50;
     background: radial-gradient(ellipse at center, #2a1e14 0%, #120e0a 70%);
+    transition: opacity 0.4s ease;
   }
-  .fb-loading.hidden { display: none; }
-  .load-spinner {
-    width: 50px; height: 50px;
-    border: 2px solid rgba(197,160,89,0.2);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+  .fb-loading.hidden { opacity: 0; pointer-events: none; }
+  .load-lotus { width: 52px; height: 52px; position: relative; }
+  .load-lotus-petals {
+    width: 52px; height: 52px;
+    animation: loto-rotate 3.5s linear infinite;
+    position: relative;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .lpetal {
+    position: absolute; width: 13px; height: 22px;
+    background: radial-gradient(ellipse at 50% 30%, rgba(197,160,89,0.9), rgba(197,160,89,0.1));
+    border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+    left: 50%; top: 50%;
+    transform-origin: 50% 100%;
+    margin-left: -6.5px; margin-top: -22px;
+  }
+  .lpetal:nth-child(1){transform:rotate(0deg);}
+  .lpetal:nth-child(2){transform:rotate(45deg);}
+  .lpetal:nth-child(3){transform:rotate(90deg);}
+  .lpetal:nth-child(4){transform:rotate(135deg);}
+  .lpetal:nth-child(5){transform:rotate(180deg);}
+  .lpetal:nth-child(6){transform:rotate(225deg);}
+  .lpetal:nth-child(7){transform:rotate(270deg);}
+  .lpetal:nth-child(8){transform:rotate(315deg);}
+  .lpetal-center {
+    position: absolute; width: 10px; height: 10px;
+    background: radial-gradient(circle, var(--gold-light), var(--gold));
+    border-radius: 50%; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    box-shadow: 0 0 10px rgba(197,160,89,0.7);
+  }
+  @keyframes loto-rotate { to { transform: rotate(360deg); } }
   .load-text {
     font-family: 'Cormorant Garamond', serif;
-    font-style: italic; font-size: 16px;
-    color: rgba(197,160,89,0.6);
-    letter-spacing: 1px;
+    font-style: italic; font-size: 15px;
+    color: rgba(197,160,89,0.55); letter-spacing: 1px;
   }
   .load-progress {
-    width: 200px; height: 2px;
-    background: rgba(197,160,89,0.15);
-    border-radius: 1px; overflow: hidden;
+    width: 180px; height: 2px;
+    background: rgba(197,160,89,0.12); border-radius: 1px; overflow: hidden;
   }
   .load-bar {
     height: 100%;
     background: linear-gradient(90deg, var(--gold-dark), var(--gold));
-    border-radius: 1px;
-    width: 0%;
+    border-radius: 1px; width: 0%;
     transition: width 0.3s ease;
   }
 
-  /* ══ StPageFlip container ══ */
+  /* FLIPBOOK */
+  #flipWrap {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  #flipWrap.active { opacity: 1; pointer-events: auto; }
   #flipbook-container {
-    display: none;
     position: relative;
+    transition: transform 0.05s linear;
+    transform-origin: center center;
+    -webkit-touch-callout: none;
   }
-
-  /* Lomo dorado encima del flipbook */
   .book-spine-overlay {
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 50%;
+    position: absolute; top: 0; bottom: 0; left: 50%;
     transform: translateX(-50%);
-    width: 12px;
-    background: linear-gradient(90deg, #8a6020, #c5a059, #8a6020);
+    width: 10px;
+    background: linear-gradient(90deg, #6a4818, #c5a059, #6a4818);
     z-index: 10;
-    box-shadow: 0 0 15px rgba(197,160,89,0.4);
+    box-shadow: 0 0 18px rgba(197,160,89,0.5);
     pointer-events: none;
+    border-radius: 1px;
   }
-
-  /* ══ Flechas laterales ══ */
-  .fb-arrow-left, .fb-arrow-right {
+  .fb-arrow {
     position: absolute; top: 50%; transform: translateY(-50%);
-    width: 48px; height: 48px; border-radius: 50%;
-    background: rgba(26,20,16,0.7);
-    backdrop-filter: blur(10px);
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(18,14,10,0.75);
+    backdrop-filter: blur(12px);
     border: 1px solid rgba(197,160,89,0.2);
     color: var(--gold); font-size: 22px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
-    z-index: 15;
-    opacity: 0.6;
+    z-index: 20; opacity: 0.65;
   }
-  .fb-arrow-left { left: 20px; }
-  .fb-arrow-right { right: 20px; }
-  .fb-arrow-left:hover, .fb-arrow-right:hover { opacity: 1; background: rgba(197,160,89,0.2); transform: translateY(-50%) scale(1.1); }
-  .fb-arrow-left:disabled, .fb-arrow-right:disabled { opacity: 0.15; cursor: default; pointer-events: none; }
+  .fb-arrow:hover { opacity: 1; background: rgba(197,160,89,0.18); transform: translateY(-50%) scale(1.1); }
+  .fb-arrow:disabled { opacity: 0.15; cursor: default; pointer-events: none; }
+  #arrowLeft  { left: 16px; }
+  #arrowRight { right: 16px; }
 
-  /* ══ Zoom hint ══ */
-  .zoom-hint {
-    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-    font-size: 9px; letter-spacing: 2px; color: rgba(197,160,89,0.3);
-    text-transform: uppercase; pointer-events: none;
-    font-family: 'Josefin Sans', sans-serif;
+  /* LECTOR */
+  #readerWrap {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  #readerWrap.active { opacity: 1; pointer-events: auto; }
+  #readerScroll {
+    width: 100%; height: 100%;
+    overflow-y: auto; overflow-x: hidden;
+    display: flex; flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 40px;
+    gap: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(197,160,89,0.3) transparent;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  #readerScroll::-webkit-scrollbar { width: 4px; }
+  #readerScroll::-webkit-scrollbar-track { background: transparent; }
+  #readerScroll::-webkit-scrollbar-thumb { background: rgba(197,160,89,0.3); border-radius: 2px; }
+  .reader-page-wrap {
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(197,160,89,0.1);
+    flex-shrink: 0;
+    background: #f5f0e8;
+  }
+  .reader-page-wrap img {
+    display: block;
+    -webkit-touch-callout: none;
+    pointer-events: none;
+  }
+  .reader-page-shield {
+    position: absolute; inset: 0;
+    z-index: 5;
+    background: transparent;
   }
 
-  /* ══ Controles ══ */
+  /* CONTROLES */
   .fb-controls {
     display: flex; align-items: center; justify-content: center;
-    gap: 16px; padding: 14px 20px;
-    background: rgba(26,20,16,0.95);
+    gap: 12px; padding: 0 20px;
+    height: var(--controls-h);
+    background: rgba(18,14,10,0.97);
     backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(197,160,89,0.15);
+    border-top: 1px solid rgba(197,160,89,0.12);
     flex-shrink: 0;
   }
   .fb-btn {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: rgba(197,160,89,0.1);
-    border: 1px solid rgba(197,160,89,0.25);
-    color: var(--gold); font-size: 18px; cursor: pointer;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(197,160,89,0.08);
+    border: 1px solid rgba(197,160,89,0.2);
+    color: var(--gold); font-size: 16px; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
   }
-  .fb-btn:hover:not(:disabled) { background: var(--gold); color: #1a1410; transform: scale(1.1); box-shadow: 0 4px 16px rgba(197,160,89,0.4); }
-  .fb-btn:disabled { opacity: 0.25; cursor: default; }
-
+  .fb-btn:hover:not(:disabled) {
+    background: var(--gold); color: #1a1410;
+    transform: scale(1.1);
+    box-shadow: 0 4px 16px rgba(197,160,89,0.4);
+  }
+  .fb-btn:disabled { opacity: 0.2; cursor: default; }
   .fb-page-info {
     font-family: 'Josefin Sans', sans-serif;
-    font-size: 10px; letter-spacing: 3px;
-    color: rgba(197,160,89,0.5); text-transform: uppercase;
-    min-width: 120px; text-align: center;
+    font-size: 9px; letter-spacing: 3px;
+    color: rgba(197,160,89,0.45); text-transform: uppercase;
+    min-width: 110px; text-align: center;
+  }
+  .zoom-controls { display: flex; align-items: center; gap: 4px; }
+  .zoom-hint {
+    position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+    font-size: 8px; letter-spacing: 2px; color: rgba(197,160,89,0.25);
+    text-transform: uppercase; pointer-events: none;
+    font-family: 'Josefin Sans', sans-serif; white-space: nowrap;
   }
 
-  .fb-fullscreen {
-    width: 36px; height: 36px; border-radius: 8px;
-    background: rgba(197,160,89,0.08);
-    border: 1px solid rgba(197,160,89,0.2);
-    color: rgba(197,160,89,0.5); font-size: 14px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.3s ease;
-  }
-  .fb-fullscreen:hover { color: var(--gold); background: rgba(197,160,89,0.15); }
-
-  /* ══ StPageFlip overrides ══ */
-  .stf__parent {
-    background: transparent !important;
-  }
-  .stf__block {
-    box-shadow: none !important;
-  }
+  .stf__parent { background: transparent !important; }
+  .stf__block { box-shadow: none !important; }
   .stf__page canvas {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-}
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+
+  @media(max-width:600px) {
+    .fb-title { font-size: 10px; letter-spacing: 1.5px; }
+    .mode-btn { padding: 5px 8px; font-size: 7px; }
+    .fb-controls { gap: 8px; }
+    .fb-btn { width: 36px; height: 36px; font-size: 14px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <div class="fb-header">
   <button class="fb-back" onclick="window.history.back()" title="Volver">←</button>
   <div class="fb-info">
-    <div class="fb-title">Gracia y Coraje</div>
-    <div class="fb-author">Ken Wilber</div>
+    <div class="fb-title" id="fbTitle">Cargando...</div>
+    <div class="fb-author" id="fbAuthor"></div>
   </div>
   <div class="fb-pages" id="fbPagesInfo">— / —</div>
-  <button class="fb-fullscreen" onclick="zoomOut()" title="Alejar">−</button>
-  <button class="fb-fullscreen" onclick="zoomReset()" title="Zoom normal">⊙</button>
-  <button class="fb-fullscreen" onclick="zoomIn()" title="Acercar">+</button>
-  <button class="fb-fullscreen" onclick="toggleFullscreen()" title="Pantalla completa">⛶</button>
+  <div class="mode-toggle">
+    <button class="mode-btn" id="btnModeReader" onclick="setMode('reader')">📄 Lector</button>
+    <button class="mode-btn" id="btnModeFlip"   onclick="setMode('flip')">✦ Libro</button>
+  </div>
+  <div class="zoom-controls">
+    <button class="hdr-btn" onclick="zoomOut()" title="Alejar">−</button>
+    <button class="hdr-btn" onclick="zoomReset()" title="Zoom normal">⊙</button>
+    <button class="hdr-btn" onclick="zoomIn()" title="Acercar">+</button>
+  </div>
+  <button class="hdr-btn" onclick="toggleFullscreen()" title="Pantalla completa">⛶</button>
 </div>
 
-<!-- Área del libro -->
 <div class="fb-stage" id="fbStage">
-
-  <!-- Loading -->
   <div class="fb-loading" id="fbLoading">
-    <div class="load-spinner"></div>
+    <div class="load-lotus">
+      <div class="load-lotus-petals">
+        <div class="lpetal"></div><div class="lpetal"></div>
+        <div class="lpetal"></div><div class="lpetal"></div>
+        <div class="lpetal"></div><div class="lpetal"></div>
+        <div class="lpetal"></div><div class="lpetal"></div>
+        <div class="lpetal-center"></div>
+      </div>
+    </div>
     <div class="load-text" id="loadText">Cargando libro...</div>
     <div class="load-progress"><div class="load-bar" id="loadBar"></div></div>
   </div>
 
-  <!-- Flechas laterales -->
-  <button class="fb-arrow-left" id="arrowLeft" onclick="prevPage()" disabled>‹</button>
-  <button class="fb-arrow-right" id="arrowRight" onclick="nextPage()" disabled>›</button>
-
-  <!-- StPageFlip container -->
-  <div id="flipbook-container">
-    <div class="book-spine-overlay" id="spineOverlay"></div>
-    <div id="flipbook"></div>
+  <!-- FLIPBOOK -->
+  <div id="flipWrap">
+    <button class="fb-arrow" id="arrowLeft"  onclick="prevPage()" disabled>‹</button>
+    <button class="fb-arrow" id="arrowRight" onclick="nextPage()" disabled>›</button>
+    <div id="flipbook-container">
+      <div class="book-spine-overlay" id="spineOverlay"></div>
+      <div id="flipbook"></div>
+    </div>
   </div>
 
-  <div class="zoom-hint" id="zoomHint">usa las flechas o teclas ← → para navegar</div>
+  <!-- LECTOR -->
+  <div id="readerWrap">
+    <div id="readerScroll"></div>
+  </div>
+
+  <div class="zoom-hint" id="zoomHint"></div>
 </div>
 
-<!-- Controles -->
 <div class="fb-controls">
-  <button class="fb-btn" id="btnFirst" onclick="goToPage(0)" disabled title="Primera página">«</button>
-  <button class="fb-btn" id="btnPrev" onclick="prevPage()" disabled title="Anterior">‹</button>
+  <button class="fb-btn" id="btnFirst" onclick="navFirst()" disabled title="Primera página">«</button>
+  <button class="fb-btn" id="btnPrev"  onclick="prevPage()" disabled title="Anterior">‹</button>
   <div class="fb-page-info" id="pageInfo">— / —</div>
-  <button class="fb-btn" id="btnNext" onclick="nextPage()" disabled title="Siguiente">›</button>
-  <button class="fb-btn" id="btnLast" onclick="goToPage(9999)" disabled title="Última página">»</button>
+  <button class="fb-btn" id="btnNext"  onclick="nextPage()" disabled title="Siguiente">›</button>
+  <button class="fb-btn" id="btnLast"  onclick="navLast()"  disabled title="Última página">»</button>
 </div>
 
-<!-- PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<!-- StPageFlip -->
 <script src="https://unpkg.com/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
-
 <script>
-  const params  = new URLSearchParams(window.location.search);
-  const PDF_URL = params.get('url') || 'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/KEN%20WILBER/Ken-Wilber-Gracia-Y-Coraje-.pdf';
-  const TITULO  = params.get('titulo') || 'Gracia y Coraje';
-  const AUTOR   = params.get('autor')  || 'Ken Wilber';
+const params  = new URLSearchParams(window.location.search);
+const PDF_URL = params.get('url')    || '';
+const TITULO  = params.get('titulo') || 'Libro';
+const AUTOR   = params.get('autor')  || '';
 
-  document.querySelector('.fb-title').textContent  = TITULO;
-  document.querySelector('.fb-author').textContent = AUTOR;
+document.getElementById('fbTitle').textContent  = TITULO;
+document.getElementById('fbAuthor').textContent = AUTOR;
+document.title = TITULO + (AUTOR ? ' — ' + AUTOR : '');
 
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-  let pdfDoc     = null;
-  let totalPages = 0;
-  let pageFlip   = null;
-  let pageWidth  = 0, pageHeight = 0;
-  let zoomLevel  = 1.0;
-  let translateX = 0, translateY = 0;
-  let isDragging = false, dragStartX = 0, dragStartY = 0;
+let pdfDoc=null, totalPages=0, pageWidth=0, pageHeight=0;
+let pageFlip=null, canvases=[];
+let zoomLevel=1.0, translateX=0, translateY=0;
+let isDragging=false, dragStartX=0, dragStartY=0, lastPinchDist=0;
 
-  const loadBar   = document.getElementById('loadBar');
-  const loadText  = document.getElementById('loadText');
-  const pageInfo  = document.getElementById('pageInfo');
-  const pagesInfo = document.getElementById('fbPagesInfo');
-  const fbStageEl = document.getElementById('fbStage');
-  const flipbookContainer = document.getElementById('flipbook-container');
+const isMobile  = () => window.innerWidth < 1024;
+let currentMode = isMobile() ? 'reader' : 'flip';
 
-  /* ══ Calcular tamaño del libro ══ */
-  function calcBookSize() {
-    const stage  = document.getElementById('fbStage');
-    const sw     = stage.clientWidth;
-    const sh     = stage.clientHeight - 20;
-    const ratio  = pageHeight / pageWidth;
-    const isMobile = sw < 1024;
+const loadBar      = document.getElementById('loadBar');
+const loadText     = document.getElementById('loadText');
+const pageInfo     = document.getElementById('pageInfo');
+const pagesInfo    = document.getElementById('fbPagesInfo');
+const fbStageEl    = document.getElementById('fbStage');
+const flipWrap     = document.getElementById('flipWrap');
+const readerWrap   = document.getElementById('readerWrap');
+const readerScroll = document.getElementById('readerScroll');
+const flipContainer= document.getElementById('flipbook-container');
+const zoomHint     = document.getElementById('zoomHint');
 
-    if (isMobile) {
-      let w = sw - 20;
-      let h = w * ratio;
-      if (h > sh) { h = sh; w = h / ratio; }
-      return { w: Math.floor(w), h: Math.floor(h), mobile: true };
-    } else {
-      let w = Math.min((sw - 80) / 2, sh / ratio);
-      let h = w * ratio;
-      if (h > sh) { h = sh; w = h / ratio; }
-      return { w: Math.floor(w), h: Math.floor(h), mobile: false };
-    }
+/* ══ MODO ══ */
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('btnModeReader').classList.toggle('active', mode==='reader');
+  document.getElementById('btnModeFlip').classList.toggle('active',   mode==='flip');
+  flipWrap.classList.toggle('active',   mode==='flip');
+  readerWrap.classList.toggle('active', mode==='reader');
+  zoomReset();
+  if (mode==='reader') {
+    zoomHint.textContent = 'pellizca para zoom · arrastra para mover';
+    updateReaderControls();
+  } else {
+    zoomHint.textContent = 'usa las flechas o teclas ← → para navegar';
+    if (pageFlip) updateFlipControls(pageFlip.getCurrentPageIndex());
   }
-
-  /* ══ Renderizar todas las páginas del PDF a canvases ══ */
-async function renderAllPages() {
-  const { w, h, mobile } = calcBookSize();
-  const dpr = window.devicePixelRatio || 1;
-  const renderScale = mobile ? dpr * 1.5 : dpr * 2;
-  const canvases = new Array(totalPages).fill(null);
-
-  async function renderOnePage(i) {
-    const page     = await pdfDoc.getPage(i + 1);
-    const vp       = page.getViewport({ scale: 1 });
-    const scale    = (w * renderScale) / vp.width;
-    const viewport = page.getViewport({ scale });
-    const canvas   = document.createElement('canvas');
-    canvas.width   = viewport.width;
-    canvas.height  = viewport.height;
-    canvas.style.width  = w + 'px';
-    canvas.style.height = h + 'px';
-    await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-    return canvas;
-  }
-
-  const firstBatch = Math.min(10, totalPages);
-  for (let i = 0; i < firstBatch; i++) {
-    loadBar.style.width = Math.round((i / firstBatch) * 100) + '%';
-    canvases[i] = await renderOnePage(i);
-  }
-
-  return { canvases, w, h, mobile, renderOnePage };
 }
 
-  /* ══ Inicializar StPageFlip ══ */
-  function initFlipbook(canvases, w, h, mobile) {
-    const flipbookEl = document.getElementById('flipbook');
-    flipbookEl.innerHTML = '';
+/* ══ TAMAÑO ══ */
+function calcBookSize() {
+  const sw=fbStageEl.clientWidth, sh=fbStageEl.clientHeight-24;
+  const ratio=pageHeight/pageWidth, mob=sw<1024;
+  if (mob) {
+    let w=sw-24, h=w*ratio;
+    if (h>sh){h=sh;w=h/ratio;}
+    return {w:Math.floor(w),h:Math.floor(h),mobile:true};
+  } else {
+    let w=Math.min((sw-100)/2,sh/ratio), h=w*ratio;
+    if (h>sh){h=sh;w=h/ratio;}
+    return {w:Math.floor(w),h:Math.floor(h),mobile:false};
+  }
+}
 
-    // Agregar portada vacía si es necesario para alinear páginas
-    canvases.forEach((canvas, i) => {
-      const page = document.createElement('div');
-      page.className = 'flip-page';
-      page.style.cssText = `
-        width:${w}px; height:${h}px;
-        background:#f5f0e8;
-        overflow:hidden;
-      `;
-     if (canvas) {
-        page.appendChild(canvas);
-      } else {
-        page.style.display = 'flex';
-        page.style.alignItems = 'center';
-        page.style.justifyContent = 'center';
-        page.innerHTML = '<div style="width:30px;height:30px;border:2px solid rgba(197,160,89,0.3);border-top-color:#C5A059;border-radius:50%;animation:spin 1s linear infinite;"></div>';
-      }
-      flipbookEl.appendChild(page);
-    });
+/* ══ RENDERIZAR ══ */
+async function renderOnePage(i, w, h) {
+  const page=await pdfDoc.getPage(i+1);
+  const vp=page.getViewport({scale:1});
+  const dpr=window.devicePixelRatio||1;
+  const rs=isMobile()?dpr*1.5:dpr*2;
+  const scale=(w*rs)/vp.width;
+  const viewport=page.getViewport({scale});
+  const canvas=document.createElement('canvas');
+  canvas.width=viewport.width;
+  canvas.height=viewport.height;
+  canvas.style.width=w+'px';
+  canvas.style.height=h+'px';
+  await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+  return canvas;
+}
 
-    const bookWidth  = mobile ? w : w * 2;
-    const bookHeight = h;
+async function renderFirstBatch(w, h) {
+  const batch=Math.min(10,totalPages);
+  canvases=new Array(totalPages).fill(null);
+  for (let i=0;i<batch;i++) {
+    loadText.textContent=`Renderizando página ${i+1} de ${totalPages}...`;
+    loadBar.style.width=Math.round((i/batch)*100)+'%';
+    canvases[i]=await renderOnePage(i,w,h);
+  }
+}
 
-    // Ajustar contenedor
-    flipbookContainer.style.width  = bookWidth + 'px';
-    flipbookContainer.style.height = bookHeight + 'px';
+/* canvas → img tag (evita el problema de cloneNode en canvas) */
+function canvasToImg(canvas) {
+  const img=new Image();
+  img.src=canvas.toDataURL('image/jpeg',0.92);
+  img.style.width=canvas.style.width;
+  img.style.height=canvas.style.height;
+  img.style.display='block';
+  return img;
+}
 
-    // Lomo solo en desktop
-    const spine = document.getElementById('spineOverlay');
-    spine.style.display = mobile ? 'none' : 'block';
-    spine.style.height  = h + 'px';
+async function renderRestInBackground(w, h) {
+  for (let i=10;i<totalPages;i++) {
+    canvases[i]=await renderOnePage(i,w,h);
 
-    pageFlip = new St.PageFlip(flipbookEl, {
-      width:        w,
-      height:       h,
-      size:         'fixed',
-      minWidth:     w,
-      maxWidth:     w,
-      minHeight:    h,
-      maxHeight:    h,
-      showCover:    false,
-      drawShadow:   true,
-      flippingTime: 650,
-      usePortrait:  mobile,
-      startZIndex:  1,
-      autoSize:     false,
-      mobileScrollSupport: false,
-      clickEventForward: true,
-      useMouseEvents: true,
-      swipeDistance: zoomLevel > 1 ? 99999 : 120,
-      showPageCorners: true,
-      disableFlipByClick: false,
-    });
+    // Actualizar lector con imagen
+    const readerEl=document.getElementById('rpage-'+i);
+    if (readerEl) {
+      readerEl.innerHTML='';
+      readerEl.appendChild(canvasToImg(canvases[i]));
+      const shield=document.createElement('div');
+      shield.className='reader-page-shield';
+      readerEl.appendChild(shield);
+    }
 
-    pageFlip.loadFromHTML(document.querySelectorAll('.flip-page'));
+    // Actualizar flipbook con canvas original
+    const flipEl=document.querySelector(`.flip-page[data-idx="${i}"]`);
+    if (flipEl) {
+      flipEl.innerHTML='';
+      flipEl.appendChild(canvases[i]);
+    }
+  }
+}
 
-    pageFlip.on('flip', (e) => {
-      updateControls(e.data);
-    });
+/* ══ CONSTRUIR LECTOR ══ */
+function buildReader(w, h) {
+  readerScroll.innerHTML='';
+  for (let i=0;i<totalPages;i++) {
+    const wrap=document.createElement('div');
+    wrap.className='reader-page-wrap';
+    wrap.id='rpage-'+i;
+    wrap.style.width=w+'px';
+    wrap.style.height=h+'px';
 
-    pageFlip.on('changeState', () => {
-      updateControls(pageFlip.getCurrentPageIndex());
-    });
+    if (canvases[i]) {
+      // Usar imagen, NO canvas directamente (el canvas va al flipbook)
+      wrap.appendChild(canvasToImg(canvases[i]));
+    } else {
+      wrap.innerHTML=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+        <div style="width:28px;height:28px;border:2px solid rgba(197,160,89,0.2);border-top-color:#C5A059;border-radius:50%;animation:loto-rotate 1s linear infinite;"></div>
+      </div>`;
+    }
 
-    flipbookContainer.style.display = 'block';
-    updateControls(0);
+    const shield=document.createElement('div');
+    shield.className='reader-page-shield';
+    wrap.appendChild(shield);
+    readerScroll.appendChild(wrap);
+  }
+  readerScroll.addEventListener('contextmenu',e=>e.preventDefault());
+}
+
+/* ══ CONSTRUIR FLIPBOOK ══ */
+function buildFlipbook(w, h, mobile) {
+  const flipbookEl=document.getElementById('flipbook');
+  flipbookEl.innerHTML='';
+
+  for (let i=0;i<totalPages;i++) {
+    const page=document.createElement('div');
+    page.className='flip-page';
+    page.dataset.idx=i;
+    page.style.cssText=`width:${w}px;height:${h}px;background:#f5f0e8;overflow:hidden;`;
+
+    if (canvases[i]) {
+      // Canvas original va al flipbook
+      page.appendChild(canvases[i]);
+    } else {
+      page.innerHTML=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
+        <div style="width:24px;height:24px;border:2px solid rgba(197,160,89,0.2);border-top-color:#C5A059;border-radius:50%;animation:loto-rotate 1s linear infinite;"></div>
+      </div>`;
+    }
+    flipbookEl.appendChild(page);
   }
 
-  /* ══ Actualizar controles ══ */
-  function updateControls(pageIndex) {
-    if (!pageFlip) return;
-    const current = pageIndex + 1;
-    const total   = totalPages;
+  const bookW=mobile?w:w*2;
+  flipContainer.style.width=bookW+'px';
+  flipContainer.style.height=h+'px';
 
-    pageInfo.textContent  = `${current} — ${Math.min(current + 1, total)} / ${total}`;
-    pagesInfo.textContent = `${current}–${Math.min(current + 1, total)} / ${total}`;
+  const spine=document.getElementById('spineOverlay');
+  spine.style.display=mobile?'none':'block';
+  spine.style.height=h+'px';
 
-    document.getElementById('btnPrev').disabled   = pageIndex <= 0;
-    document.getElementById('btnFirst').disabled  = pageIndex <= 0;
-    document.getElementById('arrowLeft').disabled  = pageIndex <= 0;
+  if (pageFlip) { try{pageFlip.destroy();}catch(e){} pageFlip=null; }
 
-    const atEnd = pageIndex >= totalPages - 2;
-    document.getElementById('btnNext').disabled   = atEnd;
-    document.getElementById('btnLast').disabled   = atEnd;
-    document.getElementById('arrowRight').disabled = atEnd;
-  }
-
-  /* ══ Navegación ══ */
-  function nextPage() { if (pageFlip) pageFlip.flipNext(); }
-  function prevPage() { if (pageFlip) pageFlip.flipPrev(); }
-  function goToPage(n) {
-    if (!pageFlip) return;
-    if (n === 0) pageFlip.flip(0);
-    else if (n === 9999) pageFlip.flip(totalPages - 1);
-    else pageFlip.flip(n);
-  }
-
-  /* ══ Teclado ══ */
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextPage();
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevPage();
+  pageFlip=new St.PageFlip(flipbookEl,{
+    width:w, height:h,
+    size:'fixed',
+    minWidth:w, maxWidth:w,
+    minHeight:h, maxHeight:h,
+    showCover:false,
+    drawShadow:true,
+    flippingTime:600,
+    usePortrait:mobile,
+    startZIndex:1,
+    autoSize:false,
+    mobileScrollSupport:false,
+    clickEventForward:true,
+    useMouseEvents:true,
+    swipeDistance:zoomLevel>1?99999:70,
+    showPageCorners:true,
+    disableFlipByClick:false,
   });
 
-  /* ══ Touch swipe ══ */
-  let touchX = 0;
-  document.addEventListener('touchstart', e => {
-    if (e.touches.length === 1) touchX = e.touches[0].clientX;
-  }, { passive: true });
-  document.addEventListener('touchend', e => {
-    if (zoomLevel > 1) return;
-    const dx = e.changedTouches[0].clientX - touchX;
-    if (Math.abs(dx) > 60) { dx < 0 ? nextPage() : prevPage(); }
-  });
+  pageFlip.loadFromHTML(document.querySelectorAll('.flip-page'));
+  pageFlip.on('flip', e=>updateFlipControls(e.data));
+  pageFlip.on('changeState',()=>{if(pageFlip)updateFlipControls(pageFlip.getCurrentPageIndex());});
+  flipContainer.addEventListener('contextmenu',e=>e.preventDefault());
+  updateFlipControls(0);
+}
 
-  /* ══ Zoom ══ */
- function applyTransform() {
-  flipbookContainer.style.transform =
-    `scale(${zoomLevel}) translate(${translateX / zoomLevel}px, ${translateY / zoomLevel}px)`;
-  flipbookContainer.style.transformOrigin = 'center center';
-  
-  if (pageFlip) {
-    pageFlip.setting.swipeDistance = zoomLevel > 1 ? 99999 : 120;
-    pageFlip.setting.disableFlipByClick = zoomLevel > 1;
-  }
-  }
-  function zoomIn() {
-    zoomLevel = Math.min(zoomLevel + 0.25, 3.0);
-    fbStageEl.style.cursor = 'grab';
-    applyTransform();
-  }
-  function zoomOut() {
-    zoomLevel = Math.max(zoomLevel - 0.25, 0.5);
-    if (zoomLevel === 1) { translateX = 0; translateY = 0; fbStageEl.style.cursor = 'default'; }
-    applyTransform();
-  }
-  function zoomReset() {
-    zoomLevel = 1.0;
-    translateX = 0; translateY = 0;
-    fbStageEl.style.cursor = 'default';
-    applyTransform();
-  }
+/* ══ CONTROLES ══ */
+function updateFlipControls(idx) {
+  if (!pageFlip) return;
+  const cur=idx+1, total=totalPages;
+  pageInfo.textContent=`${cur} — ${Math.min(cur+1,total)} / ${total}`;
+  pagesInfo.textContent=`${cur}–${Math.min(cur+1,total)} / ${total}`;
+  const atStart=idx<=0, atEnd=idx>=totalPages-2;
+  document.getElementById('btnPrev').disabled=atStart;
+  document.getElementById('btnFirst').disabled=atStart;
+  document.getElementById('arrowLeft').disabled=atStart;
+  document.getElementById('btnNext').disabled=atEnd;
+  document.getElementById('btnLast').disabled=atEnd;
+  document.getElementById('arrowRight').disabled=atEnd;
+}
 
-  /* ══ Drag mouse ══ */
-  fbStageEl.addEventListener('mousedown', e => {
-    if (zoomLevel <= 1) return;
+function updateReaderControls() {
+  const pages=readerScroll.querySelectorAll('.reader-page-wrap');
+  if (!pages.length) return;
+  let visibleIdx=0;
+  const mid=readerScroll.scrollTop+readerScroll.clientHeight/2;
+  pages.forEach((p,i)=>{if(p.offsetTop<=mid)visibleIdx=i;});
+  const cur=visibleIdx+1;
+  pageInfo.textContent=`${cur} / ${totalPages}`;
+  pagesInfo.textContent=`${cur} / ${totalPages}`;
+  document.getElementById('btnPrev').disabled=visibleIdx<=0;
+  document.getElementById('btnFirst').disabled=visibleIdx<=0;
+  document.getElementById('arrowLeft').disabled=visibleIdx<=0;
+  document.getElementById('btnNext').disabled=visibleIdx>=totalPages-1;
+  document.getElementById('btnLast').disabled=visibleIdx>=totalPages-1;
+  document.getElementById('arrowRight').disabled=visibleIdx>=totalPages-1;
+}
+
+/* ══ NAVEGACIÓN ══ */
+function nextPage() {
+  if (currentMode==='flip'){if(pageFlip)pageFlip.flipNext();}
+  else scrollToPage(currentReaderPage()+1);
+}
+function prevPage() {
+  if (currentMode==='flip'){if(pageFlip)pageFlip.flipPrev();}
+  else scrollToPage(currentReaderPage()-1);
+}
+function navFirst() {
+  if (currentMode==='flip'){if(pageFlip)pageFlip.flip(0);}
+  else scrollToPage(0);
+}
+function navLast() {
+  if (currentMode==='flip'){if(pageFlip)pageFlip.flip(totalPages-1);}
+  else scrollToPage(totalPages-1);
+}
+function currentReaderPage() {
+  const pages=readerScroll.querySelectorAll('.reader-page-wrap');
+  let idx=0;
+  const mid=readerScroll.scrollTop+readerScroll.clientHeight/2;
+  pages.forEach((p,i)=>{if(p.offsetTop<=mid)idx=i;});
+  return idx;
+}
+function scrollToPage(idx) {
+  idx=Math.max(0,Math.min(totalPages-1,idx));
+  const page=document.getElementById('rpage-'+idx);
+  if (page){readerScroll.scrollTo({top:page.offsetTop-24,behavior:'smooth'});setTimeout(updateReaderControls,400);}
+}
+readerScroll.addEventListener('scroll',()=>{if(currentMode==='reader')updateReaderControls();},{passive:true});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown')nextPage();
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')prevPage();
+});
+
+/* ══ ZOOM Y PAN ══ */
+function applyTransform() {
+  if (currentMode==='flip') {
+    flipContainer.style.transform=`scale(${zoomLevel}) translate(${translateX/zoomLevel}px,${translateY/zoomLevel}px)`;
+    flipContainer.style.transformOrigin='center center';
+    if (pageFlip&&pageFlip.setting) {
+      pageFlip.setting.swipeDistance=zoomLevel>1?99999:70;
+      pageFlip.setting.disableFlipByClick=zoomLevel>1;
+    }
+  } else {
+    readerScroll.style.transform=`scale(${zoomLevel}) translate(${translateX/zoomLevel}px,${translateY/zoomLevel}px)`;
+    readerScroll.style.transformOrigin='center top';
+  }
+  fbStageEl.style.cursor=zoomLevel>1?'grab':'default';
+}
+function zoomIn()  { zoomLevel=Math.min(zoomLevel+0.25,4.0); applyTransform(); }
+function zoomOut() {
+  zoomLevel=Math.max(zoomLevel-0.25,0.5);
+  if(zoomLevel<=1){translateX=0;translateY=0;}
+  applyTransform();
+}
+function zoomReset() {
+  zoomLevel=1.0;translateX=0;translateY=0;
+  readerScroll.style.transform='';
+  flipContainer.style.transform='';
+  fbStageEl.style.cursor='default';
+}
+
+/* Drag mouse */
+fbStageEl.addEventListener('mousedown',e=>{
+  if(zoomLevel<=1||e.button!==0)return;
+  e.preventDefault();
+  isDragging=true;
+  dragStartX=e.clientX-translateX;
+  dragStartY=e.clientY-translateY;
+  fbStageEl.style.cursor='grabbing';
+});
+window.addEventListener('mousemove',e=>{
+  if(!isDragging)return;
+  translateX=e.clientX-dragStartX;
+  translateY=e.clientY-dragStartY;
+  applyTransform();
+});
+window.addEventListener('mouseup',()=>{
+  if(!isDragging)return;
+  isDragging=false;
+  fbStageEl.style.cursor=zoomLevel>1?'grab':'default';
+});
+
+/* Pinch y drag touch */
+fbStageEl.addEventListener('touchstart',e=>{
+  if(e.touches.length===2){
     e.preventDefault();
-    isDragging = true;
-    dragStartX = e.clientX - translateX;
-    dragStartY = e.clientY - translateY;
-    fbStageEl.style.cursor = 'grabbing';
-  });
-  window.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    translateX = e.clientX - dragStartX;
-    translateY = e.clientY - dragStartY;
+    const dx=e.touches[0].clientX-e.touches[1].clientX;
+    const dy=e.touches[0].clientY-e.touches[1].clientY;
+    lastPinchDist=Math.sqrt(dx*dx+dy*dy);
+    isDragging=false;
+  } else if(e.touches.length===1&&zoomLevel>1){
+    isDragging=true;
+    dragStartX=e.touches[0].clientX-translateX;
+    dragStartY=e.touches[0].clientY-translateY;
+  }
+},{passive:false});
+
+fbStageEl.addEventListener('touchmove',e=>{
+  if(e.touches.length===2&&lastPinchDist>0){
+    e.preventDefault();
+    const dx=e.touches[0].clientX-e.touches[1].clientX;
+    const dy=e.touches[0].clientY-e.touches[1].clientY;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    zoomLevel=Math.min(Math.max(zoomLevel*(dist/lastPinchDist),0.5),4.0);
+    lastPinchDist=dist;
     applyTransform();
-  });
-  window.addEventListener('mouseup', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    fbStageEl.style.cursor = zoomLevel > 1 ? 'grab' : 'default';
-  });
-
-  /* ══ Drag touch ══ */
-  let lastPinchDist = 0;
-  fbStageEl.addEventListener('touchstart', e => {
-    if (e.touches.length === 2) {
-      const dx = e.touches[0].clientX - e.touches[1].clientX;
-      const dy = e.touches[0].clientY - e.touches[1].clientY;
-      lastPinchDist = Math.sqrt(dx*dx + dy*dy);
-    } else if (zoomLevel > 1 && e.touches.length === 1) {
-      isDragging = true;
-      dragStartX = e.touches[0].clientX - translateX;
-      dragStartY = e.touches[0].clientY - translateY;
-    }
-  }, { passive: true });
-
-  fbStageEl.addEventListener('touchmove', e => {
-    if (e.touches.length === 2 && lastPinchDist > 0) {
-      e.preventDefault();
-      const dx   = e.touches[0].clientX - e.touches[1].clientX;
-      const dy   = e.touches[0].clientY - e.touches[1].clientY;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      zoomLevel  = Math.min(Math.max(zoomLevel * (dist / lastPinchDist), 0.5), 3.0);
-      lastPinchDist = dist;
-      applyTransform();
-    } else if (isDragging && e.touches.length === 1) {
-      translateX = e.touches[0].clientX - dragStartX;
-      translateY = e.touches[0].clientY - dragStartY;
-      applyTransform();
-    }
-  }, { passive: false });
-
-  fbStageEl.addEventListener('touchend', e => {
-    if (e.touches.length === 0) { isDragging = false; lastPinchDist = 0; }
-  });
-
-  /* ══ Pantalla completa ══ */
-  function toggleFullscreen() {
-    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
-    else document.exitFullscreen?.();
+  } else if(isDragging&&e.touches.length===1&&zoomLevel>1){
+    e.preventDefault();
+    translateX=e.touches[0].clientX-dragStartX;
+    translateY=e.touches[0].clientY-dragStartY;
+    applyTransform();
   }
+},{passive:false});
 
-  /* ══ Resize ══ */
-  window.addEventListener('resize', () => {
-    if (pdfDoc) {
-      zoomReset();
-      // Re-inicializar con nuevo tamaño
-      document.getElementById('fbLoading').classList.remove('hidden');
-      flipbookContainer.style.display = 'none';
-      renderAllPages().then(({ canvases, w, h, mobile }) => {
-        initFlipbook(canvases, w, h, mobile);
-        document.getElementById('fbLoading').classList.add('hidden');
-      });
-    }
-  });
+fbStageEl.addEventListener('touchend',e=>{
+  if(e.touches.length<2)lastPinchDist=0;
+  if(e.touches.length===0)isDragging=false;
+});
 
-  /* ══ Cargar PDF ══ */
-  async function loadPDF() {
-    try {
-      const loadingTask = pdfjsLib.getDocument({
-        url: PDF_URL,
-        cMapUrl: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
-        cMapPacked: true,
-      });
-
-      loadingTask.onProgress = ({ loaded, total }) => {
-        if (total > 0) {
-          loadBar.style.width = Math.round((loaded / total) * 80) + '%';
-          loadText.textContent = 'Descargando libro...';
-        }
-      };
-
-      pdfDoc     = await loadingTask.promise;
-      totalPages = pdfDoc.numPages;
-
-      const firstPage = await pdfDoc.getPage(1);
-      const vp        = firstPage.getViewport({ scale: 1 });
-      pageWidth       = vp.width;
-      pageHeight      = vp.height;
-
-      // Renderizar todas las páginas
-    const { canvases, w, h, mobile, renderOnePage } = await renderAllPages();
-
-// Inicializar flipbook
-initFlipbook(canvases, w, h, mobile);
-
-document.getElementById('fbLoading').classList.add('hidden');
-
-// Habilitar controles
-document.getElementById('btnNext').disabled   = false;
-document.getElementById('btnLast').disabled   = false;
-document.getElementById('arrowRight').disabled = false;
-
-// Renderizar resto en segundo plano
-(async () => {
-  for (let i = 10; i < totalPages; i++) {
-    canvases[i] = await renderOnePage(i);
-    const pageEl = document.querySelectorAll('.flip-page')[i];
-    if (pageEl) {
-      pageEl.innerHTML = '';
-      pageEl.appendChild(canvases[i]);
-    }
+/* Rueda con Ctrl */
+fbStageEl.addEventListener('wheel',e=>{
+  if(e.ctrlKey||e.metaKey){
+    e.preventDefault();
+    const delta=e.deltaY>0?-0.15:0.15;
+    zoomLevel=Math.min(Math.max(zoomLevel+delta,0.5),4.0);
+    if(zoomLevel<=1){translateX=0;translateY=0;}
+    applyTransform();
   }
-})();
+},{passive:false});
 
-    } catch (err) {
-      console.error('Error cargando PDF:', err);
-      document.getElementById('fbLoading').innerHTML = `
-        <div style="text-align:center;padding:20px;">
-          <div style="font-size:32px;margin-bottom:16px;">📖</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(197,160,89,0.6);">
-            No se pudo cargar el libro.<br>Verifica tu conexión.
-          </div>
-        </div>`;
-    }
+function toggleFullscreen() {
+  if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
+}
+
+/* Resize */
+let resizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer=setTimeout(async()=>{
+    if(!pdfDoc)return;
+    zoomReset();
+    document.getElementById('fbLoading').classList.remove('hidden');
+    const{w,h,mobile}=calcBookSize();
+    await renderFirstBatch(w,h);
+    buildReader(w,h);
+    buildFlipbook(w,h,mobile);
+    setMode(currentMode);
+    document.getElementById('fbLoading').classList.add('hidden');
+    renderRestInBackground(w,h);
+  },300);
+});
+
+/* ══ CARGA PDF ══ */
+async function loadPDF() {
+  if (!PDF_URL) {
+    document.getElementById('fbLoading').innerHTML=`<div style="text-align:center;padding:20px;">
+      <div style="font-size:32px;margin-bottom:16px;">📖</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(197,160,89,0.5);">No se especificó ningún libro.</div>
+    </div>`;
+    return;
   }
+  try {
+    const loadingTask=pdfjsLib.getDocument({
+      url:PDF_URL,
+      cMapUrl:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+      cMapPacked:true,
+    });
+    loadingTask.onProgress=({loaded,total})=>{
+      if(total>0){loadBar.style.width=Math.round((loaded/total)*60)+'%';loadText.textContent='Descargando libro...';}
+    };
+    pdfDoc=await loadingTask.promise;
+    totalPages=pdfDoc.numPages;
+    const firstPage=await pdfDoc.getPage(1);
+    const vp=firstPage.getViewport({scale:1});
+    pageWidth=vp.width; pageHeight=vp.height;
 
-  loadPDF();
+    const{w,h,mobile}=calcBookSize();
+    await renderFirstBatch(w,h);
+
+    // Primero lector (usa imágenes), luego flipbook (usa canvas)
+    buildReader(w,h);
+    buildFlipbook(w,h,mobile);
+    setMode(currentMode);
+
+    document.getElementById('btnNext').disabled=false;
+    document.getElementById('btnLast').disabled=false;
+    document.getElementById('arrowRight').disabled=false;
+
+    const loading=document.getElementById('fbLoading');
+    loading.classList.add('hidden');
+    setTimeout(()=>loading.style.display='none',500);
+
+    renderRestInBackground(w,h);
+
+  } catch(err) {
+    console.error('Error cargando PDF:',err);
+    document.getElementById('fbLoading').innerHTML=`<div style="text-align:center;padding:20px;">
+      <div style="font-size:36px;margin-bottom:16px;">📖</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(197,160,89,0.55);">No se pudo cargar el libro.<br>Verifica tu conexión.</div>
+    </div>`;
+  }
+}
+
+document.addEventListener('contextmenu',e=>e.preventDefault());
+loadPDF();
 </script>
 </body>
 </html>
