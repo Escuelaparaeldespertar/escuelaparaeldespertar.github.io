@@ -197,10 +197,10 @@
     // Documentales
     { categoria:'Documentales', titulo:'Despierta', autor:'', imagen:'Documentales/Despierta.jpg', imgContain:true, video:'https://mega.nz/embed/sqV02ahJ#2rv89EsBHR2gZ7h2Gg0UXwQNFCZHHfoVle7UtZvpw98!1a' },
    // INTELIGENCIA ARTIFICIAL EN LO HUMANO
-   { categoria: 'Inteligencia Artificial en lo Humano', titulo: 'La nueva inteligencia y el contorno de lo humano', autor: 'Mariano Sigman / Santiago Bilinkis', imagen: 'Libros/Inteligencia/ARTIFICIAL.jpg', imgContain: true, url: 'https://u.pcloud.link/publink/show?code=XZULLI5ZeIrmWgUWr47mTtbElrtRRLOKGVY7' },
+   { categoria: 'Inteligencia Artificial en lo Humano', titulo: 'La nueva inteligencia y el contorno de lo humano', autor: 'Mariano Sigman / Santiago Bilinkis', imagen: 'Libros/Inteligencia/ARTIFICIAL.jpg', imgContain: true, url: 'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/INTELIGENCIA%20ARTIFICIAL%20EN%20LO%20HUMANO_/Inteligencia%20artificial%20en%20lo%20humano.pdf' },
     // Herramientas Prácticas para Sostener los Cambios
-   { categoria:'Herramientas Prácticas para Sostener los Cambios', titulo:'¿Por qué nadie me lo dijo antes?', autor:'Dra. Julie Smith', imagen:'Libros/Herramientas/Porquenadie.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZHLLI5ZoJJYekdtXEuD43UgGsgzLHDFg8PX' },
-   { categoria:'Herramientas Prácticas para Sostener los Cambios', titulo:'Autodisciplina Automática - El Poder de la Mente Subconsciente', autor:'Russel C. James', imagen:'Libros/Herramientas/autodisciplina.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZzLLI5Z8RWB6QVBaXYqAJaDz9CR0pfcgJwk' },
+   { categoria:'Herramientas Prácticas para Sostener los Cambios', titulo:'¿Por qué nadie me lo dijo antes?', autor:'Dra. Julie Smith', imagen:'Libros/Herramientas/Porquenadie.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/HERRAMIENTAS%20PR%C3%81CTICAS%20PARA%20SOSTENER%20LOS%20CAMBIOS/%C2%BFPor%20qu%C3%A9%20nadie%20me%20lo%20dijo%20antes.pdf' },
+   { categoria:'Herramientas Prácticas para Sostener los Cambios', titulo:'Autodisciplina Automática - El Poder de la Mente Subconsciente', autor:'Russel C. James', imagen:'Libros/Herramientas/autodisciplina.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/HERRAMIENTAS%20PR%C3%81CTICAS%20PARA%20SOSTENER%20LOS%20CAMBIOS/Autodisciplina%20autom%C3%A1tica%20El%20poder%20de%20la%20mente%20subconsciente.pdf' },
     // Papa León XIV
    { categoria:'Papa León XIV', titulo:'Carta Encíclica Magnifica Humanitas', autor:'Papa León XIV', imagen:'Libros/Papa León XIV/Magnifica.jpg', imgContain:true, url:'https://u.pcloud.link/publink/show?code=XZj8LI5ZDNuF77D8e0prfJq6QWguFXGMlm3X' },
     
