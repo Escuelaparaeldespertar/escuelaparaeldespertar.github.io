@@ -194,9 +194,7 @@
     { categoria:'Teosofía', titulo:'Una Gran Aventura - La Muerte', autor:'Alice A. Bailey / Djwhal Khul', imagen:'Libros/Teosofia/aventuramuerte.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/TEOSOF%C3%8DA/Una%20Gran%20Aventura-%20La%20Muerte.pdf' },
     // Biología y comportamiento social
     { categoria:'Biología y comportamiento social', titulo:'El gen egoísta Las bases biológicas de nuestra conducta',autor:'Richard Dawkins',imagen:'Libros/Biologia/Gen_egoista.jpg',imgContain:true,url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/Biolog%C3%ADa%20y%20comportamiento%20social/El-Gen-Ego%C3%ADsta-Las-Bases-Biol%C3%B3gicas-de-Nuestra-Conducta-Richard-Dawkins.pdf' },
-    // Documentales
-    { categoria:'Documentales', titulo:'Despierta', autor:'', imagen:'Documentales/Despierta.jpg', imgContain:true, video:'https://mega.nz/embed/sqV02ahJ#2rv89EsBHR2gZ7h2Gg0UXwQNFCZHHfoVle7UtZvpw98!1a' },
-   // INTELIGENCIA ARTIFICIAL EN LO HUMANO
+      // INTELIGENCIA ARTIFICIAL EN LO HUMANO
    { categoria: 'Inteligencia Artificial en lo Humano', titulo: 'La nueva inteligencia y el contorno de lo humano', autor: 'Mariano Sigman / Santiago Bilinkis', imagen: 'Libros/Inteligencia/ARTIFICIAL.jpg', imgContain: true, url: 'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/INTELIGENCIA%20ARTIFICIAL%20EN%20LO%20HUMANO_/Inteligencia%20artificial%20en%20lo%20humano.pdf' },
     // Herramientas Prácticas para Sostener los Cambios
    { categoria:'Herramientas Prácticas para Sostener los Cambios', titulo:'¿Por qué nadie me lo dijo antes?', autor:'Dra. Julie Smith', imagen:'Libros/Herramientas/Porquenadie.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/HERRAMIENTAS%20PR%C3%81CTICAS%20PARA%20SOSTENER%20LOS%20CAMBIOS/%C2%BFPor%20qu%C3%A9%20nadie%20me%20lo%20dijo%20antes.pdf' },
