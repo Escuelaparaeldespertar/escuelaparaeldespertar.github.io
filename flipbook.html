@@ -98,18 +98,18 @@
   }
 
   .fb-stage {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    background:
-      url('Fondo/Tramado.png') repeat,
-      radial-gradient(ellipse at center, #2a1e14 0%, #120e0a 100%);
-    background-size: 300px 300px, cover;
-    background-blend-mode: overlay;
-  }
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background:
+    url('Fondo/Tramado.png') repeat,
+    #f0ebe0;
+  background-size: 500px 500px, cover;
+  background-blend-mode: multiply;
+}
 
   .fb-loading {
     position: absolute; inset: 0;
@@ -237,7 +237,7 @@
     overflow: hidden;
     box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(197,160,89,0.1);
     flex-shrink: 0;
-    background: #f5f0e8;
+    background: #ffffff;
   }
   .reader-page-wrap img {
     display: block;
@@ -527,7 +527,7 @@ function buildFlipbook(w, h, mobile) {
     const page=document.createElement('div');
     page.className='flip-page';
     page.dataset.idx=i;
-    page.style.cssText=`width:${w}px;height:${h}px;background:#f5f0e8;overflow:hidden;`;
+    page.style.cssText=`width:${w}px;height:${h}px;background:#ffffff;overflow:hidden;`;
 
     if (canvases[i]) {
       // Canvas original va al flipbook
