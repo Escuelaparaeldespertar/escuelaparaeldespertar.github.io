@@ -98,18 +98,18 @@
   }
 
   .fb-stage {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  background:
-    url('Fondo/Tramado.png') repeat,
-    #f0ebe0;
-  background-size: 1000px 1000px, cover;
-  background-blend-mode: multiply;
-}
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background:
+      url('Fondo/Tramado.png') repeat,
+      #f0ebe0;
+    background-size: 1000px 1000px, cover;
+    background-blend-mode: multiply;
+  }
 
   .fb-loading {
     position: absolute; inset: 0;
@@ -238,6 +238,7 @@
     box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(197,160,89,0.1);
     flex-shrink: 0;
     background: #ffffff;
+    display: flex; align-items: center; justify-content: center;
   }
   .reader-page-wrap img {
     display: block;
@@ -248,6 +249,17 @@
     position: absolute; inset: 0;
     z-index: 5;
     background: transparent;
+  }
+  .page-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .page-spinner {
+    width: 28px; height: 28px;
+    border: 2px solid rgba(197,160,89,0.2);
+    border-top-color: #C5A059;
+    border-radius: 50%;
+    animation: loto-rotate 1s linear infinite;
   }
 
   /* CONTROLES */
@@ -290,10 +302,6 @@
 
   .stf__parent { background: transparent !important; }
   .stf__block { box-shadow: none !important; }
-  .stf__page canvas {
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-  }
 
   @media(max-width:600px) {
     .fb-title { font-size: 10px; letter-spacing: 1.5px; }
@@ -368,6 +376,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://unpkg.com/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
 <script>
+
+/* ══════════════════════════════════════════
+   DETECCIÓN DE DISPOSITIVO
+   ══════════════════════════════════════════ */
+const screenMax = Math.max(window.screen.width, window.screen.height);
+const hasTouch   = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+const isMobileUA = /Mobile|Android.*Mobile|iPhone|iPod/.test(navigator.userAgent);
+const isTabletUA = hasTouch && !isMobileUA;
+
+// Límites de memoria según dispositivo
+// Tablet: solo 6 páginas en memoria a la vez
+// Móvil:  solo 4 páginas en memoria a la vez
+// PC:     10 páginas en memoria a la vez
+const CACHE_WINDOW = isTabletUA ? 6 : (isMobileUA ? 4 : 10);
+
+// Escala de renderizado
+// Tablet: 1.0x  — evita reventar RAM
+// Móvil:  1.5x  — balance calidad/memoria
+// PC:     2.0x  — alta calidad
+function getRenderScale(dpr) {
+  if (isTabletUA) return 1.0;
+  if (isMobileUA) return dpr * 1.5;
+  return dpr * 2.0;
+}
+
+/* ══════════════════════════════════════════
+   PARÁMETROS URL
+   ══════════════════════════════════════════ */
 const params  = new URLSearchParams(window.location.search);
 const PDF_URL = params.get('url')    || '';
 const TITULO  = params.get('titulo') || 'Libro';
@@ -380,14 +416,36 @@ document.title = TITULO + (AUTOR ? ' — ' + AUTOR : '');
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-let pdfDoc=null, totalPages=0, pageWidth=0, pageHeight=0;
-let pageFlip=null, canvases=[];
-let zoomLevel=1.0, translateX=0, translateY=0;
-let isDragging=false, dragStartX=0, dragStartY=0, lastPinchDist=0;
+/* ══════════════════════════════════════════
+   ESTADO GLOBAL
+   ══════════════════════════════════════════ */
+let pdfDoc      = null;
+let totalPages  = 0;
+let pageWidth   = 0;
+let pageHeight  = 0;
+let pageFlip    = null;
+let renderW     = 0;
+let renderH     = 0;
 
-const isMobile  = () => window.innerWidth < 1024;
-let currentMode = isMobile() ? 'reader' : 'flip';
+// Cache bajo demanda: Map<índice, dataURL>
+// Usamos dataURL (strings) en vez de canvas para liberar GPU memory
+const pageCache = new Map();
+let renderQueue = [];
+let isRendering = false;
+let currentPage = 0; // índice 0-based de la página visible
 
+let zoomLevel  = 1.0;
+let translateX = 0;
+let translateY = 0;
+let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+let lastPinchDist = 0;
+
+const isMobile = () => window.innerWidth < 1024;
+let currentMode = (isTabletUA || isMobileUA) ? 'reader' : 'flip';
+
+/* ── DOM refs ── */
 const loadBar      = document.getElementById('loadBar');
 const loadText     = document.getElementById('loadText');
 const pageInfo     = document.getElementById('pageInfo');
@@ -399,15 +457,256 @@ const readerScroll = document.getElementById('readerScroll');
 const flipContainer= document.getElementById('flipbook-container');
 const zoomHint     = document.getElementById('zoomHint');
 
-/* ══ MODO ══ */
+/* ══════════════════════════════════════════
+   RENDERIZADO BAJO DEMANDA CON CACHE
+   ══════════════════════════════════════════ */
+
+/**
+ * Renderiza una página del PDF y devuelve un dataURL JPEG.
+ * Usa dataURL para poder liberar el canvas de inmediato.
+ */
+async function renderPageToDataURL(idx, w, h) {
+  const page    = await pdfDoc.getPage(idx + 1);
+  const vp      = page.getViewport({ scale: 1 });
+  const dpr     = window.devicePixelRatio || 1;
+  const rs      = getRenderScale(dpr);
+  const scale   = (w * rs) / vp.width;
+  const viewport= page.getViewport({ scale });
+
+  const canvas  = document.createElement('canvas');
+  canvas.width  = viewport.width;
+  canvas.height = viewport.height;
+  const ctx     = canvas.getContext('2d');
+
+  await page.render({ canvasContext: ctx, viewport }).promise;
+
+  // Calidad JPEG: menor en tablet/móvil para ahorrar memoria
+  const quality = isTabletUA ? 0.80 : (isMobileUA ? 0.85 : 0.92);
+  const dataURL = canvas.toDataURL('image/jpeg', quality);
+
+  // Liberar canvas inmediatamente
+  canvas.width  = 0;
+  canvas.height = 0;
+
+  return dataURL;
+}
+
+/**
+ * Asegura que las páginas en [start, end] estén en cache.
+ * Libera las páginas fuera de la ventana de cache.
+ */
+async function ensurePagesCached(centerIdx) {
+  const half  = Math.floor(CACHE_WINDOW / 2);
+  const start = Math.max(0, centerIdx - half);
+  const end   = Math.min(totalPages - 1, centerIdx + half);
+
+  // Liberar páginas fuera de ventana
+  for (const [idx] of pageCache) {
+    if (idx < start - 2 || idx > end + 2) {
+      pageCache.delete(idx);
+    }
+  }
+
+  // Encolar páginas que faltan, priorizando las más cercanas al centro
+  const needed = [];
+  for (let i = centerIdx; i <= end; i++) {
+    if (!pageCache.has(i)) needed.push(i);
+  }
+  for (let i = centerIdx - 1; i >= start; i--) {
+    if (!pageCache.has(i)) needed.push(i);
+  }
+
+  for (const idx of needed) {
+    if (pageCache.has(idx)) continue;
+    try {
+      const dataURL = await renderPageToDataURL(idx, renderW, renderH);
+      pageCache.set(idx, dataURL);
+      // Actualizar la UI si la página ya está en el DOM
+      updatePageInDOM(idx, dataURL);
+    } catch (e) {
+      console.warn('Error renderizando página', idx, e);
+    }
+  }
+}
+
+/**
+ * Actualiza una página en el DOM del lector cuando su dataURL está lista.
+ */
+function updatePageInDOM(idx, dataURL) {
+  const wrap = document.getElementById('rpage-' + idx);
+  if (!wrap) return;
+  const existing = wrap.querySelector('img');
+  if (existing) return; // Ya tiene imagen
+  wrap.innerHTML = '';
+  const img = new Image();
+  img.src = dataURL;
+  img.style.width  = renderW + 'px';
+  img.style.height = renderH + 'px';
+  img.style.display = 'block';
+  img.draggable = false;
+  wrap.appendChild(img);
+  const shield = document.createElement('div');
+  shield.className = 'reader-page-shield';
+  wrap.appendChild(shield);
+}
+
+/**
+ * Actualiza una página en el flipbook cuando su dataURL está lista.
+ */
+function updateFlipPageInDOM(idx, dataURL) {
+  const flipEl = document.querySelector(`.flip-page[data-idx="${idx}"]`);
+  if (!flipEl) return;
+  const existing = flipEl.querySelector('img');
+  if (existing) return;
+  flipEl.innerHTML = '';
+  const img = new Image();
+  img.src = dataURL;
+  img.style.width  = renderW + 'px';
+  img.style.height = renderH + 'px';
+  img.style.display = 'block';
+  img.draggable = false;
+  flipEl.appendChild(img);
+}
+
+/* ══════════════════════════════════════════
+   TAMAÑO DEL LIBRO
+   ══════════════════════════════════════════ */
+function calcBookSize() {
+  const sw    = fbStageEl.clientWidth;
+  const sh    = fbStageEl.clientHeight - 24;
+  const ratio = pageHeight / pageWidth;
+  const mob   = isMobile() || isTabletUA;
+
+  if (mob) {
+    let w = sw - 24, h = w * ratio;
+    if (h > sh) { h = sh; w = h / ratio; }
+    return { w: Math.floor(w), h: Math.floor(h), mobile: true };
+  } else {
+    let w = Math.min((sw - 100) / 2, sh / ratio), h = w * ratio;
+    if (h > sh) { h = sh; w = h / ratio; }
+    return { w: Math.floor(w), h: Math.floor(h), mobile: false };
+  }
+}
+
+/* ══════════════════════════════════════════
+   CONSTRUIR LECTOR (placeholders primero)
+   ══════════════════════════════════════════ */
+function buildReader(w, h) {
+  readerScroll.innerHTML = '';
+  for (let i = 0; i < totalPages; i++) {
+    const wrap = document.createElement('div');
+    wrap.className = 'reader-page-wrap';
+    wrap.id = 'rpage-' + i;
+    wrap.style.width  = w + 'px';
+    wrap.style.height = h + 'px';
+
+    if (pageCache.has(i)) {
+      const img = new Image();
+      img.src = pageCache.get(i);
+      img.style.width  = w + 'px';
+      img.style.height = h + 'px';
+      img.style.display = 'block';
+      img.draggable = false;
+      wrap.appendChild(img);
+      const shield = document.createElement('div');
+      shield.className = 'reader-page-shield';
+      wrap.appendChild(shield);
+    } else {
+      wrap.innerHTML = `<div class="page-placeholder"><div class="page-spinner"></div></div>`;
+    }
+
+    readerScroll.appendChild(wrap);
+  }
+  readerScroll.addEventListener('contextmenu', e => e.preventDefault());
+}
+
+/* ══════════════════════════════════════════
+   CONSTRUIR FLIPBOOK (placeholders primero)
+   ══════════════════════════════════════════ */
+function buildFlipbook(w, h, mobile) {
+  const flipbookEl = document.getElementById('flipbook');
+  flipbookEl.innerHTML = '';
+
+  for (let i = 0; i < totalPages; i++) {
+    const page = document.createElement('div');
+    page.className = 'flip-page';
+    page.dataset.idx = i;
+    page.style.cssText = `width:${w}px;height:${h}px;background:#ffffff;overflow:hidden;display:flex;align-items:center;justify-content:center;`;
+
+    if (pageCache.has(i)) {
+      const img = new Image();
+      img.src = pageCache.get(i);
+      img.style.width  = w + 'px';
+      img.style.height = h + 'px';
+      img.style.display = 'block';
+      img.draggable = false;
+      page.appendChild(img);
+    } else {
+      page.innerHTML = `<div class="page-spinner"></div>`;
+    }
+
+    flipbookEl.appendChild(page);
+  }
+
+  const bookW = mobile ? w : w * 2;
+  flipContainer.style.width  = bookW + 'px';
+  flipContainer.style.height = h + 'px';
+
+  const spine = document.getElementById('spineOverlay');
+  spine.style.display = mobile ? 'none' : 'block';
+  spine.style.height  = h + 'px';
+
+  if (pageFlip) { try { pageFlip.destroy(); } catch(e) {} pageFlip = null; }
+
+  pageFlip = new St.PageFlip(flipbookEl, {
+    width:  w, height: h,
+    size:   'fixed',
+    minWidth: w, maxWidth: w,
+    minHeight: h, maxHeight: h,
+    showCover: false,
+    drawShadow: true,
+    flippingTime: 600,
+    usePortrait: mobile,
+    startZIndex: 1,
+    autoSize: false,
+    mobileScrollSupport: false,
+    clickEventForward: true,
+    useMouseEvents: true,
+    swipeDistance: zoomLevel > 1 ? 99999 : 70,
+    showPageCorners: true,
+    disableFlipByClick: false,
+  });
+
+  pageFlip.loadFromHTML(document.querySelectorAll('.flip-page'));
+  pageFlip.on('flip', e => {
+    currentPage = e.data;
+    updateFlipControls(e.data);
+    // Cargar páginas vecinas en cache al girar
+    ensurePagesCached(e.data).then(() => {
+      // Actualizar páginas del flipbook con las imágenes recién cargadas
+      for (const [idx, dataURL] of pageCache) {
+        updateFlipPageInDOM(idx, dataURL);
+      }
+    });
+  });
+  pageFlip.on('changeState', () => {
+    if (pageFlip) updateFlipControls(pageFlip.getCurrentPageIndex());
+  });
+  flipContainer.addEventListener('contextmenu', e => e.preventDefault());
+  updateFlipControls(0);
+}
+
+/* ══════════════════════════════════════════
+   MODO (reader / flip)
+   ══════════════════════════════════════════ */
 function setMode(mode) {
   currentMode = mode;
-  document.getElementById('btnModeReader').classList.toggle('active', mode==='reader');
-  document.getElementById('btnModeFlip').classList.toggle('active',   mode==='flip');
-  flipWrap.classList.toggle('active',   mode==='flip');
-  readerWrap.classList.toggle('active', mode==='reader');
+  document.getElementById('btnModeReader').classList.toggle('active', mode === 'reader');
+  document.getElementById('btnModeFlip').classList.toggle('active',   mode === 'flip');
+  flipWrap.classList.toggle('active',   mode === 'flip');
+  readerWrap.classList.toggle('active', mode === 'reader');
   zoomReset();
-  if (mode==='reader') {
+  if (mode === 'reader') {
     zoomHint.textContent = 'pellizca para zoom · arrastra para mover';
     updateReaderControls();
   } else {
@@ -416,406 +715,300 @@ function setMode(mode) {
   }
 }
 
-/* ══ TAMAÑO ══ */
-function calcBookSize() {
-  const sw=fbStageEl.clientWidth, sh=fbStageEl.clientHeight-24;
-  const ratio=pageHeight/pageWidth, mob=sw<1024;
-  if (mob) {
-    let w=sw-24, h=w*ratio;
-    if (h>sh){h=sh;w=h/ratio;}
-    return {w:Math.floor(w),h:Math.floor(h),mobile:true};
-  } else {
-    let w=Math.min((sw-100)/2,sh/ratio), h=w*ratio;
-    if (h>sh){h=sh;w=h/ratio;}
-    return {w:Math.floor(w),h:Math.floor(h),mobile:false};
-  }
-}
-
-/* ══ RENDERIZAR ══ */
-async function renderOnePage(i, w, h) {
-  const page=await pdfDoc.getPage(i+1);
-  const vp=page.getViewport({scale:1});
-  const dpr=window.devicePixelRatio||1;
-  const rs=isMobile()?dpr*1.5:dpr*2;
-  const scale=(w*rs)/vp.width;
-  const viewport=page.getViewport({scale});
-  const canvas=document.createElement('canvas');
-  canvas.width=viewport.width;
-  canvas.height=viewport.height;
-  canvas.style.width=w+'px';
-  canvas.style.height=h+'px';
-  await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
-  return canvas;
-}
-
-async function renderFirstBatch(w, h) {
-  const batch=Math.min(10,totalPages);
-  canvases=new Array(totalPages).fill(null);
-  for (let i=0;i<batch;i++) {
-    loadText.textContent=`Renderizando página ${i+1} de ${totalPages}...`;
-    loadBar.style.width=Math.round((i/batch)*100)+'%';
-    canvases[i]=await renderOnePage(i,w,h);
-  }
-}
-
-/* canvas → img tag (evita el problema de cloneNode en canvas) */
-function canvasToImg(canvas) {
-  const img=new Image();
-  img.src=canvas.toDataURL('image/jpeg',0.92);
-  img.style.width=canvas.style.width;
-  img.style.height=canvas.style.height;
-  img.style.display='block';
-  return img;
-}
-
-async function renderRestInBackground(w, h) {
-  for (let i=10;i<totalPages;i++) {
-    canvases[i]=await renderOnePage(i,w,h);
-
-    // Actualizar lector con imagen
-    const readerEl=document.getElementById('rpage-'+i);
-    if (readerEl) {
-      readerEl.innerHTML='';
-      readerEl.appendChild(canvasToImg(canvases[i]));
-      const shield=document.createElement('div');
-      shield.className='reader-page-shield';
-      readerEl.appendChild(shield);
-    }
-
-    // Actualizar flipbook con canvas original
-    const flipEl=document.querySelector(`.flip-page[data-idx="${i}"]`);
-    if (flipEl) {
-      flipEl.innerHTML='';
-      flipEl.appendChild(canvases[i]);
-    }
-  }
-}
-
-/* ══ CONSTRUIR LECTOR ══ */
-function buildReader(w, h) {
-  readerScroll.innerHTML='';
-  for (let i=0;i<totalPages;i++) {
-    const wrap=document.createElement('div');
-    wrap.className='reader-page-wrap';
-    wrap.id='rpage-'+i;
-    wrap.style.width=w+'px';
-    wrap.style.height=h+'px';
-
-    if (canvases[i]) {
-      // Usar imagen, NO canvas directamente (el canvas va al flipbook)
-      wrap.appendChild(canvasToImg(canvases[i]));
-    } else {
-      wrap.innerHTML=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
-        <div style="width:28px;height:28px;border:2px solid rgba(197,160,89,0.2);border-top-color:#C5A059;border-radius:50%;animation:loto-rotate 1s linear infinite;"></div>
-      </div>`;
-    }
-
-    const shield=document.createElement('div');
-    shield.className='reader-page-shield';
-    wrap.appendChild(shield);
-    readerScroll.appendChild(wrap);
-  }
-  readerScroll.addEventListener('contextmenu',e=>e.preventDefault());
-}
-
-/* ══ CONSTRUIR FLIPBOOK ══ */
-function buildFlipbook(w, h, mobile) {
-  const flipbookEl=document.getElementById('flipbook');
-  flipbookEl.innerHTML='';
-
-  for (let i=0;i<totalPages;i++) {
-    const page=document.createElement('div');
-    page.className='flip-page';
-    page.dataset.idx=i;
-    page.style.cssText=`width:${w}px;height:${h}px;background:#ffffff;overflow:hidden;`;
-
-    if (canvases[i]) {
-      // Canvas original va al flipbook
-      page.appendChild(canvases[i]);
-    } else {
-      page.innerHTML=`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;">
-        <div style="width:24px;height:24px;border:2px solid rgba(197,160,89,0.2);border-top-color:#C5A059;border-radius:50%;animation:loto-rotate 1s linear infinite;"></div>
-      </div>`;
-    }
-    flipbookEl.appendChild(page);
-  }
-
-  const bookW=mobile?w:w*2;
-  flipContainer.style.width=bookW+'px';
-  flipContainer.style.height=h+'px';
-
-  const spine=document.getElementById('spineOverlay');
-  spine.style.display=mobile?'none':'block';
-  spine.style.height=h+'px';
-
-  if (pageFlip) { try{pageFlip.destroy();}catch(e){} pageFlip=null; }
-
-  pageFlip=new St.PageFlip(flipbookEl,{
-    width:w, height:h,
-    size:'fixed',
-    minWidth:w, maxWidth:w,
-    minHeight:h, maxHeight:h,
-    showCover:false,
-    drawShadow:true,
-    flippingTime:600,
-    usePortrait:mobile,
-    startZIndex:1,
-    autoSize:false,
-    mobileScrollSupport:false,
-    clickEventForward:true,
-    useMouseEvents:true,
-    swipeDistance:zoomLevel>1?99999:70,
-    showPageCorners:true,
-    disableFlipByClick:false,
-  });
-
-  pageFlip.loadFromHTML(document.querySelectorAll('.flip-page'));
-  pageFlip.on('flip', e=>updateFlipControls(e.data));
-  pageFlip.on('changeState',()=>{if(pageFlip)updateFlipControls(pageFlip.getCurrentPageIndex());});
-  flipContainer.addEventListener('contextmenu',e=>e.preventDefault());
-  updateFlipControls(0);
-}
-
-/* ══ CONTROLES ══ */
+/* ══════════════════════════════════════════
+   CONTROLES
+   ══════════════════════════════════════════ */
 function updateFlipControls(idx) {
   if (!pageFlip) return;
-  const cur=idx+1, total=totalPages;
-  pageInfo.textContent=`${cur} — ${Math.min(cur+1,total)} / ${total}`;
-  pagesInfo.textContent=`${cur}–${Math.min(cur+1,total)} / ${total}`;
-  const atStart=idx<=0, atEnd=idx>=totalPages-2;
-  document.getElementById('btnPrev').disabled=atStart;
-  document.getElementById('btnFirst').disabled=atStart;
-  document.getElementById('arrowLeft').disabled=atStart;
-  document.getElementById('btnNext').disabled=atEnd;
-  document.getElementById('btnLast').disabled=atEnd;
-  document.getElementById('arrowRight').disabled=atEnd;
+  const cur   = idx + 1;
+  const total = totalPages;
+  pageInfo.textContent  = `${cur} — ${Math.min(cur + 1, total)} / ${total}`;
+  pagesInfo.textContent = `${cur}–${Math.min(cur + 1, total)} / ${total}`;
+  const atStart = idx <= 0;
+  const atEnd   = idx >= totalPages - 2;
+  document.getElementById('btnPrev').disabled   = atStart;
+  document.getElementById('btnFirst').disabled  = atStart;
+  document.getElementById('arrowLeft').disabled = atStart;
+  document.getElementById('btnNext').disabled   = atEnd;
+  document.getElementById('btnLast').disabled   = atEnd;
+  document.getElementById('arrowRight').disabled= atEnd;
 }
 
 function updateReaderControls() {
-  const pages=readerScroll.querySelectorAll('.reader-page-wrap');
+  const pages = readerScroll.querySelectorAll('.reader-page-wrap');
   if (!pages.length) return;
-  let visibleIdx=0;
-  const mid=readerScroll.scrollTop+readerScroll.clientHeight/2;
-  pages.forEach((p,i)=>{if(p.offsetTop<=mid)visibleIdx=i;});
-  const cur=visibleIdx+1;
-  pageInfo.textContent=`${cur} / ${totalPages}`;
-  pagesInfo.textContent=`${cur} / ${totalPages}`;
-  document.getElementById('btnPrev').disabled=visibleIdx<=0;
-  document.getElementById('btnFirst').disabled=visibleIdx<=0;
-  document.getElementById('arrowLeft').disabled=visibleIdx<=0;
-  document.getElementById('btnNext').disabled=visibleIdx>=totalPages-1;
-  document.getElementById('btnLast').disabled=visibleIdx>=totalPages-1;
-  document.getElementById('arrowRight').disabled=visibleIdx>=totalPages-1;
+  let visibleIdx = 0;
+  const mid = readerScroll.scrollTop + readerScroll.clientHeight / 2;
+  pages.forEach((p, i) => { if (p.offsetTop <= mid) visibleIdx = i; });
+
+  if (visibleIdx !== currentPage) {
+    currentPage = visibleIdx;
+    ensurePagesCached(visibleIdx);
+  }
+
+  const cur = visibleIdx + 1;
+  pageInfo.textContent  = `${cur} / ${totalPages}`;
+  pagesInfo.textContent = `${cur} / ${totalPages}`;
+  document.getElementById('btnPrev').disabled   = visibleIdx <= 0;
+  document.getElementById('btnFirst').disabled  = visibleIdx <= 0;
+  document.getElementById('arrowLeft').disabled = visibleIdx <= 0;
+  document.getElementById('btnNext').disabled   = visibleIdx >= totalPages - 1;
+  document.getElementById('btnLast').disabled   = visibleIdx >= totalPages - 1;
+  document.getElementById('arrowRight').disabled= visibleIdx >= totalPages - 1;
 }
 
-/* ══ NAVEGACIÓN ══ */
+/* ══════════════════════════════════════════
+   NAVEGACIÓN
+   ══════════════════════════════════════════ */
 function nextPage() {
-  if (currentMode==='flip'){if(pageFlip)pageFlip.flipNext();}
-  else scrollToPage(currentReaderPage()+1);
+  if (currentMode === 'flip') { if (pageFlip) pageFlip.flipNext(); }
+  else scrollToPage(currentReaderPage() + 1);
 }
 function prevPage() {
-  if (currentMode==='flip'){if(pageFlip)pageFlip.flipPrev();}
-  else scrollToPage(currentReaderPage()-1);
+  if (currentMode === 'flip') { if (pageFlip) pageFlip.flipPrev(); }
+  else scrollToPage(currentReaderPage() - 1);
 }
 function navFirst() {
-  if (currentMode==='flip'){if(pageFlip)pageFlip.flip(0);}
+  if (currentMode === 'flip') { if (pageFlip) pageFlip.flip(0); }
   else scrollToPage(0);
 }
 function navLast() {
-  if (currentMode==='flip'){if(pageFlip)pageFlip.flip(totalPages-1);}
-  else scrollToPage(totalPages-1);
+  if (currentMode === 'flip') { if (pageFlip) pageFlip.flip(totalPages - 1); }
+  else scrollToPage(totalPages - 1);
 }
 function currentReaderPage() {
-  const pages=readerScroll.querySelectorAll('.reader-page-wrap');
-  let idx=0;
-  const mid=readerScroll.scrollTop+readerScroll.clientHeight/2;
-  pages.forEach((p,i)=>{if(p.offsetTop<=mid)idx=i;});
+  const pages = readerScroll.querySelectorAll('.reader-page-wrap');
+  let idx = 0;
+  const mid = readerScroll.scrollTop + readerScroll.clientHeight / 2;
+  pages.forEach((p, i) => { if (p.offsetTop <= mid) idx = i; });
   return idx;
 }
 function scrollToPage(idx) {
-  idx=Math.max(0,Math.min(totalPages-1,idx));
-  const page=document.getElementById('rpage-'+idx);
-  if (page){readerScroll.scrollTo({top:page.offsetTop-24,behavior:'smooth'});setTimeout(updateReaderControls,400);}
+  idx = Math.max(0, Math.min(totalPages - 1, idx));
+  const page = document.getElementById('rpage-' + idx);
+  if (page) {
+    readerScroll.scrollTo({ top: page.offsetTop - 24, behavior: 'smooth' });
+    setTimeout(updateReaderControls, 400);
+  }
 }
-readerScroll.addEventListener('scroll',()=>{if(currentMode==='reader')updateReaderControls();},{passive:true});
 
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key==='ArrowDown')nextPage();
-  if(e.key==='ArrowLeft'||e.key==='ArrowUp')prevPage();
+// Throttle del scroll para no disparar renders continuos
+let scrollThrottle;
+readerScroll.addEventListener('scroll', () => {
+  clearTimeout(scrollThrottle);
+  scrollThrottle = setTimeout(() => {
+    if (currentMode === 'reader') updateReaderControls();
+  }, 100);
+}, { passive: true });
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextPage();
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevPage();
 });
 
-/* ══ ZOOM Y PAN ══ */
+/* ══════════════════════════════════════════
+   ZOOM Y PAN
+   ══════════════════════════════════════════ */
 function applyTransform() {
-  if (currentMode==='flip') {
-    flipContainer.style.transform=`scale(${zoomLevel}) translate(${translateX/zoomLevel}px,${translateY/zoomLevel}px)`;
-    flipContainer.style.transformOrigin='center center';
-    if (pageFlip&&pageFlip.setting) {
-      pageFlip.setting.swipeDistance=zoomLevel>1?99999:70;
-      pageFlip.setting.disableFlipByClick=zoomLevel>1;
+  if (currentMode === 'flip') {
+    flipContainer.style.transform = `scale(${zoomLevel}) translate(${translateX / zoomLevel}px,${translateY / zoomLevel}px)`;
+    flipContainer.style.transformOrigin = 'center center';
+    if (pageFlip && pageFlip.setting) {
+      pageFlip.setting.swipeDistance       = zoomLevel > 1 ? 99999 : 70;
+      pageFlip.setting.disableFlipByClick  = zoomLevel > 1;
     }
   } else {
-    readerScroll.style.transform=`scale(${zoomLevel}) translate(${translateX/zoomLevel}px,${translateY/zoomLevel}px)`;
-    readerScroll.style.transformOrigin='center top';
+    readerScroll.style.transform       = `scale(${zoomLevel}) translate(${translateX / zoomLevel}px,${translateY / zoomLevel}px)`;
+    readerScroll.style.transformOrigin = 'center top';
   }
-  fbStageEl.style.cursor=zoomLevel>1?'grab':'default';
+  fbStageEl.style.cursor = zoomLevel > 1 ? 'grab' : 'default';
 }
-function zoomIn()  { zoomLevel=Math.min(zoomLevel+0.25,4.0); applyTransform(); }
+function zoomIn()  { zoomLevel = Math.min(zoomLevel + 0.25, 4.0); applyTransform(); }
 function zoomOut() {
-  zoomLevel=Math.max(zoomLevel-0.25,0.5);
-  if(zoomLevel<=1){translateX=0;translateY=0;}
+  zoomLevel = Math.max(zoomLevel - 0.25, 0.5);
+  if (zoomLevel <= 1) { translateX = 0; translateY = 0; }
   applyTransform();
 }
 function zoomReset() {
-  zoomLevel=1.0;translateX=0;translateY=0;
-  readerScroll.style.transform='';
-  flipContainer.style.transform='';
-  fbStageEl.style.cursor='default';
+  zoomLevel = 1.0; translateX = 0; translateY = 0;
+  readerScroll.style.transform = '';
+  flipContainer.style.transform = '';
+  fbStageEl.style.cursor = 'default';
 }
 
 /* Drag mouse */
-fbStageEl.addEventListener('mousedown',e=>{
-  if(zoomLevel<=1||e.button!==0)return;
+fbStageEl.addEventListener('mousedown', e => {
+  if (zoomLevel <= 1 || e.button !== 0) return;
   e.preventDefault();
-  isDragging=true;
-  dragStartX=e.clientX-translateX;
-  dragStartY=e.clientY-translateY;
-  fbStageEl.style.cursor='grabbing';
+  isDragging = true;
+  dragStartX = e.clientX - translateX;
+  dragStartY = e.clientY - translateY;
+  fbStageEl.style.cursor = 'grabbing';
 });
-window.addEventListener('mousemove',e=>{
-  if(!isDragging)return;
-  translateX=e.clientX-dragStartX;
-  translateY=e.clientY-dragStartY;
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  translateX = e.clientX - dragStartX;
+  translateY = e.clientY - dragStartY;
   applyTransform();
 });
-window.addEventListener('mouseup',()=>{
-  if(!isDragging)return;
-  isDragging=false;
-  fbStageEl.style.cursor=zoomLevel>1?'grab':'default';
+window.addEventListener('mouseup', () => {
+  if (!isDragging) return;
+  isDragging = false;
+  fbStageEl.style.cursor = zoomLevel > 1 ? 'grab' : 'default';
 });
 
 /* Pinch y drag touch */
-fbStageEl.addEventListener('touchstart',e=>{
-  if(e.touches.length===2){
+fbStageEl.addEventListener('touchstart', e => {
+  if (e.touches.length === 2) {
     e.preventDefault();
-    const dx=e.touches[0].clientX-e.touches[1].clientX;
-    const dy=e.touches[0].clientY-e.touches[1].clientY;
-    lastPinchDist=Math.sqrt(dx*dx+dy*dy);
-    isDragging=false;
-  } else if(e.touches.length===1&&zoomLevel>1){
-    isDragging=true;
-    dragStartX=e.touches[0].clientX-translateX;
-    dragStartY=e.touches[0].clientY-translateY;
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    lastPinchDist = Math.sqrt(dx * dx + dy * dy);
+    isDragging = false;
+  } else if (e.touches.length === 1 && zoomLevel > 1) {
+    isDragging = true;
+    dragStartX = e.touches[0].clientX - translateX;
+    dragStartY = e.touches[0].clientY - translateY;
   }
-},{passive:false});
+}, { passive: false });
 
-fbStageEl.addEventListener('touchmove',e=>{
-  if(e.touches.length===2&&lastPinchDist>0){
+fbStageEl.addEventListener('touchmove', e => {
+  if (e.touches.length === 2 && lastPinchDist > 0) {
     e.preventDefault();
-    const dx=e.touches[0].clientX-e.touches[1].clientX;
-    const dy=e.touches[0].clientY-e.touches[1].clientY;
-    const dist=Math.sqrt(dx*dx+dy*dy);
-    zoomLevel=Math.min(Math.max(zoomLevel*(dist/lastPinchDist),0.5),4.0);
-    lastPinchDist=dist;
+    const dx   = e.touches[0].clientX - e.touches[1].clientX;
+    const dy   = e.touches[0].clientY - e.touches[1].clientY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    zoomLevel  = Math.min(Math.max(zoomLevel * (dist / lastPinchDist), 0.5), 4.0);
+    lastPinchDist = dist;
     applyTransform();
-  } else if(isDragging&&e.touches.length===1&&zoomLevel>1){
+  } else if (isDragging && e.touches.length === 1 && zoomLevel > 1) {
     e.preventDefault();
-    translateX=e.touches[0].clientX-dragStartX;
-    translateY=e.touches[0].clientY-dragStartY;
+    translateX = e.touches[0].clientX - dragStartX;
+    translateY = e.touches[0].clientY - dragStartY;
     applyTransform();
   }
-},{passive:false});
+}, { passive: false });
 
-fbStageEl.addEventListener('touchend',e=>{
-  if(e.touches.length<2)lastPinchDist=0;
-  if(e.touches.length===0)isDragging=false;
+fbStageEl.addEventListener('touchend', e => {
+  if (e.touches.length < 2) lastPinchDist = 0;
+  if (e.touches.length === 0) isDragging = false;
 });
 
 /* Rueda con Ctrl */
-fbStageEl.addEventListener('wheel',e=>{
-  if(e.ctrlKey||e.metaKey){
+fbStageEl.addEventListener('wheel', e => {
+  if (e.ctrlKey || e.metaKey) {
     e.preventDefault();
-    const delta=e.deltaY>0?-0.15:0.15;
-    zoomLevel=Math.min(Math.max(zoomLevel+delta,0.5),4.0);
-    if(zoomLevel<=1){translateX=0;translateY=0;}
+    const delta = e.deltaY > 0 ? -0.15 : 0.15;
+    zoomLevel = Math.min(Math.max(zoomLevel + delta, 0.5), 4.0);
+    if (zoomLevel <= 1) { translateX = 0; translateY = 0; }
     applyTransform();
   }
-},{passive:false});
+}, { passive: false });
 
 function toggleFullscreen() {
-  if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
   else document.exitFullscreen?.();
 }
 
 /* Resize */
 let resizeTimer;
-window.addEventListener('resize',()=>{
+window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
-  resizeTimer=setTimeout(async()=>{
-    if(!pdfDoc)return;
+  resizeTimer = setTimeout(async () => {
+    if (!pdfDoc) return;
     zoomReset();
+    pageCache.clear(); // Limpiar cache al cambiar tamaño
     document.getElementById('fbLoading').classList.remove('hidden');
-    const{w,h,mobile}=calcBookSize();
-    await renderFirstBatch(w,h);
-    buildReader(w,h);
-    buildFlipbook(w,h,mobile);
+    const { w, h, mobile } = calcBookSize();
+    renderW = w; renderH = h;
+    // Renderizar solo las primeras páginas para el rebuild
+    await ensurePagesCached(0);
+    buildReader(w, h);
+    buildFlipbook(w, h, mobile);
     setMode(currentMode);
     document.getElementById('fbLoading').classList.add('hidden');
-    renderRestInBackground(w,h);
-  },300);
+    // Cargar páginas vecinas en background
+    ensurePagesCached(currentPage);
+  }, 300);
 });
 
-/* ══ CARGA PDF ══ */
+/* ══════════════════════════════════════════
+   CARGA INICIAL DEL PDF
+   ══════════════════════════════════════════ */
 async function loadPDF() {
   if (!PDF_URL) {
-    document.getElementById('fbLoading').innerHTML=`<div style="text-align:center;padding:20px;">
+    document.getElementById('fbLoading').innerHTML = `<div style="text-align:center;padding:20px;">
       <div style="font-size:32px;margin-bottom:16px;">📖</div>
       <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(197,160,89,0.5);">No se especificó ningún libro.</div>
     </div>`;
     return;
   }
   try {
-    const loadingTask=pdfjsLib.getDocument({
-      url:PDF_URL,
-      cMapUrl:'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
-      cMapPacked:true,
+    const loadingTask = pdfjsLib.getDocument({
+      url: PDF_URL,
+      cMapUrl:    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/cmaps/',
+      cMapPacked: true,
     });
-    loadingTask.onProgress=({loaded,total})=>{
-      if(total>0){loadBar.style.width=Math.round((loaded/total)*60)+'%';loadText.textContent='Descargando libro...';}
+
+    loadingTask.onProgress = ({ loaded, total }) => {
+      if (total > 0) {
+        loadBar.style.width = Math.round((loaded / total) * 60) + '%';
+        loadText.textContent = 'Descargando libro...';
+      }
     };
-    pdfDoc=await loadingTask.promise;
-    totalPages=pdfDoc.numPages;
-    const firstPage=await pdfDoc.getPage(1);
-    const vp=firstPage.getViewport({scale:1});
-    pageWidth=vp.width; pageHeight=vp.height;
 
-    const{w,h,mobile}=calcBookSize();
-    await renderFirstBatch(w,h);
+    pdfDoc     = await loadingTask.promise;
+    totalPages = pdfDoc.numPages;
 
-    // Primero lector (usa imágenes), luego flipbook (usa canvas)
-    buildReader(w,h);
-    buildFlipbook(w,h,mobile);
+    const firstPage = await pdfDoc.getPage(1);
+    const vp        = firstPage.getViewport({ scale: 1 });
+    pageWidth  = vp.width;
+    pageHeight = vp.height;
+
+    const { w, h, mobile } = calcBookSize();
+    renderW = w; renderH = h;
+
+    // Cuántas páginas renderizar al inicio según dispositivo
+    const initialBatch = isTabletUA ? 3 : (isMobileUA ? 3 : 6);
+    loadText.textContent = 'Preparando páginas...';
+
+    for (let i = 0; i < Math.min(initialBatch, totalPages); i++) {
+      loadBar.style.width = 60 + Math.round((i / initialBatch) * 40) + '%';
+      loadText.textContent = `Preparando página ${i + 1} de ${totalPages}...`;
+      const dataURL = await renderPageToDataURL(i, w, h);
+      pageCache.set(i, dataURL);
+    }
+
+    loadBar.style.width = '100%';
+
+    // Construir UI con las páginas disponibles
+    buildReader(w, h);
+    buildFlipbook(w, h, mobile);
     setMode(currentMode);
 
-    document.getElementById('btnNext').disabled=false;
-    document.getElementById('btnLast').disabled=false;
-    document.getElementById('arrowRight').disabled=false;
+    // Habilitar botones
+    document.getElementById('btnNext').disabled   = false;
+    document.getElementById('btnLast').disabled   = false;
+    document.getElementById('arrowRight').disabled= false;
 
-    const loading=document.getElementById('fbLoading');
+    // Ocultar loading
+    const loading = document.getElementById('fbLoading');
     loading.classList.add('hidden');
-    setTimeout(()=>loading.style.display='none',500);
+    setTimeout(() => loading.style.display = 'none', 500);
 
-    renderRestInBackground(w,h);
+    // Cargar páginas siguientes en background
+    ensurePagesCached(0);
 
-  } catch(err) {
-    console.error('Error cargando PDF:',err);
-    document.getElementById('fbLoading').innerHTML=`<div style="text-align:center;padding:20px;">
+  } catch (err) {
+    console.error('Error cargando PDF:', err);
+    document.getElementById('fbLoading').innerHTML = `<div style="text-align:center;padding:20px;">
       <div style="font-size:36px;margin-bottom:16px;">📖</div>
       <div style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:rgba(197,160,89,0.55);">No se pudo cargar el libro.<br>Verifica tu conexión.</div>
     </div>`;
   }
 }
 
-document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('contextmenu', e => e.preventDefault());
 loadPDF();
 </script>
 </body>
