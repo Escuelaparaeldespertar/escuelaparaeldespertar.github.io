@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biblioteca Virtual</title>
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
-<!-- ══ DearFlip CSS ══ -->
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/dearflip@2.2.4/dist/dearflip.min.css"/>
 <style>
   :root {
@@ -22,28 +21,8 @@
     --text-gold: #C5A059;
   }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
-  
-  body {
-    background: var(--bg);
-    font-family: 'Josefin Sans', sans-serif;
-    color: var(--text-dark);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ══ Tramado de fondo ══ */
- /* ══ Tramado de fondo ══ */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: url('Fondo/Tramado.png') repeat;
-  background-size: 600px 600px;
-  opacity: 0.55;
-  pointer-events: none;
-  z-index: 0;
-}
-
+  body { background: var(--bg); font-family: 'Josefin Sans', sans-serif; color: var(--text-dark); min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: url('Fondo/Tramado.png') repeat; background-size: 600px 600px; opacity: 0.55; pointer-events: none; z-index: 0; }
   @keyframes fadeUp   { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
   @keyframes scaleIn  { from{opacity:0;transform:scale(0.92);} to{opacity:1;transform:scale(1);} }
   @keyframes float    { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
@@ -51,7 +30,6 @@ body::before {
   @keyframes loto-rotate { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
   @keyframes pulse-petal  { 0%,100%{filter:brightness(1);} 50%{filter:brightness(1.9) drop-shadow(0 0 5px rgba(197,160,89,0.9));} }
   @keyframes pulse-center { 0%,100%{box-shadow:0 0 8px rgba(197,160,89,0.4);} 50%{box-shadow:0 0 18px rgba(197,160,89,1);} }
-
   .loto-spinner { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:3; pointer-events:none; transition:opacity 0.5s ease; }
   .loto-spinner.hidden { opacity:0; }
   .loto-petals { position:relative; width:52px; height:52px; animation:loto-rotate 3.5s linear infinite; }
@@ -65,10 +43,8 @@ body::before {
   .petal:nth-child(7){transform:rotate(270deg); animation:pulse-petal 1.6s ease-in-out infinite 1.20s;}
   .petal:nth-child(8){transform:rotate(315deg); animation:pulse-petal 1.6s ease-in-out infinite 1.40s;}
   .loto-center { position:absolute; width:11px; height:11px; background:radial-gradient(circle, var(--gold-light), var(--gold)); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); box-shadow:0 0 10px rgba(197,160,89,0.7); animation:pulse-center 1.6s ease-in-out infinite; }
-
   #particles { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; overflow:hidden; }
   .particle { position:absolute; border-radius:50%; opacity:0; animation:float-up linear infinite; background:var(--gold); }
-
   #panelMusica { display:none !important; }
   #panelMusicaMobile { position:fixed; bottom:24px; right:24px; display:flex; flex-direction:column; align-items:flex-end; gap:12px; z-index:500; }
   #inicioMusicaM { width:54px; height:54px; border-radius:50%; background:var(--glass); backdrop-filter:blur(20px) saturate(1.8); -webkit-backdrop-filter:blur(20px) saturate(1.8); border:1.5px solid var(--glass-border); color:var(--gold); font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.8); transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s; }
@@ -85,18 +61,17 @@ body::before {
   .mobile-vol-row span { font-size:13px; }
   #volumenM { width:100px; accent-color:var(--gold); cursor:pointer; height:3px; }
   .player-widget#playerWidgetM { background:var(--glass); backdrop-filter:blur(20px) saturate(1.8); -webkit-backdrop-filter:blur(20px) saturate(1.8); border:1.5px solid var(--glass-border); border-radius:18px; padding:14px 16px; box-shadow:0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8); min-width:190px; }
-
   .app { position:relative; z-index:1; display:flex; min-height:100vh; }
   .panel-cats { width:100%; flex-shrink:0; display:flex; flex-direction:column; align-items:center; min-height:100vh; transition:transform 0.55s cubic-bezier(0.77,0,0.18,1), opacity 0.4s ease; will-change:transform,opacity; }
   .panel-cats.slide-out { transform:translateX(-100%); opacity:0; pointer-events:none; position:absolute; top:0; left:0; width:100%; }
-
   .app-header { width:100%; display:flex; flex-direction:column; align-items:center; padding:48px 28px 32px; background:rgba(255,255,255,0.85); backdrop-filter:blur(20px); border-bottom:1px solid rgba(197,160,89,0.18); box-shadow:0 2px 20px rgba(0,0,0,0.04); animation:fadeUp 0.7s cubic-bezier(0.34,1.56,0.64,1) both; position:relative; }
   .app-logo { width:150px; height:150px; border-radius:50%; object-fit:cover; border:1px solid rgba(197,160,89,0.25); box-shadow:0 4px 24px rgba(0,0,0,0.08); margin-bottom:20px; cursor:pointer; transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease; animation:float 6s ease-in-out infinite; }
   .app-logo:hover { transform:scale(1.05); box-shadow:0 8px 32px rgba(0,0,0,0.12), 0 0 0 1px rgba(197,160,89,0.3); animation:none; }
   .app-title { font-family:'Josefin Sans', sans-serif; font-size:11px; letter-spacing:6px; color:var(--text-gold); text-transform:uppercase; line-height:2.2; text-align:center; font-weight:700; }
   .app-quote { font-family:'Cormorant Garamond', serif; font-style:italic; font-size:13px; color:var(--text-light); margin-top:10px; text-align:center; line-height:1.6; }
   .gold-divider { width:50%; height:1px; background:linear-gradient(90deg, transparent, rgba(197,160,89,0.4), transparent); margin:8px 0; }
-
+  .descargo-btn { background:none; border:0.5px solid rgba(197,160,89,0.4); border-radius:20px; color:var(--text-gold); font-family:'Josefin Sans',sans-serif; font-size:8px; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; cursor:pointer; margin-top:4px; transition:all 0.3s; }
+  .descargo-btn:hover { background:rgba(197,160,89,0.1); }
   .search-box-wrap { width:100%; margin-top:16px; }
   .search-box { width:100%; display:flex; align-items:center; gap:10px; background:var(--bg); border:1px solid rgba(197,160,89,0.2); border-radius:10px; padding:10px 14px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.04); transition:all 0.3s ease; }
   .search-box:focus-within { border-color:rgba(197,160,89,0.5); box-shadow:0 0 0 3px rgba(197,160,89,0.08), inset 0 1px 3px rgba(0,0,0,0.04); background:#FFFFFF; }
@@ -106,20 +81,16 @@ body::before {
   .search-box-clear { background:none; border:none; color:rgba(100,80,40,0.35); font-size:13px; cursor:pointer; padding:2px; transition:all 0.2s; display:none; }
   .search-box-clear.visible { display:block; }
   .search-box-clear:hover { color:var(--gold); }
-
   .hero-bar { background:#1C1C1E; border-radius:12px; padding:20px 24px; margin-bottom:28px; position:relative; overflow:hidden; cursor:default; }
   .hero-bar::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(197,160,89,0.06) 0%, transparent 50%); pointer-events:none; }
   .hero-bar::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, rgba(197,160,89,0.4), transparent); }
   .hero-ornament { font-size:9px; letter-spacing:0.3em; color:rgba(197,160,89,0.6); text-transform:uppercase; margin-bottom:8px; position:relative; z-index:1; transition:transform 0.15s ease; }
   .hero-title { font-size:14px; font-weight:700; letter-spacing:0.2em; color:rgba(197,160,89,0.75); text-transform:uppercase; position:relative; z-index:1; transition:transform 0.15s ease; }
   .hero-sub { font-family:'Cormorant Garamond', serif; font-style:italic; font-size:13px; color:#FFFFFF; margin-top:6px; position:relative; z-index:1; transition:transform 0.15s ease; line-height:1.5; }
-
   .cats-label { font-family:'Josefin Sans', sans-serif; font-size:9px; letter-spacing:5px; color:var(--text-gold); text-transform:uppercase; width:100%; padding:28px 28px 16px; animation:fadeUp 0.7s ease 0.2s both; display:flex; align-items:center; gap:14px; font-weight:700; }
   .cats-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg, rgba(197,160,89,0.4), transparent); border-radius:1px; }
-
   .cats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:0 20px 32px; width:100%; animation:fadeUp 0.7s ease 0.3s both; }
   .cats-grid-wrap.hidden { display:none; }
-
   .cat-card { background:#FFFFFF; border:none; border-radius:12px; padding:12px 14px 12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:10px; position:relative; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.04); transition:all 0.35s cubic-bezier(0.34,1.2,0.64,1); animation:scaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
   .cat-card::before { content:''; position:absolute; bottom:0; left:20%; right:20%; height:2px; background:linear-gradient(90deg, transparent, rgba(197,160,89,0.5), transparent); opacity:0; transition:opacity 0.3s; border-radius:1px; }
   .cat-card:hover { transform:translateY(-5px); box-shadow:0 2px 6px rgba(0,0,0,0.04), 0 12px 32px rgba(0,0,0,0.09), 0 0 0 1px rgba(197,160,89,0.12); }
@@ -131,11 +102,9 @@ body::before {
   .cat-card:hover .cat-icon svg { stroke:var(--gold-dark); }
   .cat-name { font-family:'Josefin Sans', sans-serif; font-size:9px; letter-spacing:1.5px; color:var(--text-mid); text-transform:uppercase; text-align:center; line-height:1.7; font-weight:600; transition:color 0.3s ease; }
   .cat-card:hover .cat-name { color:var(--text-dark); }
-
   .panel-books { position:fixed; inset:0; display:flex; flex-direction:column; background:transparent; z-index:10; transform:translateX(100%); opacity:0; transition:transform 0.55s cubic-bezier(0.77,0,0.18,1), opacity 0.4s ease; will-change:transform,opacity; overflow-y:auto; padding-bottom:80px; }
   .panel-books.slide-in { transform:translateX(0); opacity:1; }
   .books-loto { position:fixed; inset:0; background-image:url('Fondo/Tramado.png'); background-size:cover; background-position:center; opacity:0.05; pointer-events:none; z-index:0; }
-
   .books-header { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:12px; padding:14px 20px; background:rgba(255,252,247,0.92); backdrop-filter:blur(28px) saturate(1.8); -webkit-backdrop-filter:blur(28px) saturate(1.8); border-bottom:1px solid rgba(197,160,89,0.35); box-shadow:0 1px 0 rgba(255,255,255,0.9) inset, 0 4px 20px rgba(0,0,0,0.07); flex-wrap:nowrap; }
   .back-logo { width:80px; height:80px; border-radius:50%; object-fit:cover; border:1.5px solid rgba(255,255,255,0.8); box-shadow:0 0 0 1px rgba(197,160,89,0.25), 0 4px 16px rgba(0,0,0,0.1); cursor:pointer; flex-shrink:0; transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1); }
   .back-logo:hover { transform:scale(1.08) rotate(-3deg); }
@@ -144,12 +113,10 @@ body::before {
   .books-count { font-size:12px; color:var(--text-light); margin-top:3px; font-style:italic; font-family:'Cormorant Garamond', serif; }
   .back-btn { padding:9px 20px; background:rgba(255,255,255,0.7); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border:1px solid rgba(197,160,89,0.3); border-radius:50px; color:var(--text-gold); font-family:'Josefin Sans', sans-serif; font-size:9px; letter-spacing:2px; cursor:pointer; font-weight:700; box-shadow:0 2px 12px rgba(0,0,0,0.05); transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1); white-space:nowrap; }
   .back-btn:hover { background:var(--gold); color:white; border-color:var(--gold); transform:translateY(-2px) scale(1.04); box-shadow:0 6px 20px rgba(197,160,89,0.4); }
-
   .books-inner { position:relative; z-index:1; display:grid; grid-template-columns:repeat(2,1fr); gap:18px; padding:28px 24px; }
   @media(min-width:500px) { .books-inner { grid-template-columns:repeat(3,1fr); } }
   @media(min-width:768px) { .books-inner { grid-template-columns:repeat(4,1fr); max-width:960px; padding:32px; gap:22px; } }
   @media(min-width:1100px) { .books-inner { grid-template-columns:repeat(5,1fr); max-width:1200px; } }
-
   .book-card { background:#FFFFFF; border:none; border-radius:14px; overflow:hidden; cursor:pointer; transition:all 0.45s cubic-bezier(0.34,1.56,0.64,1); animation:scaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; max-width:280px; width:100%; display:flex; flex-direction:column; box-shadow:0 2px 8px rgba(0,0,0,0.06), 0 4px 20px rgba(0,0,0,0.04); }
   .book-card:hover { transform:translateY(-10px) scale(1.02); box-shadow:0 20px 50px rgba(0,0,0,0.12), 0 8px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(197,160,89,0.2); }
   .book-cover-wrap { width:100%; padding-top:115%; position:relative; overflow:hidden; background:linear-gradient(135deg,#ede8e0,#ddd5c8); border-bottom:1px solid rgba(197,160,89,0.1); }
@@ -161,7 +128,6 @@ body::before {
   .book-author { font-size:11px; color:var(--text-light); font-style:italic; margin-bottom:auto; padding-bottom:12px; font-family:'Cormorant Garamond', serif; }
   .book-btn { display:block; width:100%; padding:8px 14px; background:var(--bg); color:var(--gold-dark); border:1px solid rgba(197,160,89,0.3); border-radius:50px; cursor:pointer; font-family:'Josefin Sans', sans-serif; font-size:8px; letter-spacing:1.5px; text-transform:uppercase; transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1); text-decoration:none; text-align:center; font-weight:700; }
   .book-btn:hover { background:var(--gold); color:white; border-color:transparent; transform:translateY(-1px); box-shadow:0 6px 20px rgba(197,160,89,0.4); }
-
   .search-results { display:none; animation:fadeUp 0.35s ease both; }
   .search-results.visible { display:block; }
   .sr-meta { display:flex; align-items:baseline; gap:10px; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid rgba(197,160,89,0.2); }
@@ -185,7 +151,6 @@ body::before {
   .sr-btn { display:block; width:100%; padding:6px; background:rgba(197,160,89,0.08); color:var(--gold-dark); border:1px solid rgba(197,160,89,0.2); border-radius:0 0 12px 12px; cursor:pointer; font-family:'Josefin Sans', sans-serif; font-size:7px; letter-spacing:1.5px; text-transform:uppercase; transition:all 0.3s ease; text-decoration:none; text-align:center; font-weight:700; }
   .sr-btn:hover { background:var(--gold); color:white; border-color:transparent; }
   .sr-empty,.empty-msg { grid-column:1/-1; text-align:center; padding:60px 20px; font-family:'Cormorant Garamond', serif; font-style:italic; font-size:18px; color:var(--text-light); line-height:1.8; }
-
   @media(min-width:600px) { .cats-grid { grid-template-columns:1fr 1fr 1fr; max-width:700px; margin:0 auto; padding:0 28px 28px; } .app-header { padding:54px 40px 38px; } .sr-grid { grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); } }
   @media(min-width:900px) {
     .panel-cats { flex-direction:row; align-items:flex-start; }
@@ -197,8 +162,6 @@ body::before {
   }
   @media(min-width:1200px) { .app-header { width:280px; min-width:280px; } .cats-grid { grid-template-columns:repeat(5,1fr); } }
   @media(max-width:600px) { .back-btn { padding:6px 12px; font-size:8px; } .back-logo { width:60px; height:60px; } .books-cat-name { font-size:8px; } .app-header { position:sticky; top:0; z-index:20; padding-bottom:20px; } .search-results { padding-bottom:45vh; } .sr-grid { grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:10px; } }
-
-  /* ══ Visor ══ */
   #visorOverlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:2000; opacity:0; pointer-events:none; transition:opacity 0.4s ease; backdrop-filter:blur(8px); }
   #visorOverlay.visible { opacity:1; pointer-events:auto; }
   #visorPanel { position:fixed; top:0; right:0; width:100vw; height:100vh; background:#1a1714; z-index:2100; display:flex; flex-direction:column; transform:translateX(100%); transition:transform 0.5s cubic-bezier(0.77,0,0.18,1); }
@@ -218,11 +181,9 @@ body::before {
   .df-btn-sound, .df-btn-download, .df-btn-print { display:none !important; }
   .df-container { background:#1a1714 !important; }
   @media(max-width:600px) { #visorPanel { width:100vw; height:90vh; } #visorHeader { padding:10px 14px; } #visorTitulo { font-size:12px; } }
-
   .view-toggle { display:flex; align-items:center; gap:5px; background:rgba(255,255,255,0.7); border:1px solid rgba(197,160,89,0.2); border-radius:50px; padding:4px 5px; box-shadow:0 2px 8px rgba(0,0,0,0.05); flex-shrink:0; }
   .view-btn { width:30px; height:30px; border-radius:50px; border:none; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1); background:transparent; color:var(--text-light); }
   .view-btn.active { background:var(--gold); color:white; box-shadow:0 3px 10px rgba(197,160,89,0.4); transform:scale(1.05); }
-
   .coverflow-wrap { display:none; flex-direction:column; align-items:center; padding:40px 20px 60px; position:relative; z-index:1; animation:fadeUp 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
   .coverflow-wrap.active { display:flex; }
   .cf-stage { display:flex; align-items:center; justify-content:center; height:260px; width:100%; perspective:900px; position:relative; overflow:visible; }
@@ -243,10 +204,18 @@ body::before {
   .cf-open-btn { margin-top:20px; padding:10px 28px; background:var(--gold); color:white; border:none; border-radius:50px; cursor:pointer; font-family:'Josefin Sans',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; font-weight:700; transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1); text-decoration:none; display:inline-block; }
   .cf-open-btn:hover { transform:translateY(-2px) scale(1.03); box-shadow:0 8px 24px rgba(197,160,89,0.5); }
   .books-inner.cf-hidden { display:none; }
-
   ::-webkit-scrollbar { width:4px; }
   ::-webkit-scrollbar-track { background:transparent; }
   ::-webkit-scrollbar-thumb { background:rgba(197,160,89,0.3); border-radius:2px; }
+
+  /* ══ Modal Descargo ══ */
+  #modalDescargo { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(8px); }
+  #modalDescargo.visible { display:flex; }
+  .modal-descargo-box { background:#1C1C1E; border:0.5px solid rgba(201,168,76,0.4); border-radius:16px; padding:2rem; max-width:500px; margin:20px; }
+  .modal-descargo-titulo { font-family:'Josefin Sans',sans-serif; font-size:10px; letter-spacing:3px; color:#C5A059; text-transform:uppercase; margin-bottom:16px; }
+  .modal-descargo-texto { font-family:'Cormorant Garamond',serif; font-size:14px; color:#E8D5A3; line-height:1.8; font-style:italic; }
+  .modal-descargo-cerrar { margin-top:20px; display:block; width:100%; padding:10px; background:none; border:0.5px solid rgba(201,168,76,0.4); border-radius:8px; color:#C5A059; font-family:'Josefin Sans',sans-serif; font-size:9px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all 0.2s; }
+  .modal-descargo-cerrar:hover { background:rgba(201,168,76,0.1); }
 </style>
 </head>
 <body>
@@ -287,17 +256,29 @@ body::before {
   </div>
 </div>
 
+<!-- Modal Descargo de Responsabilidad -->
+<div id="modalDescargo" onclick="this.classList.remove('visible')">
+  <div class="modal-descargo-box" onclick="event.stopPropagation()">
+    <div class="modal-descargo-titulo">Aviso Legal y Descargo de Responsabilidad</div>
+    <div class="modal-descargo-texto">
+      Los contenidos disponibles en esta Biblioteca Virtual son proporcionados exclusivamente con fines educativos, formativos y de consulta personal. Todo el material bibliográfico aquí presentado puede estar protegido por derechos de autor. Esta plataforma no almacena, distribuye ni comercializa ningún archivo; los libros son accesibles únicamente en modalidad de visualización en línea a través de sus fuentes originales.<br><br>
+      No está permitida la descarga, reproducción, modificación o distribución de ninguno de los contenidos disponibles. El uso indebido del material es responsabilidad exclusiva del usuario.<br><br>
+      Escuela para el Despertar actúa como intermediario de acceso con fines estrictamente culturales y educativos, promoviendo el respeto por la propiedad intelectual y el trabajo de cada autor.
+    </div>
+    <button class="modal-descargo-cerrar" onclick="document.getElementById('modalDescargo').classList.remove('visible')">Cerrar</button>
+  </div>
+</div>
+
 <div class="app">
   <div class="panel-cats" id="panelCats">
     <div class="app-header">
-     <img class="app-logo" src="Fondo/Escuela.png" alt="Logo" onclick="window.top.location.href='https://www.escuelaparaeldespertar.com'" onerror="this.style.display='none'">
+      <img class="app-logo" src="Fondo/Escuela.png" alt="Logo" onclick="window.top.location.href='https://www.escuelaparaeldespertar.com'" onerror="this.style.display='none'">
       <div class="app-title">Biblioteca<br>Virtual</div>
       <div class="gold-divider"></div>
+      <button class="descargo-btn" onclick="document.getElementById('modalDescargo').classList.add('visible')">Descargo de Responsabilidad</button>
       <nav style="display:flex;align-items:center;gap:6px;font-size:12px;margin-top:6px;">
-  <a href="https://www.escuelaparaeldespertar.com" 
-   style="color:#854F0B;text-decoration:none;display:flex;align-items:center;gap:4px;">
-  ⌂ Inicio</a>
-   </nav>
+        <a href="https://www.escuelaparaeldespertar.com" style="color:#854F0B;text-decoration:none;display:flex;align-items:center;gap:4px;">⌂ Inicio</a>
+      </nav>
       <div class="search-box-wrap">
         <div class="search-box">
           <span class="search-box-icon">🔍</span>
@@ -312,14 +293,13 @@ body::before {
         <div class="sr-grid" id="srGrid"></div>
       </div>
       <div class="cats-grid-wrap" id="catsGridWrap">
-  <div class="hero-bar" id="heroBar" style="margin:0 0 24px;">
-    <div class="hero-ornament" id="hOrnament"></div>
-    <div class="hero-title" id="hTitle">EVOLUTIKA</div>
-    <div class="hero-sub" id="hSub">Pensamiento profundo para tiempos extraordinarios</div>
-  </div>
-  <div class="cats-label"><span>✦ &nbsp; Colecciones</span></div>
-  <div class="cats-grid" id="catsGrid"></div>
-</div>
+        <div class="hero-bar" id="heroBar" style="margin:0 0 24px;">
+          <div class="hero-ornament" id="hOrnament"></div>
+          <div class="hero-title" id="hTitle">EVOLUTIKA</div>
+          <div class="hero-sub" id="hSub">Pensamiento profundo para tiempos extraordinarios</div>
+        </div>
+        <div class="cats-label"><span>✦ &nbsp; Colecciones</span></div>
+        <div class="cats-grid" id="catsGrid"></div>
       </div>
     </div>
   </div>
@@ -352,11 +332,9 @@ body::before {
   </div>
 </div>
 
-<!-- ══ DearFlip JS ══ -->
 <script src="https://cdn.jsdelivr.net/npm/dearflip@2.2.4/dist/dearflip.min.js"></script>
 <script src="libros.js"></script>
 <script>
-
   const catSVGs = {
     'Barbara Ann Brenan': `<img src="Iconos/barbara.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Biodescodificación': `<img src="Iconos/biodescodificacion.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
@@ -380,7 +358,6 @@ body::before {
     'Herramientas Prácticas para Sostener los Cambios': `<img src="Iconos/Herramienta.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Papa León XIV': `<img src="Iconos/PapaLeon.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
   };
-
   const catData = [
     {name:'Barbara Ann Brenan'},{name:'Biodescodificación'},{name:'Budismo'},
     {name:'Carolyne Myss'},{name:'Constelaciones Familiares'},{name:'Cristaloterapia'},
@@ -390,9 +367,7 @@ body::before {
     {name:'Biología y comportamiento social'},{name:'Inteligencia Artificial en lo Humano'},
     {name:'Herramientas Prácticas para Sostener los Cambios'},{name:'Papa León XIV'},
   ];
-
   const catIconsEmoji = {'Ken Wilber':'🌊','Barbara Ann Brenan':'🌺','Biodescodificación':'🧬','Budismo':'🌿','Carolyne Myss':'🌸','Constelaciones Familiares':'🫧','Cristaloterapia':'💎','Filosofía y Religión':'🕊️','Geometría Sagrada':'🌀','Kabbalah':'🔮','Kryon':'✨','Libros Raros':'📜','Lobsang Rampa':'🏔️','Neville Goddard':'🌙','Nikola Tesla':'⚡','Teosofía':'🌌','Triguerinho':'🌟','Biología y comportamiento social':'🧬👥','Inteligencia Artificial en lo Humano':'🤖','Herramientas Prácticas para Sostener los Cambios':'🧰','Papa León XIV':'📜'};
-
   function buildCatsGrid() {
     const grid = document.getElementById('catsGrid');
     grid.innerHTML = catData.map((c, i) => {
@@ -405,7 +380,6 @@ body::before {
     }).join('');
     initTilt();
   }
-
   const heroBar = document.getElementById('heroBar');
   const hOrn = document.getElementById('hOrnament');
   const hTit = document.getElementById('hTitle');
@@ -420,10 +394,8 @@ body::before {
     });
     heroBar.addEventListener('mouseleave', () => { heroBar.style.backgroundPosition='50% 50%'; hOrn.style.transform=hTit.style.transform=hSub.style.transform=''; });
   }
-
   let dfInstance = null;
   function esPDF(url) { return url && url.toLowerCase().includes('.pdf'); }
-
   function abrirVisor(url, titulo, autor) {
     if (esPDF(url)) {
       const params = new URLSearchParams({ url, titulo: titulo || '', autor: autor || '' });
@@ -444,7 +416,6 @@ body::before {
       setTimeout(() => { iframe.src = url; }, 300);
     }
   }
-
   function cerrarVisor() {
     document.getElementById('visorOverlay').classList.remove('visible');
     document.getElementById('visorPanel').classList.remove('open');
@@ -458,11 +429,9 @@ body::before {
       document.getElementById('visorEstado').classList.remove('oculto');
     }, 500);
   }
-
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && document.getElementById('visorPanel').classList.contains('open')) cerrarVisor();
   });
-
   function bookCardHTML(l,i) {
     const tieneImagen=l.imagen&&l.imagen.trim();
     const esAudio=l.subcategoria&&l.subcategoria.includes('Audio');
@@ -483,12 +452,10 @@ body::before {
       </div>
     </div>`;
   }
-
   const panelCats=document.getElementById('panelCats');
   const panelBooks=document.getElementById('panelBooks');
   let navState='home', currentCat=null, currentCatIcon=null;
   history.replaceState({nav:'home'},'');
-
   window.addEventListener('popstate',function(e){
     const state=e.state||{};
     if(state.nav==='category'){
@@ -497,7 +464,6 @@ body::before {
       else{const filtrados=libros.filter(l=>l.categoria===state.cat&&!l.subcategoria);document.getElementById('booksCatName').textContent=state.icon+'  '+state.cat;document.getElementById('booksCount').textContent=filtrados.length+(filtrados.length===1?' libro':' libros');mostrarLibros(filtrados);navState='category';}
     } else {_irAInicio();}
   });
-
   function _irAInicio(){
     navState='home';
     document.getElementById('panelMusicaMobile').style.opacity='1';
@@ -506,7 +472,6 @@ body::before {
     panelCats.classList.remove('slide-out');
     window.scrollTo(0,0);
   }
-
   function _mostrarCategoria(cat,icon){
     const subcats=[...new Set(libros.filter(l=>l.categoria===cat&&l.subcategoria).map(l=>l.subcategoria))];
     const subcatImages={'Audios de Neville Goddard':'Libros/Neville_goddard/Audios/audiosneville.jpg','Libros de Neville Goddard':'Libros/Neville_goddard/Libros/librosneville.jpg'};
@@ -528,7 +493,6 @@ body::before {
     }).join('');
     navState='category'; panelBooks.scrollTop=0;
   }
-
   function abrirCategoria(cat,icon){
     currentCat=cat; currentCatIcon=icon;
     document.getElementById('panelMusicaMobile').style.transition='opacity 0.5s ease';
@@ -547,29 +511,23 @@ body::before {
     panelBooks.classList.add('slide-in');
     panelBooks.scrollTop=0;
   }
-
   function abrirSubcategoria(cat,sub,catIcon,subIcon){
     const filtrados=libros.filter(l=>l.subcategoria===sub);
     document.getElementById('booksCatName').textContent=subIcon+'  '+sub;
     document.getElementById('booksCount').textContent=filtrados.length+(filtrados.length===1?' elemento':' elementos');
     mostrarLibros(filtrados);history.pushState({nav:'subcategory',cat,sub,catIcon,subIcon},'');navState='subcategory';panelBooks.scrollTop=0;
   }
-
   function mostrarLibros(filtrados){
     const grid=document.getElementById('booksInner');
     grid.innerHTML=filtrados.length===0?`<div class="empty-msg">Próximamente libros<br>en esta colección ✦</div>`:filtrados.map((l,i)=>bookCardHTML(l,i)).join('');
     requestAnimationFrame(()=>{const now=Date.now();grid.querySelectorAll('.loto-spinner').forEach(s=>{s._startTime=now;});});
     cfInit(filtrados);
   }
-
   function volverInicio(){ history.pushState({nav:'home'},'');_irAInicio(); }
-
   const LOTO_MIN=1200;
   function revelarPortada(img){const s=img.parentElement.querySelector('.loto-spinner');if(!s)return;const r=Math.max(0,LOTO_MIN-(Date.now()-(s._startTime||Date.now())));setTimeout(()=>{img.classList.add('img-loaded');s.classList.add('hidden');},r);}
   function ocultarLoto(s){if(!s)return;const r=Math.max(0,LOTO_MIN-(Date.now()-(s._startTime||Date.now())));setTimeout(()=>s.classList.add('hidden'),r);}
-
   function highlight(t,q){return t.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'),'<mark>$1</mark>');}
-
   function buscarLibros(){
     const q=document.getElementById('searchInput').value.trim();
     const results=document.getElementById('searchResults'),catsWrap=document.getElementById('catsGridWrap'),clearBtn=document.getElementById('searchClear');
@@ -593,13 +551,10 @@ body::before {
     }).join('');
     if(window.innerWidth<=768) setTimeout(()=>results.scrollIntoView({behavior:'smooth',block:'start'}),100);
   }
-
   function limpiarBusqueda(){document.getElementById('searchInput').value='';buscarLibros();document.getElementById('searchInput').focus();}
   document.getElementById('searchInput').addEventListener('focus',function(){if(window.innerWidth<=768) setTimeout(()=>this.scrollIntoView({behavior:'smooth',block:'center'}),350);});
-
   const cont=document.getElementById('particles');
   for(let i=0;i<18;i++){const p=document.createElement('div');p.className='particle';p.style.cssText=`left:${Math.random()*100}%;animation-duration:${12+Math.random()*20}s;animation-delay:${Math.random()*14}s;width:${1+Math.random()*1.5}px;height:${1+Math.random()*1.5}px;opacity:0.4;`;cont.appendChild(p);}
-
   const audio=document.getElementById('musicaFondo');audio.volume=0.5;let isRepeating=true;
   function iniciarMusica(){audio.play();document.getElementById('inicioMusicaM').style.display='none';document.getElementById('playerWidgetM').style.display='flex';document.getElementById('mobileVolRow').style.display='flex';}
   function toggleAudio(){if(audio.paused){audio.play();document.getElementById('playPauseBtnM').textContent='⏸';}else{audio.pause();document.getElementById('playPauseBtnM').textContent='▶';}}
@@ -607,7 +562,6 @@ body::before {
   function seekAudio(e){audio.currentTime=(e.offsetX/e.currentTarget.offsetWidth)*audio.duration;}
   audio.addEventListener('timeupdate',()=>{if(!audio.duration)return;document.getElementById('progressFillM').style.width=(audio.currentTime/audio.duration*100)+'%';});
   function cambiarVolumen(){const s=document.getElementById('volumenM');if(s)audio.volume=s.value;}
-
   function initTilt(){
     document.querySelectorAll('.cat-card').forEach(card=>{
       if(card.dataset.tilt)return; card.dataset.tilt='1';
@@ -628,7 +582,6 @@ body::before {
       card.addEventListener('mousedown',()=>{card.style.transform='perspective(600px) scale(0.97)';});
     });
   }
-
   let cfBooks=[],cfCurrent=0,cfView=localStorage.getItem('libView')||'grid';
   function setView(mode){cfView=mode;localStorage.setItem('libView',mode);document.getElementById('btnGrid').classList.toggle('active',mode==='grid');document.getElementById('btnCover').classList.toggle('active',mode==='cover');document.getElementById('booksInner').classList.toggle('cf-hidden',mode==='cover');document.getElementById('coverflowWrap').classList.toggle('active',mode==='cover');if(mode==='cover'&&cfBooks.length>0)cfRender();}
   function cfInit(libros){cfBooks=libros.filter(l=>l.url||l.video||l.imagen);cfCurrent=0;cfBuild();if(cfView==='cover'){setView('cover');}else{setView('grid');}}
@@ -672,10 +625,8 @@ body::before {
   let cfTx0=0;
   document.addEventListener('touchstart',e=>{cfTx0=e.touches[0]?.clientX||0;});
   document.addEventListener('touchend',e=>{if(!document.getElementById('coverflowWrap').classList.contains('active'))return;const dx=(e.changedTouches[0]?.clientX||0)-cfTx0;if(Math.abs(dx)>40)cfMove(dx<0?1:-1);});
-
   buildCatsGrid();
   new MutationObserver(()=>{if(!document.getElementById('panelCats').classList.contains('slide-out'))setTimeout(initTilt,100);}).observe(document.getElementById('panelCats'),{attributes:true,attributeFilter:['class']});
-
 </script>
 </body>
 </html>
