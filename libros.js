@@ -80,6 +80,8 @@
     { categoria:'Filosofía y Religión', titulo:'Santa Teresa de Ávila', autor:'Francis J. Sicius', imagen:'Libros/Filosofia_Religion/SantaTeresa.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/FILOSOF%C3%8DA%20Y%20RELIGI%C3%93N/Dialnet-SantaTeresaDeAvilaCompaneraEspiritualDeLaSiervaDeD-5179509.pdf', imgPosition:'center top' },
     { categoria:'Filosofía y Religión', titulo:'La Vida Sempiterna 1', autor:'Duane S. Crowther', imagen:'Libros/Filosofia_Religion/VidaSempiterna1.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/FILOSOF%C3%8DA%20Y%20RELIGI%C3%93N/La%20vida%20sempiterna%201-%20Duane%20S.%20Crowther.pdf' },
     { categoria:'Filosofía y Religión', titulo:'La Vida Sempiterna 2', autor:'Duane S. Crowther', imagen:'Libros/Filosofia_Religion/VidaSempiterna2.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/FILOSOF%C3%8DA%20Y%20RELIGI%C3%93N/La%20vida%20sempiterna%202%20-%20Duane%20S.%20Crowther.pdf' },
+    // Meditación
+    { categoria:'Meditación', titulo:'La Meditacion y los Estados Superiores de Consciencia', autor:'Daniel Goleman', imagen:'Libros/Meditacion/Meditacion.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/MEDITACI%C3%93N/La_meditacin_y_los_estados_superiores_de_consciencia.pdf ' },
     // Sexualidad Sagrada
     { categoria:'Sexualidad Sagrada', titulo:'Diccionario de la Sexualidad Sagrada', autor:'Rufus Camphausen', imagen:'Libros/Sexualidad/Sexualidad.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/SEXUALIDAD%20SAGRADA/Diccionario_de_la_sexualidad_sagrada.pdf' },
     // Geometría Sagrada
