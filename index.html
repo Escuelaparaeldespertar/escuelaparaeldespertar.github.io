@@ -214,7 +214,45 @@
   ::-webkit-scrollbar { width:4px; }
   ::-webkit-scrollbar-track { background:transparent; }
   ::-webkit-scrollbar-thumb { background:rgba(197,160,89,0.3); border-radius:2px; }
-
+@keyframes bounce-down {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.7; }
+  50%       { transform: translateX(-50%) translateY(8px); opacity: 1; }
+}
+#scrollIndicator {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 100;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  animation: bounce-down 1.6s ease-in-out infinite;
+}
+#scrollIndicator span {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 8px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+#scrollIndicator svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--gold);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 4px rgba(197,160,89,0.5));
+}
+#scrollIndicator.hidden {
+  opacity: 0;
+}
   /* ══ Modal Descargo ══ */
   #modalDescargo { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(8px); }
   #modalDescargo.visible { display:flex; }
@@ -311,7 +349,12 @@
       </div>
     </div>
   </div>
-
+<div id="scrollIndicator">
+  <span>Ver más</span>
+  <svg viewBox="0 0 24 24">
+    <polyline points="6 9 12 15 18 9"/>
+  </svg>
+</div>
   <div class="panel-books" id="panelBooks">
     <div class="books-loto"></div>
     <div class="books-header">
@@ -637,6 +680,27 @@
   let cfTx0=0;
   document.addEventListener('touchstart',e=>{cfTx0=e.touches[0]?.clientX||0;});
   document.addEventListener('touchend',e=>{if(!document.getElementById('coverflowWrap').classList.contains('active'))return;const dx=(e.changedTouches[0]?.clientX||0)-cfTx0;if(Math.abs(dx)>40)cfMove(dx<0?1:-1);});
+  (function(){
+  const indicator = document.getElementById('scrollIndicator');
+  const catsRight = document.querySelector('.cats-right');
+  if (!indicator || !catsRight) return;
+  function checkScroll() {
+    const el = window.innerWidth >= 900 ? catsRight : document.documentElement;
+    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 40;
+    indicator.classList.toggle('hidden', atBottom);
+  }
+  catsRight.addEventListener('scroll', checkScroll);
+  window.addEventListener('scroll', checkScroll);
+  checkScroll();
+  document.getElementById('panelCats').addEventListener('click', function(e){
+    if (e.target.closest('.cat-card')) indicator.classList.add('hidden');
+  });
+  const origVolver = window.volverInicio;
+  window.volverInicio = function(){
+    origVolver();
+    setTimeout(checkScroll, 600);
+  };
+})();
   buildCatsGrid();
   new MutationObserver(()=>{if(!document.getElementById('panelCats').classList.contains('slide-out'))setTimeout(initTilt,100);}).observe(document.getElementById('panelCats'),{attributes:true,attributeFilter:['class']});
 </script>
