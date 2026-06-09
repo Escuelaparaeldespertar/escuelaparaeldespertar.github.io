@@ -347,14 +347,14 @@
         <div class="cats-label"><span>✦ &nbsp; Colecciones</span></div>
         <div class="cats-grid" id="catsGrid"></div>
       </div>
-    </div>
-  </div>
-<div id="scrollIndicator">
+      <div id="scrollIndicator">
   <span>Ver más</span>
   <svg viewBox="0 0 24 24">
     <polyline points="6 9 12 15 18 9"/>
   </svg>
 </div>
+    </div>
+  </div>
   <div class="panel-books" id="panelBooks">
     <div class="books-loto"></div>
     <div class="books-header">
@@ -684,11 +684,12 @@
   const indicator = document.getElementById('scrollIndicator');
   const catsRight = document.querySelector('.cats-right');
   if (!indicator || !catsRight) return;
-  function checkScroll() {
-    const el = window.innerWidth >= 900 ? catsRight : document.documentElement;
-    const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 40;
-    indicator.classList.toggle('hidden', atBottom);
-  }
+function checkScroll() {
+  const el = window.innerWidth >= 900 ? catsRight : document.documentElement;
+  const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 40;
+  const panelSlideOut = document.getElementById('panelCats').classList.contains('slide-out');
+  indicator.classList.toggle('hidden', atBottom || panelSlideOut);
+}
   catsRight.addEventListener('scroll', checkScroll);
   window.addEventListener('scroll', checkScroll);
   checkScroll();
