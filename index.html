@@ -686,14 +686,15 @@
   if (!indicator || !catsRight) return;
 function checkScroll() {
   const el = window.innerWidth >= 900 ? catsRight : document.documentElement;
+  const scrolled = el.scrollTop > 50;
   const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 40;
   const panelSlideOut = document.getElementById('panelCats').classList.contains('slide-out');
-  const hasMore = el.scrollHeight > el.clientHeight + 10;
-  indicator.classList.toggle('hidden', atBottom || panelSlideOut || !hasMore);
+  indicator.classList.toggle('hidden', scrolled || atBottom || panelSlideOut);
 }
   catsRight.addEventListener('scroll', checkScroll);
   window.addEventListener('scroll', checkScroll);
- setTimeout(checkScroll, 500);
+ indicator.classList.remove('hidden');
+setTimeout(checkScroll, 300);
   document.getElementById('panelCats').addEventListener('click', function(e){
     if (e.target.closest('.cat-card')) indicator.classList.add('hidden');
   });
