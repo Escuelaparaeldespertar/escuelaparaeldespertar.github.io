@@ -692,7 +692,7 @@ function checkScroll() {
 }
   catsRight.addEventListener('scroll', checkScroll);
   window.addEventListener('scroll', checkScroll);
-  checkScroll();
+ setTimeout(checkScroll, 500);
   document.getElementById('panelCats').addEventListener('click', function(e){
     if (e.target.closest('.cat-card')) indicator.classList.add('hidden');
   });
