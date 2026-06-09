@@ -347,13 +347,7 @@
         <div class="cats-label"><span>✦ &nbsp; Colecciones</span></div>
         <div class="cats-grid" id="catsGrid"></div>
       </div>
-      <div id="scrollIndicator">
-  <span>Ver más</span>
-  <svg viewBox="0 0 24 24">
-    <polyline points="6 9 12 15 18 9"/>
-  </svg>
-</div>
-    </div>
+     </div>
   </div>
   <div class="panel-books" id="panelBooks">
     <div class="books-loto"></div>
@@ -680,32 +674,39 @@
   let cfTx0=0;
   document.addEventListener('touchstart',e=>{cfTx0=e.touches[0]?.clientX||0;});
   document.addEventListener('touchend',e=>{if(!document.getElementById('coverflowWrap').classList.contains('active'))return;const dx=(e.changedTouches[0]?.clientX||0)-cfTx0;if(Math.abs(dx)>40)cfMove(dx<0?1:-1);});
-  (function(){
+ (function(){
   const indicator = document.getElementById('scrollIndicator');
   const catsRight = document.querySelector('.cats-right');
   if (!indicator || !catsRight) return;
-function checkScroll() {
-  const el = window.innerWidth >= 900 ? catsRight : document.documentElement;
-  const scrolled = el.scrollTop > 50;
-  const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 40;
-  const panelSlideOut = document.getElementById('panelCats').classList.contains('slide-out');
-  indicator.classList.toggle('hidden', scrolled || atBottom || panelSlideOut);
-}
+
+  function checkScroll() {
+    const panelSlideOut = document.getElementById('panelCats').classList.contains('slide-out');
+    const atBottom = catsRight.scrollTop + catsRight.clientHeight >= catsRight.scrollHeight - 40;
+    indicator.classList.toggle('hidden', atBottom || panelSlideOut);
+  }
+
   catsRight.addEventListener('scroll', checkScroll);
-  window.addEventListener('scroll', checkScroll);
- indicator.classList.remove('hidden');
-setTimeout(checkScroll, 300);
+  window.addEventListener('resize', checkScroll);
+  setTimeout(checkScroll, 800);
+
   document.getElementById('panelCats').addEventListener('click', function(e){
     if (e.target.closest('.cat-card')) indicator.classList.add('hidden');
   });
   const origVolver = window.volverInicio;
   window.volverInicio = function(){
     origVolver();
+    indicator.classList.remove('hidden');
     setTimeout(checkScroll, 600);
   };
 })();
   buildCatsGrid();
   new MutationObserver(()=>{if(!document.getElementById('panelCats').classList.contains('slide-out'))setTimeout(initTilt,100);}).observe(document.getElementById('panelCats'),{attributes:true,attributeFilter:['class']});
 </script>
+ <div id="scrollIndicator">
+  <span>Ver más</span>
+  <svg viewBox="0 0 24 24">
+    <polyline points="6 9 12 15 18 9"/>
+  </svg>
+</div>
 </body>
 </html>
