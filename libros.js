@@ -30,6 +30,8 @@
     // Biodescodificación
     { categoria:'Biodescodificación', titulo:'La Descodificación Biológica de las Enfermedades', autor:'Enric Corbera', imagen:'Libros/Biodescodificacion/Biodescodificacion.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/BIODESCODIFICACI%C3%93N/DescodificacinBiolgicadelasenfermedades.pdf' },
     { categoria:'Biodescodificación', titulo:'Causas Emocionales de las Enfermedades', autor:'Jacques Martel', imagen:'Libros/Biodescodificacion/Causasdolencias.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/BIODESCODIFICACI%C3%93N/Causas%20emocionales%20de%20las%20enfermedades%20El%20gran%20diccionario%20Jacques%20Martel.pdf' },
+    // Medicina Ancestral
+    { categoria:'Medicina Ancestral', titulo:'Un Salto Cuántico - De la Medicina Ancestral a la Medicina Cuántica', autor:'Dr. Manuel Arrieta', imagen:'Libros/Medicina_Ancestral/Medicina.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/MEDICINA%20ANCESTRAL/Un%20Salto%20Cuantica%20De%20la%20Medicina%20Ancestral%20a%20la%20Medicina%20Cu%C3%A1ntica%20(Manuel%20Arriet.pdf' },
     // Budismo
     { categoria:'Budismo', titulo:'El Libro Tibetano de los Muertos', autor:'Timothy Leary', imagen:'Libros/Budismo/librotibetanomuertos.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/BUDISMO/Libro_Tibetano_de_los_Muertos.pdf' },
     { categoria:'Budismo', titulo:'Budismo Esotérico', autor:'Alfred Percy Sinnett', imagen:'Libros/Budismo/Budismoesoterico.jpg', imgContain:true, url:'https://pub-fc46ecd1c6b8484494c1513716440500.r2.dev/Biblioteca/BUDISMO/Sinnett%20-%20Budismo%20Esoterico.pdf' },
