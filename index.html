@@ -702,7 +702,11 @@
   };
 })();
   buildCatsGrid();
-  new MutationObserver(()=>{if(!document.getElementById('panelCats').classList.contains('slide-out'))setTimeout(initTilt,100);}).observe(document.getElementById('panelCats'),{attributes:true,attributeFilter:['class']});
+  new MutationObserver(()=>{
+  const slideOut = document.getElementById('panelCats').classList.contains('slide-out');
+  if(!slideOut) setTimeout(initTilt,100);
+  document.getElementById('scrollIndicator').classList.toggle('hidden', slideOut);
+}).observe(document.getElementById('panelCats'),{attributes:true,attributeFilter:['class']});
 </script>
  <div id="scrollIndicator">
   <span>Ver más</span>
