@@ -565,6 +565,7 @@
     const filtrados=libros.filter(l=>l.subcategoria===sub);
     document.getElementById('booksCatName').textContent=subIcon+'  '+sub;
     document.getElementById('booksCount').textContent=filtrados.length+(filtrados.length===1?' elemento':' elementos');
+    document.getElementById('scrollIndicator').classList.add('hidden');
     mostrarLibros(filtrados);history.pushState({nav:'subcategory',cat,sub,catIcon,subIcon},'');navState='subcategory';panelBooks.scrollTop=0;
   }
   function mostrarLibros(filtrados){
