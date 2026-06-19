@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Evolutika Biblioteca</title>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #C5A059; --gold-dark: #A07838; --gold-light: #D4B06A;
+  --bg: #F8F5EE; --white: #FFFFFF; --dark: #1C1C1E;
+  --mid: #3A3A3C; --light: #6C6C70;
+  --border: rgba(197,160,89,0.2); --border-strong: rgba(197,160,89,0.4);
+  --glass: rgba(255,255,255,0.85); --danger: #c0392b; --success: #27ae60;
+  --sidebar-w: 240px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+body{font-family:'Josefin Sans',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:url('Fondo/Tramado.png') repeat;background-size:600px;opacity:0.3;pointer-events:none;z-index:0;}
+
+/* ─── LOGIN ─── */
+#loginScreen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:1000;background:var(--bg);}
+.login-card{background:var(--white);border:1px solid var(--border-strong);border-radius:20px;padding:44px 40px;width:360px;position:relative;z-index:1;box-shadow:0 20px 60px rgba(0,0,0,0.1);}
+.login-logo{width:100px;height:100px;border-radius:50%;object-fit:cover;border:2px solid var(--border-strong);display:block;margin:0 auto 20px;}
+.login-title{font-size:11px;letter-spacing:5px;color:var(--gold);text-transform:uppercase;text-align:center;font-weight:700;margin-bottom:4px;}
+.login-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--light);text-align:center;margin-bottom:28px;}
+.gold-divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-strong),transparent);margin:12px 0 20px;}
+
+/* ─── FORM ELEMENTS ─── */
+.field{margin-bottom:16px;}
+.field label{font-size:9px;letter-spacing:2px;color:var(--light);text-transform:uppercase;font-weight:700;display:block;margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1px solid var(--border-strong);border-radius:10px;font-family:'Josefin Sans',sans-serif;font-size:13px;color:var(--dark);background:var(--bg);transition:all 0.3s;outline:none;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);background:var(--white);box-shadow:0 0 0 3px rgba(197,160,89,0.1);}
+.field textarea{resize:vertical;min-height:70px;}
+.field input[type=color]{padding:4px;height:40px;cursor:pointer;}
+.field input[type=checkbox]{width:auto;cursor:pointer;accent-color:var(--gold);}
+
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:50px;border:1px solid var(--border-strong);background:var(--white);color:var(--dark);font-family:'Josefin Sans',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1);}
+.btn-gold{background:var(--gold);border-color:var(--gold);color:var(--white);}
+.btn-gold:hover{background:var(--gold-dark);border-color:var(--gold-dark);}
+.btn-danger{border-color:var(--danger);color:var(--danger);}
+.btn-danger:hover{background:var(--danger);color:var(--white);}
+.btn-sm{padding:6px 14px;font-size:8px;}
+.btn-icon{width:34px;height:34px;padding:0;border-radius:50%;justify-content:center;font-size:14px;}
+
+/* ─── SIDEBAR ─── */
+#adminApp{display:none;position:relative;z-index:1;}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar-w);background:var(--dark);display:flex;flex-direction:column;z-index:100;overflow-y:auto;}
+.sidebar-logo{padding:28px 24px 20px;border-bottom:1px solid rgba(197,160,89,0.15);}
+.sidebar-logo img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid rgba(197,160,89,0.4);display:block;margin-bottom:12px;}
+.sidebar-logo-title{font-size:9px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;font-weight:700;}
+.sidebar-logo-sub{font-size:10px;color:rgba(255,255,255,0.3);margin-top:2px;}
+.nav-section{font-size:8px;letter-spacing:3px;color:rgba(197,160,89,0.4);padding:20px 24px 8px;text-transform:uppercase;font-weight:700;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 24px;font-size:10px;letter-spacing:1px;cursor:pointer;border:none;background:none;color:rgba(255,255,255,0.45);width:100%;text-align:left;transition:all 0.2s;font-family:'Josefin Sans',sans-serif;font-weight:600;text-transform:uppercase;}
+.nav-item span.icon{font-size:16px;width:20px;text-align:center;}
+.nav-item:hover{background:rgba(197,160,89,0.08);color:rgba(255,255,255,0.8);}
+.nav-item.active{background:rgba(197,160,89,0.12);color:var(--gold);border-left:2px solid var(--gold);}
+.sidebar-footer{margin-top:auto;padding:20px 24px;border-top:1px solid rgba(197,160,89,0.15);}
+
+/* ─── MAIN ─── */
+.main{margin-left:var(--sidebar-w);padding:36px 40px;min-height:100vh;}
+.page{display:none;}
+.page.active{display:block;}
+.page-header{margin-bottom:28px;}
+.page-title{font-size:18px;font-weight:700;color:var(--dark);}
+.page-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:15px;color:var(--light);margin-top:4px;}
+
+/* ─── CARDS ─── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px 28px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.card-title{font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:4px;}
+.card-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--light);margin-bottom:20px;}
+
+/* ─── STATS ─── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px;}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 20px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+.stat-num{font-size:28px;font-weight:700;color:var(--dark);}
+.stat-lbl{font-size:8px;letter-spacing:2px;color:var(--light);text-transform:uppercase;font-weight:700;margin-top:4px;}
+
+/* ─── COLLECTION LIST ─── */
+.cat-list{display:flex;flex-direction:column;gap:10px;}
+.cat-item{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--bg);border:1px solid var(--border);border-radius:12px;transition:all 0.2s;}
+.cat-item:hover{border-color:var(--border-strong);background:var(--white);}
+.cat-icon{font-size:22px;width:36px;text-align:center;flex-shrink:0;}
+.cat-img{width:40px;height:40px;object-fit:contain;border-radius:8px;flex-shrink:0;}
+.cat-name{flex:1;font-size:12px;font-weight:700;letter-spacing:0.5px;}
+.cat-count{font-size:10px;color:var(--light);font-style:italic;font-family:'Cormorant Garamond',serif;}
+.cat-actions{display:flex;gap:6px;}
+
+/* ─── BOOK LIST ─── */
+.book-list{display:flex;flex-direction:column;gap:10px;}
+.book-item{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:12px;transition:all 0.2s;}
+.book-item:hover{border-color:var(--border-strong);background:var(--white);}
+.book-cover{width:38px;height:54px;object-fit:cover;border-radius:6px;background:var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;}
+.book-cover img{width:100%;height:100%;object-fit:cover;display:block;}
+.book-info{flex:1;min-width:0;}
+.book-title-s{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.book-meta{font-size:10px;color:var(--light);font-family:'Cormorant Garamond',serif;font-style:italic;margin-top:2px;}
+.book-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:8px;letter-spacing:1px;border:1px solid var(--border-strong);color:var(--gold);text-transform:uppercase;font-weight:700;}
+
+/* ─── MODAL ─── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(8px);}
+.modal-bg.open{display:flex;}
+.modal{background:var(--white);border:1px solid var(--border-strong);border-radius:20px;padding:32px;width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 30px 80px rgba(0,0,0,0.2);}
+.modal-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;}
+.modal-title{font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;font-weight:700;}
+.modal-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--light);margin-top:3px;}
+.modal-close{background:none;border:1px solid var(--border-strong);border-radius:50%;width:30px;height:30px;cursor:pointer;color:var(--light);font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+.modal-close:hover{background:var(--danger);border-color:var(--danger);color:var(--white);}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;padding-top:20px;border-top:1px solid var(--border);}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+
+/* ─── COLOR ROWS ─── */
+.color-row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);}
+.color-row:last-child{border-bottom:none;}
+.color-swatch{width:40px;height:40px;border-radius:10px;border:1px solid var(--border-strong);flex-shrink:0;overflow:hidden;}
+.color-swatch input[type=color]{width:100%;height:100%;border:none;padding:0;cursor:pointer;background:none;}
+.color-label{flex:1;font-size:11px;font-weight:600;}
+.color-desc{font-size:10px;color:var(--light);font-family:'Cormorant Garamond',serif;font-style:italic;}
+.color-hex{font-size:10px;color:var(--light);font-family:monospace;flex-shrink:0;min-width:70px;text-align:right;}
+
+/* ─── ALERTS ─── */
+.alert{padding:12px 16px;border-radius:10px;font-size:11px;letter-spacing:0.5px;margin-top:14px;display:none;}
+.alert.success{background:#e9f7ef;color:var(--success);border:1px solid #a9dfbf;}
+.alert.error{background:#fdecea;color:var(--danger);border:1px solid #f5b7b1;}
+
+/* ─── EXPORT ─── */
+.code-block{background:var(--dark);border-radius:12px;padding:18px 20px;font-family:monospace;font-size:11px;color:rgba(197,160,89,0.7);max-height:240px;overflow-y:auto;margin-top:12px;white-space:pre-wrap;word-break:break-all;line-height:1.6;}
+
+/* ─── IMG PREVIEW ─── */
+.img-prev-wrap{display:flex;gap:14px;align-items:flex-start;}
+.img-prev{width:80px;height:112px;border-radius:10px;border:1px solid var(--border-strong);object-fit:cover;background:var(--bg);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;}
+.img-prev img{width:100%;height:100%;object-fit:cover;}
+
+/* ─── SECTION ACTIONS ─── */
+.section-actions{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
+.section-label{font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;font-weight:700;}
+
+/* ─── FILTER BAR ─── */
+.filter-bar{display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;}
+.filter-bar select,.filter-bar input{padding:9px 14px;border:1px solid var(--border-strong);border-radius:50px;font-family:'Josefin Sans',sans-serif;font-size:11px;color:var(--dark);background:var(--white);outline:none;transition:all 0.2s;}
+.filter-bar select:focus,.filter-bar input:focus{border-color:var(--gold);}
+
+/* ─── EMPTY ─── */
+.empty{text-align:center;padding:50px 20px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--light);}
+
+/* ─── BADGE ─── */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:8px;letter-spacing:1.5px;font-weight:700;text-transform:uppercase;}
+.badge-gold{background:rgba(197,160,89,0.12);color:var(--gold-dark);border:1px solid var(--border);}
+.badge-audio{background:#e8f4f8;color:#1a6985;border:1px solid #b8dce8;}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ LOGIN ══════════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <img class="login-logo" src="Fondo/Escuela.png" alt="Logo" onerror="this.style.display='none'">
+    <div class="login-title">Panel de Administración</div>
+    <div class="login-sub">Evolutika — Escuela para el Despertar</div>
+    <div class="gold-divider"></div>
+    <div class="alert error" id="loginError">Contraseña incorrecta</div>
+    <div class="field">
+      <label>Contraseña de acceso</label>
+      <input type="password" id="pwdInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:6px;" onclick="doLogin()">
+      🔓 Ingresar al panel
+    </button>
+    <p style="font-size:10px;color:var(--light);text-align:center;margin-top:18px;font-family:'Cormorant Garamond',serif;font-style:italic;">
+      Contraseña por defecto: <strong>evolutika2024</strong><br>
+      Cámbiala desde Ajustes una vez dentro.
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════ APP ══════════════ -->
+<div id="adminApp">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <img src="Fondo/Escuela.png" alt="Logo" onerror="this.style.display='none'">
+      <div class="sidebar-logo-title">Admin Panel</div>
+      <div class="sidebar-logo-sub">Evolutika Biblioteca</div>
+    </div>
+    <div class="nav-section">General</div>
+    <button class="nav-item active" onclick="goPage('dashboard')">
+      <span class="icon">🏠</span> Dashboard
+    </button>
+    <button class="nav-item" onclick="goPage('colores')">
+      <span class="icon">🎨</span> Colores y estilo
+    </button>
+    <div class="nav-section">Contenido</div>
+    <button class="nav-item" onclick="goPage('colecciones')">
+      <span class="icon">📁</span> Colecciones
+    </button>
+    <button class="nav-item" onclick="goPage('libros')">
+      <span class="icon">📚</span> Libros
+    </button>
+    <div class="nav-section">Sistema</div>
+    <button class="nav-item" onclick="goPage('exportar')">
+      <span class="icon">💾</span> Exportar datos
+    </button>
+    <button class="nav-item" onclick="goPage('instrucciones')">
+      <span class="icon">📋</span> Instrucciones
+    </button>
+    <button class="nav-item" onclick="goPage('ajustes')">
+      <span class="icon">⚙️</span> Ajustes
+    </button>
+    <div class="sidebar-footer">
+      <button class="btn btn-sm" style="width:100%;justify-content:center;background:rgba(255,255,255,0.06);border-color:rgba(197,160,89,0.2);color:rgba(255,255,255,0.4);" onclick="doLogout()">
+        🚪 Cerrar sesión
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- ─── DASHBOARD ─── -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <div class="page-title">Panel principal</div>
+        <div class="page-sub">Resumen general de la biblioteca virtual</div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num" id="st-cols">0</div><div class="stat-lbl">Colecciones</div></div>
+        <div class="stat-card"><div class="stat-num" id="st-books">0</div><div class="stat-lbl">Libros totales</div></div>
+        <div class="stat-card"><div class="stat-num" id="st-cover">0%</div><div class="stat-lbl">Con portada</div></div>
+        <div class="stat-card"><div class="stat-num" id="st-url">0%</div><div class="stat-lbl">Con enlace</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Colecciones activas</div>
+        <div class="card-sub">Haz clic en una colección para ir a gestionar sus libros</div>
+        <div class="cat-list" id="dashCats"></div>
+      </div>
+    </div>
+
+    <!-- ─── COLORES ─── -->
+    <div class="page" id="page-colores">
+      <div class="page-header">
+        <div class="page-title">Colores y estilo</div>
+        <div class="page-sub">Personaliza la apariencia de la biblioteca sin tocar código</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Paleta de colores</div>
+        <div class="card-sub">Estos colores reemplazarán los valores en el index.html al exportar</div>
+        <div id="colorList"></div>
+        <br>
+        <button class="btn btn-gold" onclick="saveColors()">✓ Guardar colores</button>
+        <button class="btn" style="margin-left:10px;" onclick="resetColors()">↺ Restaurar originales</button>
+        <div class="alert success" id="colorAlert">Colores guardados correctamente</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Textos del encabezado hero</div>
+        <div class="card-sub">El bloque oscuro que aparece en la pantalla principal</div>
+        <div class="grid2">
+          <div class="field">
+            <label>Título principal</label>
+            <input type="text" id="heroTitle" placeholder="EVOLUTIKA">
+          </div>
+          <div class="field">
+            <label>Subtítulo / descripción</label>
+            <input type="text" id="heroSub" placeholder="Pensamiento profundo para tiempos extraordinarios">
+          </div>
+        </div>
+        <button class="btn btn-gold" onclick="saveHero()">✓ Guardar textos</button>
+        <div class="alert success" id="heroAlert">Textos guardados</div>
+      </div>
+    </div>
+
+    <!-- ─── COLECCIONES ─── -->
+    <div class="page" id="page-colecciones">
+      <div class="page-header">
+        <div class="page-title">Colecciones</div>
+        <div class="page-sub">Agrega, edita o elimina las categorías de la biblioteca</div>
+      </div>
+      <div class="card">
+        <div class="section-actions">
+          <div class="section-label">Colecciones activas</div>
+          <button class="btn btn-gold btn-sm" onclick="openNewCat()">+ Nueva colección</button>
+        </div>
+        <div class="cat-list" id="catList"></div>
+      </div>
+    </div>
+
+    <!-- ─── LIBROS ─── -->
+    <div class="page" id="page-libros">
+      <div class="page-header">
+        <div class="page-title">Libros</div>
+        <div class="page-sub">Agrega, edita o elimina libros de cada colección</div>
+      </div>
+      <div class="card">
+        <div class="filter-bar">
+          <select id="filterCat" onchange="filterBooks()">
+            <option value="">— Todas las colecciones —</option>
+          </select>
+          <input type="text" id="filterSearch" placeholder="Buscar por título o autor…" oninput="filterBooks()" style="min-width:220px;">
+          <button class="btn btn-gold btn-sm" onclick="openNewBook()">+ Agregar libro</button>
+        </div>
+        <div class="section-actions">
+          <div class="section-label" id="bookListTitle">Todos los libros</div>
+        </div>
+        <div class="book-list" id="bookList"></div>
+      </div>
+    </div>
+
+    <!-- ─── EXPORTAR ─── -->
+    <div class="page" id="page-exportar">
+      <div class="page-header">
+        <div class="page-title">Exportar datos</div>
+        <div class="page-sub">Genera los archivos listos para subir al servidor</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Archivo libros.js</div>
+        <div class="card-sub">
+          Copia este código y reemplaza el contenido del archivo <strong>libros.js</strong> en tu servidor.
+          Este archivo contiene todos los libros que has agregado desde el panel.
+        </div>
+        <div class="code-block" id="exportBlock">// Haz clic en "Generar" para ver el código</div>
+        <br>
+        <button class="btn btn-gold" onclick="generateExport()">⟳ Generar libros.js</button>
+        <button class="btn" style="margin-left:8px;" onclick="copyExport()">⎘ Copiar código</button>
+        <div class="alert success" id="copyAlert">Código copiado al portapapeles</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Variables CSS de colores</div>
+        <div class="card-sub">
+          Copia este bloque y pégalo dentro del <code>:root { }</code> en el <code>&lt;style&gt;</code>
+          de tu <strong>index.html</strong> para aplicar los colores personalizados.
+        </div>
+        <div class="code-block" id="cssBlock">/* Haz clic en "Generar CSS" */</div>
+        <br>
+        <button class="btn btn-gold" onclick="generateCSS()">⟳ Generar CSS</button>
+        <button class="btn" style="margin-left:8px;" onclick="copyCSS()">⎘ Copiar CSS</button>
+        <div class="alert success" id="cssCopied">CSS copiado al portapapeles</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Exportar / Importar respaldo JSON</div>
+        <div class="card-sub">Guarda todos los datos del panel como archivo JSON o carga uno anterior</div>
+        <button class="btn btn-gold" onclick="exportJSON()">⬇ Descargar respaldo .json</button>
+        <button class="btn" style="margin-left:8px;" onclick="document.getElementById('importFile').click()">⬆ Importar respaldo .json</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+        <div class="alert success" id="importAlert">Datos importados correctamente</div>
+      </div>
+    </div>
+
+    <!-- ─── INSTRUCCIONES ─── -->
+    <div class="page" id="page-instrucciones">
+      <div class="page-header">
+        <div class="page-title">Instrucciones de uso</div>
+        <div class="page-sub">Cómo conectar este panel con tu biblioteca</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Paso 1 — Subir admin.html al servidor</div>
+        <div class="card-sub">Sube este archivo a la misma carpeta raíz donde está tu index.html</div>
+        <p style="font-size:13px;line-height:1.8;color:var(--mid);">
+          El archivo <code>admin.html</code> debe estar en la misma carpeta que <code>index.html</code> y <code>flipbook.html</code>.
+          Accede a él por URL directa, por ejemplo: <code>https://evolutika.escuelaparaeldespertar.com/admin.html</code>
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title">Paso 2 — Agregar colecciones y libros</div>
+        <div class="card-sub">Usa las secciones "Colecciones" y "Libros" del menú izquierdo</div>
+        <p style="font-size:13px;line-height:1.8;color:var(--mid);">
+          • <strong>Colecciones:</strong> Agrega el nombre, emoji e imagen del ícono.<br>
+          • <strong>Libros:</strong> Completa título, autor, colección, URL del PDF y URL de la portada.<br>
+          • Las URLs de portadas pueden ser rutas del servidor (<code>Libros/categoria/portada.jpg</code>)
+            o URLs externas (Google Drive, Cloudflare R2, Dropbox, etc).<br>
+          • Las URLs de PDFs funcionan igual — pueden ser R2, Google Drive o rutas locales del servidor.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title">Paso 3 — Exportar y subir libros.js</div>
+        <div class="card-sub">El paso más importante: actualizar el archivo de datos en el servidor</div>
+        <p style="font-size:13px;line-height:1.8;color:var(--mid);">
+          1. Ve a la sección <strong>Exportar datos</strong> del menú.<br>
+          2. Haz clic en <strong>"Generar libros.js"</strong> y copia el código.<br>
+          3. Abre el archivo <code>libros.js</code> en tu servidor (via FTP, cPanel File Manager, SSH, etc).<br>
+          4. Reemplaza TODO el contenido con el código copiado.<br>
+          5. Guarda. Los cambios se ven de inmediato en la biblioteca.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title">Paso 4 — Colores personalizados (opcional)</div>
+        <div class="card-sub">Aplicar colores cambiados desde la sección "Colores y estilo"</div>
+        <p style="font-size:13px;line-height:1.8;color:var(--mid);">
+          1. Ve a <strong>Exportar datos → Variables CSS de colores</strong>.<br>
+          2. Genera y copia el CSS.<br>
+          3. Abre <code>index.html</code> en el servidor.<br>
+          4. Busca el bloque <code>:root { --bg: ... }</code> y reemplaza las variables con las nuevas.<br>
+          5. Guarda.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-title">Respaldo de datos</div>
+        <div class="card-sub">Importante: los datos del panel se guardan en este navegador</div>
+        <p style="font-size:13px;line-height:1.8;color:var(--mid);">
+          Los datos que ingresas en este panel se guardan en el <strong>localStorage del navegador</strong>.
+          Esto significa que si cambias de computadora o limpias el caché del navegador, los datos se perderían.<br><br>
+          <strong>Recomendación:</strong> Usa la opción <strong>"Descargar respaldo .json"</strong> regularmente
+          desde Exportar datos. Ese archivo lo puedes cargar en cualquier computadora con "Importar respaldo .json".
+        </p>
+      </div>
+    </div>
+
+    <!-- ─── AJUSTES ─── -->
+    <div class="page" id="page-ajustes">
+      <div class="page-header">
+        <div class="page-title">Ajustes del sistema</div>
+        <div class="page-sub">Configuración del panel de administración</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Cambiar contraseña</div>
+        <div class="card-sub">La contraseña se guarda cifrada en este navegador</div>
+        <div class="grid3">
+          <div class="field">
+            <label>Contraseña actual</label>
+            <input type="password" id="oldPwd" placeholder="••••••••">
+          </div>
+          <div class="field">
+            <label>Nueva contraseña</label>
+            <input type="password" id="newPwd" placeholder="••••••••">
+          </div>
+          <div class="field">
+            <label>Confirmar nueva</label>
+            <input type="password" id="newPwd2" placeholder="••••••••">
+          </div>
+        </div>
+        <button class="btn btn-gold" onclick="changePwd()">🔒 Cambiar contraseña</button>
+        <div class="alert success" id="pwdAlert">Contraseña actualizada correctamente</div>
+        <div class="alert error" id="pwdError">Contraseña actual incorrecta o las nuevas no coinciden</div>
+      </div>
+      <div class="card" style="border-color:#f5b7b1;">
+        <div class="card-title" style="color:var(--danger);">Zona de peligro</div>
+        <div class="card-sub">Estas acciones no se pueden deshacer. Haz un respaldo primero.</div>
+        <button class="btn btn-danger" onclick="clearAll()">🗑 Borrar todos los datos del panel</button>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /adminApp -->
+
+<!-- ══ MODAL COLECCIÓN ══ -->
+<div class="modal-bg" id="modalCat">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalCatTitle">Nueva colección</div>
+        <div class="modal-sub">Los campos con * son obligatorios</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modalCat')">✕</button>
+    </div>
+    <input type="hidden" id="editCatIdx" value="-1">
+    <div class="grid2">
+      <div class="field">
+        <label>Nombre de la colección *</label>
+        <input type="text" id="catName" placeholder="Ej: Budismo, Meditación…">
+      </div>
+      <div class="field">
+        <label>Emoji / Icono *</label>
+        <input type="text" id="catIcon" placeholder="🪷" maxlength="4">
+      </div>
+    </div>
+    <div class="field">
+      <label>Imagen del ícono (URL o ruta relativa)</label>
+      <input type="text" id="catImgUrl" placeholder="Iconos/nombre.png  o  https://…">
+      <p style="font-size:10px;color:var(--light);margin-top:5px;font-style:italic;">
+        Si tienes la imagen en la carpeta Iconos/ del servidor, usa: <code>Iconos/nombre.png</code>
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modalCat')">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveCat()">✓ Guardar colección</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL LIBRO ══ -->
+<div class="modal-bg" id="modalBook">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalBookTitle">Agregar libro</div>
+        <div class="modal-sub">Completa los datos del libro. Los campos con * son obligatorios.</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modalBook')">✕</button>
+    </div>
+    <input type="hidden" id="editBookIdx" value="-1">
+    <div class="grid2">
+      <div>
+        <div class="field">
+          <label>Título *</label>
+          <input type="text" id="bTitle" placeholder="Título del libro">
+        </div>
+        <div class="field">
+          <label>Autor *</label>
+          <input type="text" id="bAutor" placeholder="Nombre del autor">
+        </div>
+        <div class="field">
+          <label>Colección *</label>
+          <select id="bCat" onchange="loadSubcats()">
+            <option value="">— Seleccionar —</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Subcategoría (opcional)</label>
+          <input type="text" id="bSubcat" placeholder="Ej: Audios de Neville Goddard">
+          <p style="font-size:10px;color:var(--light);margin-top:4px;font-style:italic;">
+            Solo si el libro pertenece a una subcategoría dentro de la colección
+          </p>
+        </div>
+      </div>
+      <div>
+        <div class="field">
+          <label>Imagen de portada (URL o ruta)</label>
+          <input type="text" id="bImagen" placeholder="Libros/categoria/portada.jpg" oninput="previewImg()">
+          <div class="img-prev-wrap" style="margin-top:10px;">
+            <div class="img-prev" id="imgPrev">📖</div>
+            <div style="flex:1;">
+              <p style="font-size:10px;color:var(--light);line-height:1.7;font-style:italic;">
+                Puede ser ruta local del servidor:<br>
+                <code>Libros/categoria/portada.jpg</code><br>
+                O URL externa de R2, Google Drive, Dropbox, etc.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="field" style="display:flex;align-items:center;gap:8px;margin-top:6px;">
+          <input type="checkbox" id="bImgContain" checked>
+          <label style="margin:0;cursor:pointer;" for="bImgContain">Usar object-fit: contain (mantener proporciones)</label>
+        </div>
+        <div class="field">
+          <label>Posición de imagen (opcional)</label>
+          <input type="text" id="bImgPos" placeholder="Ej: center top">
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label>URL del libro (PDF) *</label>
+      <input type="text" id="bUrl" placeholder="https://… o ruta relativa del PDF en el servidor">
+    </div>
+    <div class="field">
+      <label>URL de video (opcional)</label>
+      <input type="text" id="bVideo" placeholder="https://youtube.com/…">
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modalBook')">Cancelar</button>
+      <button class="btn btn-gold" onclick="saveBook()">✓ Guardar libro</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   DATOS Y PERSISTENCIA
+   ══════════════════════════════════════════ */
+const DEFAULT_PWD = 'evolutika2024';
+const COLOR_DEFS = [
+  { key:'--bg',         label:'Fondo principal',       desc:'Color de fondo de toda la página',           def:'#F8F5EE' },
+  { key:'--gold',       label:'Dorado principal',      desc:'Color base de acentos y botones',            def:'#C5A059' },
+  { key:'--gold-light', label:'Dorado claro',          desc:'Hover y elementos secundarios dorados',      def:'#D4B06A' },
+  { key:'--gold-dark',  label:'Dorado oscuro',         desc:'Texto sobre fondos dorados',                 def:'#A07838' },
+  { key:'--text-dark',  label:'Texto oscuro',          desc:'Títulos y texto principal',                  def:'#1C1C1E' },
+  { key:'--text-mid',   label:'Texto medio',           desc:'Texto secundario',                           def:'#3A3A3C' },
+  { key:'--text-light', label:'Texto claro',           desc:'Texto de apoyo y metadatos',                 def:'#6C6C70' },
+  { key:'--card-bg',    label:'Fondo de tarjetas',     desc:'Fondo de cada tarjeta de libro o categoría', def:'#FFFFFF' },
+];
+
+function ls(k){ return localStorage.getItem('ev_'+k); }
+function lss(k,v){ localStorage.setItem('ev_'+k, v); }
+
+let cats   = JSON.parse(ls('cats')  || '[]');
+let books  = JSON.parse(ls('books') || '[]');
+let colors = JSON.parse(ls('colors')|| '{}');
+COLOR_DEFS.forEach(c=>{ if(!colors[c.key]) colors[c.key]=c.def; });
+
+function saveCatsLS()  { lss('cats',  JSON.stringify(cats));   }
+function saveBooksLS() { lss('books', JSON.stringify(books));  }
+function saveColorsLS(){ lss('colors',JSON.stringify(colors)); }
+function getPwd(){ return ls('pwd') || DEFAULT_PWD; }
+
+/* ══════════════════════════════════════════
+   SESIÓN
+   ══════════════════════════════════════════ */
+function doLogin(){
+  const v = document.getElementById('pwdInput').value;
+  const err = document.getElementById('loginError');
+  if(v === getPwd()){
+    err.style.display = 'none';
+    lss('session','1');
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminApp').style.display = 'block';
+    refreshAll();
+  } else {
+    err.style.display = 'block';
+  }
+}
+function doLogout(){
+  lss('session','');
+  document.getElementById('adminApp').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('pwdInput').value = '';
+  document.getElementById('loginError').style.display = 'none';
+}
+if(ls('session')==='1'){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminApp').style.display='block';
+  refreshAll();
+}
+
+/* ══════════════════════════════════════════
+   NAVEGACIÓN
+   ══════════════════════════════════════════ */
+function goPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{
+    if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"))
+      n.classList.add('active');
+  });
+  if(id==='dashboard') renderDash();
+  if(id==='colores')   renderColors();
+  if(id==='colecciones') renderCats();
+  if(id==='libros'){   populateFilterCat(); filterBooks(); }
+}
+
+function refreshAll(){
+  renderDash(); renderColors(); renderCats(); populateFilterCat(); filterBooks();
+}
+
+/* ══════════════════════════════════════════
+   DASHBOARD
+   ══════════════════════════════════════════ */
+function renderDash(){
+  document.getElementById('st-cols').textContent  = cats.length;
+  document.getElementById('st-books').textContent = books.length;
+  const wC = books.filter(b=>b.imagen).length;
+  const wU = books.filter(b=>b.url).length;
+  document.getElementById('st-cover').textContent = books.length ? Math.round(wC/books.length*100)+'%' : '0%';
+  document.getElementById('st-url').textContent   = books.length ? Math.round(wU/books.length*100)+'%' : '0%';
+
+  const el = document.getElementById('dashCats');
+  if(!cats.length){ el.innerHTML='<div class="empty">No hay colecciones todavía. Crea la primera en la sección Colecciones ✦</div>'; return; }
+  el.innerHTML = cats.map(c=>{
+    const cnt = books.filter(b=>b.categoria===c.nombre).length;
+    const img = c.imgUrl ? `<img src="${c.imgUrl}" class="cat-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="cat-icon" style="display:none">${c.icono}</span>`
+                         : `<span class="cat-icon">${c.icono}</span>`;
+    return `<div class="cat-item" style="cursor:pointer;" onclick="goPage('libros');setTimeout(()=>{document.getElementById('filterCat').value='${esc(c.nombre)}';filterBooks();},80)">
+      ${img}
+      <div style="flex:1"><div class="cat-name">${c.nombre}</div><div class="cat-count">${cnt} libro${cnt!==1?'s':''}</div></div>
+      <span style="color:var(--light);font-size:18px;">›</span>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════
+   COLORES
+   ══════════════════════════════════════════ */
+function renderColors(){
+  const el = document.getElementById('colorList');
+  el.innerHTML = COLOR_DEFS.map(c=>`
+    <div class="color-row">
+      <div class="color-swatch"><input type="color" value="${colors[c.key]||c.def}" data-key="${c.key}" onchange="colors[this.dataset.key]=this.value;document.getElementById('hex-${slug(c.key)}').textContent=this.value;"></div>
+      <div style="flex:1"><div class="color-label">${c.label}</div><div class="color-desc">${c.desc}</div></div>
+      <div class="color-hex" id="hex-${slug(c.key)}">${colors[c.key]||c.def}</div>
+    </div>`).join('');
+
+  const ht = ls('heroTitle')||'EVOLUTIKA';
+  const hs = ls('heroSub')||'Pensamiento profundo para tiempos extraordinarios';
+  document.getElementById('heroTitle').value = ht;
+  document.getElementById('heroSub').value   = hs;
+}
+function slug(s){ return s.replace(/[^a-z0-9]/gi,'_'); }
+
+function saveColors(){
+  saveColorsLS();
+  showAlert('colorAlert');
+}
+function resetColors(){
+  COLOR_DEFS.forEach(c=>colors[c.key]=c.def);
+  saveColorsLS(); renderColors();
+}
+function saveHero(){
+  lss('heroTitle', document.getElementById('heroTitle').value);
+  lss('heroSub',   document.getElementById('heroSub').value);
+  showAlert('heroAlert');
+}
+
+/* ══════════════════════════════════════════
+   COLECCIONES
+   ══════════════════════════════════════════ */
+function renderCats(){
+  const el = document.getElementById('catList');
+  if(!cats.length){ el.innerHTML='<div class="empty">No hay colecciones. Crea la primera. ✦</div>'; return; }
+  el.innerHTML = cats.map((c,i)=>{
+    const cnt = books.filter(b=>b.categoria===c.nombre).length;
+    const img = c.imgUrl
+      ? `<img src="${c.imgUrl}" class="cat-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"><span class="cat-icon" style="display:none">${c.icono}</span>`
+      : `<span class="cat-icon">${c.icono}</span>`;
+    return `<div class="cat-item">
+      ${img}
+      <div style="flex:1"><div class="cat-name">${c.nombre}</div><div class="cat-count">${cnt} libro${cnt!==1?'s':''}</div></div>
+      <div class="cat-actions">
+        <button class="btn btn-sm" onclick="editCat(${i})" title="Editar">✏️</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteCat(${i})" title="Eliminar">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openNewCat(){
+  document.getElementById('editCatIdx').value = -1;
+  document.getElementById('modalCatTitle').textContent = 'Nueva colección';
+  ['catName','catIcon','catImgUrl'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('modalCat').classList.add('open');
+}
+function editCat(i){
+  const c = cats[i];
+  document.getElementById('editCatIdx').value = i;
+  document.getElementById('modalCatTitle').textContent = 'Editar colección';
+  document.getElementById('catName').value   = c.nombre;
+  document.getElementById('catIcon').value   = c.icono;
+  document.getElementById('catImgUrl').value = c.imgUrl||'';
+  document.getElementById('modalCat').classList.add('open');
+}
+function saveCat(){
+  const idx    = parseInt(document.getElementById('editCatIdx').value);
+  const nombre = document.getElementById('catName').value.trim();
+  const icono  = document.getElementById('catIcon').value.trim();
+  const imgUrl = document.getElementById('catImgUrl').value.trim();
+  if(!nombre||!icono){ alert('El nombre y el icono son obligatorios'); return; }
+  const obj = {nombre, icono, imgUrl};
+  if(idx===-1) cats.push(obj);
+  else cats[idx] = obj;
+  saveCatsLS(); renderCats(); renderDash(); populateFilterCat();
+  closeModal('modalCat');
+}
+function deleteCat(i){
+  if(!confirm(`¿Eliminar la colección "${cats[i].nombre}"?\nLos libros asignados a ella quedarán sin colección.`)) return;
+  cats.splice(i,1); saveCatsLS(); renderCats(); renderDash(); populateFilterCat();
+}
+
+/* ══════════════════════════════════════════
+   LIBROS
+   ══════════════════════════════════════════ */
+function populateFilterCat(){
+  const sel = document.getElementById('filterCat');
+  const bSel = document.getElementById('bCat');
+  const opts = cats.map(c=>`<option value="${esc(c.nombre)}">${c.icono} ${c.nombre}</option>`).join('');
+  sel.innerHTML  = '<option value="">— Todas las colecciones —</option>' + opts;
+  bSel.innerHTML = '<option value="">— Seleccionar —</option>' + opts;
+}
+
+function loadSubcats(){
+  // placeholder para futura autocompletación de subcats
+}
+
+function filterBooks(){
+  const cat    = document.getElementById('filterCat').value;
+  const search = document.getElementById('filterSearch').value.toLowerCase().trim();
+  let filtered = books;
+  if(cat)    filtered = filtered.filter(b=>b.categoria===cat);
+  if(search) filtered = filtered.filter(b=>(b.titulo||'').toLowerCase().includes(search)||(b.autor||'').toLowerCase().includes(search));
+
+  document.getElementById('bookListTitle').textContent =
+    cat ? `${cat} (${filtered.length} libro${filtered.length!==1?'s':''})` : `Todos los libros (${filtered.length})`;
+
+  const el = document.getElementById('bookList');
+  if(!filtered.length){ el.innerHTML='<div class="empty">No hay libros aquí todavía ✦</div>'; return; }
+
+  el.innerHTML = filtered.map(b=>{
+    const realIdx = books.indexOf(b);
+    const esAudio = b.subcategoria && b.subcategoria.toLowerCase().includes('audio');
+    const coverInner = b.imagen
+      ? `<img src="${b.imagen}" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.parentElement.innerHTML='📖'">`
+      : '📖';
+    return `<div class="book-item">
+      <div class="book-cover">${coverInner}</div>
+      <div class="book-info">
+        <div class="book-title-s">${b.titulo||'Sin título'}</div>
+        <div class="book-meta">${b.autor||''} · ${b.categoria||''} ${b.subcategoria?'· '+b.subcategoria:''}</div>
+        <div style="margin-top:4px;display:flex;gap:6px;flex-wrap:wrap;">
+          ${b.url ? `<span class="badge badge-gold">${esAudio?'🎧 Audio':'📄 PDF'}</span>` : ''}
+          ${b.video ? `<span class="badge badge-audio">▶ Video</span>` : ''}
+          ${!b.url && !b.video ? `<span class="badge" style="color:var(--light);">Sin enlace</span>` : ''}
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;">
+        <button class="btn btn-sm" onclick="editBook(${realIdx})">✏️ Editar</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteBook(${realIdx})">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openNewBook(){
+  document.getElementById('editBookIdx').value = -1;
+  document.getElementById('modalBookTitle').textContent = 'Agregar libro';
+  ['bTitle','bAutor','bSubcat','bImagen','bUrl','bVideo','bImgPos'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('bCat').value = '';
+  document.getElementById('bImgContain').checked = true;
+  document.getElementById('imgPrev').innerHTML = '📖';
+  document.getElementById('modalBook').classList.add('open');
+}
+function editBook(i){
+  const b = books[i];
+  document.getElementById('editBookIdx').value = i;
+  document.getElementById('modalBookTitle').textContent = 'Editar libro';
+  document.getElementById('bTitle').value      = b.titulo||'';
+  document.getElementById('bAutor').value      = b.autor||'';
+  document.getElementById('bCat').value        = b.categoria||'';
+  document.getElementById('bSubcat').value     = b.subcategoria||'';
+  document.getElementById('bImagen').value     = b.imagen||'';
+  document.getElementById('bUrl').value        = b.url||'';
+  document.getElementById('bVideo').value      = b.video||'';
+  document.getElementById('bImgContain').checked = b.imgContain!==false;
+  document.getElementById('bImgPos').value     = b.imgPosition||'';
+  previewImg();
+  document.getElementById('modalBook').classList.add('open');
+}
+function saveBook(){
+  const idx    = parseInt(document.getElementById('editBookIdx').value);
+  const titulo = document.getElementById('bTitle').value.trim();
+  const autor  = document.getElementById('bAutor').value.trim();
+  const cat    = document.getElementById('bCat').value;
+  if(!titulo||!autor||!cat){ alert('Título, autor y colección son obligatorios'); return; }
+
+  const libro = {
+    categoria:   cat,
+    titulo:      titulo,
+    autor:       autor,
+    subcategoria: document.getElementById('bSubcat').value.trim() || undefined,
+    imagen:      document.getElementById('bImagen').value.trim() || undefined,
+    imgContain:  document.getElementById('bImgContain').checked,
+    imgPosition: document.getElementById('bImgPos').value.trim() || undefined,
+    url:         document.getElementById('bUrl').value.trim() || undefined,
+    video:       document.getElementById('bVideo').value.trim() || undefined,
+  };
+  // limpiar undefined
+  Object.keys(libro).forEach(k=>libro[k]===undefined && delete libro[k]);
+
+  if(idx===-1) books.push(libro);
+  else books[idx] = libro;
+
+  saveBooksLS(); filterBooks(); renderDash();
+  closeModal('modalBook');
+}
+function deleteBook(i){
+  if(!confirm(`¿Eliminar "${books[i].titulo}"?`)) return;
+  books.splice(i,1); saveBooksLS(); filterBooks(); renderDash();
+}
+
+function previewImg(){
+  const url = document.getElementById('bImagen').value.trim();
+  const pre = document.getElementById('imgPrev');
+  if(url){
+    pre.innerHTML = `<img src="${url}" style="width:80px;height:112px;object-fit:cover;border-radius:10px;display:block;" onerror="this.parentElement.innerHTML='📖'">`;
+  } else {
+    pre.innerHTML = '📖';
+  }
+}
+
+/* ══════════════════════════════════════════
+   EXPORTAR
+   ══════════════════════════════════════════ */
+function generateExport(){
+  // Serializar libros en el mismo formato que el libros.js original
+  const lines = books.map(b=>{
+    const parts = Object.entries(b).map(([k,v])=>{
+      if(typeof v === 'boolean') return `${k}:${v}`;
+      return `${k}:${JSON.stringify(v)}`;
+    }).join(', ');
+    return `    { ${parts} }`;
+  }).join(',\n');
+  const code = `// Datos de la biblioteca - libros.js\n  const libros = [\n${lines}\n  ];`;
+  document.getElementById('exportBlock').textContent = code;
+}
+
+function copyExport(){
+  const t = document.getElementById('exportBlock').textContent;
+  if(t.startsWith('//')) {
+    navigator.clipboard.writeText(t).then(()=>showAlert('copyAlert'));
+  } else {
+    generateExport(); copyExport();
+  }
+}
+
+function generateCSS(){
+  const lines = COLOR_DEFS.map(c=>`  ${c.key}: ${colors[c.key]||c.def};`).join('\n');
+  document.getElementById('cssBlock').textContent = `:root {\n${lines}\n}`;
+}
+function copyCSS(){
+  const t = document.getElementById('cssBlock').textContent;
+  navigator.clipboard.writeText(t).then(()=>showAlert('cssCopied'));
+}
+
+function exportJSON(){
+  const data = { cats, books, colors, heroTitle: ls('heroTitle'), heroSub: ls('heroSub') };
+  const blob  = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a     = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'evolutika-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+}
+function importJSON(evt){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    try {
+      const d = JSON.parse(e.target.result);
+      if(d.cats)   { cats  = d.cats;  saveCatsLS();  }
+      if(d.books)  { books = d.books; saveBooksLS(); }
+      if(d.colors) { colors= d.colors;saveColorsLS();}
+      if(d.heroTitle) lss('heroTitle', d.heroTitle);
+      if(d.heroSub)   lss('heroSub',   d.heroSub);
+      refreshAll();
+      showAlert('importAlert');
+    } catch(err){ alert('Error al importar: archivo JSON inválido'); }
+  };
+  reader.readAsText(file);
+  evt.target.value = '';
+}
+
+/* ══════════════════════════════════════════
+   AJUSTES
+   ══════════════════════════════════════════ */
+function changePwd(){
+  const old  = document.getElementById('oldPwd').value;
+  const n1   = document.getElementById('newPwd').value;
+  const n2   = document.getElementById('newPwd2').value;
+  const ok   = document.getElementById('pwdAlert');
+  const err  = document.getElementById('pwdError');
+  ok.style.display = 'none'; err.style.display = 'none';
+  if(old !== getPwd() || !n1 || n1 !== n2){
+    err.style.display = 'block'; return;
+  }
+  lss('pwd', n1);
+  ['oldPwd','newPwd','newPwd2'].forEach(id=>document.getElementById(id).value='');
+  showAlert('pwdAlert');
+}
+function clearAll(){
+  if(!confirm('¿Borrar TODOS los datos del panel? Esta acción no se puede deshacer.\n\nHaz un respaldo primero desde Exportar datos.')) return;
+  ['cats','books','colors','heroTitle','heroSub'].forEach(k=>localStorage.removeItem('ev_'+k));
+  cats=[]; books=[]; colors={};
+  COLOR_DEFS.forEach(c=>colors[c.key]=c.def);
+  refreshAll(); alert('Datos borrados. El panel queda vacío.');
+}
+
+/* ══════════════════════════════════════════
+   UTILIDADES
+   ══════════════════════════════════════════ */
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function showAlert(id){
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  setTimeout(()=>el.style.display='none', 3000);
+}
+function esc(s){ return (s||'').replace(/'/g,"\\'"); }
+
+document.querySelectorAll('.modal-bg').forEach(m=>{
+  m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('open'); });
+});
+
+renderDash();
+</script>
+</body>
+</html>
