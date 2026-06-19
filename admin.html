@@ -208,7 +208,9 @@ body::before{content:'';position:fixed;inset:0;background:url('Fondo/Tramado.png
       🔓 Ingresar al panel
     </button>
     <p style="font-size:10px;color:var(--light);text-align:center;margin-top:18px;font-family:'Cormorant Garamond',serif;font-style:italic;">
-      </p>
+      Contraseña por defecto: <strong>evolutika2024</strong><br>
+      Cámbiala desde Ajustes una vez dentro.
+    </p>
   </div>
 </div>
 
@@ -608,10 +610,6 @@ body::before{content:'';position:fixed;inset:0;background:url('Fondo/Tramado.png
    DATOS Y PERSISTENCIA
    ══════════════════════════════════════════ */
 const DEFAULT_PWD = 'evolutika2024';
-function hashPwd(pwd){ 
-  return Array.from(pwd).reduce((h,c)=>Math.imul(31,h)+c.charCodeAt(0)|0,0).toString(36);
-}
-function getPwd(){ return ls('pwd') || hashPwd(DEFAULT_PWD); }
 const COLOR_DEFS = [
   { key:'--bg',         label:'Fondo principal',       desc:'Color de fondo de toda la página',           def:'#F8F5EE' },
   { key:'--gold',       label:'Dorado principal',      desc:'Color base de acentos y botones',            def:'#C5A059' },
@@ -737,7 +735,7 @@ function syncFromLibrosJS() {
 function doLogin(){
   const v = document.getElementById('pwdInput').value;
   const err = document.getElementById('loginError');
-  if(hashPwd(v) === getPwd()){
+  if(v === getPwd()){
     err.style.display = 'none';
     lss('session','1');
     document.getElementById('loginScreen').style.display = 'none';
@@ -1087,7 +1085,7 @@ function changePwd(){
   if(old !== getPwd() || !n1 || n1 !== n2){
     err.style.display = 'block'; return;
   }
-  lss('pwd', hashPwd(n1));
+  lss('pwd', n1);
   ['oldPwd','newPwd','newPwd2'].forEach(id=>document.getElementById(id).value='');
   showAlert('pwdAlert');
 }
