@@ -380,44 +380,65 @@
 <script src="https://cdn.jsdelivr.net/npm/dearflip@2.2.4/dist/dearflip.min.js"></script>
 <script src="libros.js"></script>
 <script>
-  const catSVGs = {
+    const catSVGs = {
+    'Ken Wilber': `<img src="Iconos/KenWil.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
+    'Jacobo Grinberg': `<img src="Iconos/Jacobo.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Barbara Ann Brenan': `<img src="Iconos/barbara.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Biodescodificación': `<img src="Iconos/biodescodificacion.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Medicina Ancestral': `<img src="Iconos/Medicina.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Budismo': `<img src="Iconos/Budismo.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
-    'Meditación': `<img src="Iconos/Meditacion.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Carolyne Myss': `<img src="Iconos/Caroline.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Constelaciones Familiares': `<img src="Iconos/Constelacion.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Cristaloterapia': `<img src="Iconos/Cristal.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
-    'Filosofía y Religión': `<img src="Iconos/Filorelig.png" style="width:100px;height:100px;object-fit:contain;display:block;margin:0 auto;">`,
+    'Filosofía y Religión': `<img src="Iconos/Filorelig.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
+    'Meditación': `<img src="Iconos/Meditacion.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Sexualidad Sagrada': `<img src="Iconos/Sexualidad.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Geometría Sagrada': `<img src="Iconos/Flor.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
-    'Kabbalah': `<img src="Iconos/Kabbalah.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
-    'Ken Wilber': `<img src="Iconos/KenWil.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Kryon': `<img src="Iconos/Kryon.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
-    'Jacobo Grinberg': `<img src="Iconos/Jacobo.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
+    'Triguerinho': `<img src="Iconos/Trigue.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
+    'Nikola Tesla': `<img src="Iconos/Nikola.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Libros Raros': `<img src="Iconos/LibrosR.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
+    'Kabbalah': `<img src="Iconos/Kabbalah.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Lobsang Rampa': `<img src="Iconos/Lobsang.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Neville Goddard': `<img src="Iconos/Neville.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
-    'Nikola Tesla': `<img src="Iconos/Nikola.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Teosofía': `<img src="Iconos/Teosofia.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
-    'Triguerinho': `<img src="Iconos/Trigue.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Biología y comportamiento social': `<img src="Iconos/Biologia.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
-    'Inteligencia Artificial en lo Humano': `<img src="Iconos/Artificial.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Ciencias Políticas': `<img src="Iconos/ciencias.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
+    'Inteligencia Artificial en lo Humano': `<img src="Iconos/Artificial.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Herramientas Prácticas para Sostener los Cambios': `<img src="Iconos/Herramienta.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Papa León XIV': `<img src="Iconos/PapaLeon.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
-  };
-  const catData = [
-    {name:'Barbara Ann Brenan'},{name:'Biodescodificación'},{name:'Medicina Ancestral'},{name:'Budismo'},{name:'Meditación'},
-    {name:'Carolyne Myss'},{name:'Constelaciones Familiares'},{name:'Cristaloterapia'},
-    {name:'Filosofía y Religión'},{name:'Sexualidad Sagrada'},{name:'Geometría Sagrada'},{name:'Kabbalah'},
-    {name:'Ken Wilber'},{name:'Kryon'},{name:'Jacobo Grinberg'},{name:'Libros Raros'},{name:'Lobsang Rampa'},
-    {name:'Neville Goddard'},{name:'Nikola Tesla'},{name:'Teosofía'},{name:'Triguerinho'},
-    {name:'Biología y comportamiento social'},{name:'Ciencias Políticas'},{name:'Inteligencia Artificial en lo Humano'},
-    {name:'Herramientas Prácticas para Sostener los Cambios'},{name:'Papa León XIV'},
-  ];
-  const catIconsEmoji = {'Ken Wilber':'🌊','Barbara Ann Brenan':'🌺','Biodescodificación':'🧬','Medicina Ancestral':'🌿','Budismo':'🪷','Meditación':'🧘','Carolyne Myss':'🌸','Constelaciones Familiares':'🫧','Cristaloterapia':'💎','Filosofía y Religión':'🕊️','Sexualidad Sagrada':'🌹','Geometría Sagrada':'🌀','Kabbalah':'🔮','Kryon':'✨','Jacobo Grinberg':'🧔🏻‍♂️','Libros Raros':'📜','Lobsang Rampa':'🏔️','Neville Goddard':'🌙','Nikola Tesla':'⚡','Teosofía':'🌌','Triguerinho':'🌟','Biología y comportamiento social':'🧬👥','Ciencias Políticas':'🏛️','Inteligencia Artificial en lo Humano':'🤖','Herramientas Prácticas para Sostener los Cambios':'🧰','Papa León XIV':'📜'};
+    'Diccionario del Color': `<img src="Iconos/diccionario.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
+  };;
+    const catData = [
+    {name:'Ken Wilber'},
+    {name:'Jacobo Grinberg'},
+    {name:'Barbara Ann Brenan'},
+    {name:'Biodescodificación'},
+    {name:'Medicina Ancestral'},
+    {name:'Budismo'},
+    {name:'Carolyne Myss'},
+    {name:'Constelaciones Familiares'},
+    {name:'Cristaloterapia'},
+    {name:'Filosofía y Religión'},
+    {name:'Meditación'},
+    {name:'Sexualidad Sagrada'},
+    {name:'Geometría Sagrada'},
+    {name:'Kryon'},
+    {name:'Triguerinho'},
+    {name:'Nikola Tesla'},
+    {name:'Libros Raros'},
+    {name:'Kabbalah'},
+    {name:'Lobsang Rampa'},
+    {name:'Neville Goddard'},
+    {name:'Teosofía'},
+    {name:'Biología y comportamiento social'},
+    {name:'Ciencias Políticas'},
+    {name:'Inteligencia Artificial en lo Humano'},
+    {name:'Herramientas Prácticas para Sostener los Cambios'},
+    {name:'Papa León XIV'},
+    {name:'Diccionario del Color'},
+  ];;
+    const catIconsEmoji = {'Ken Wilber':'🌊','Jacobo Grinberg':'🧔🏻‍♂️','Barbara Ann Brenan':'🌺','Biodescodificación':'🧬','Medicina Ancestral':'🌿','Budismo':'🪷','Carolyne Myss':'🌸','Constelaciones Familiares':'🫧','Cristaloterapia':'💎','Filosofía y Religión':'🕊️','Meditación':'🧘','Sexualidad Sagrada':'🌹','Geometría Sagrada':'🌀','Kryon':'✨','Triguerinho':'🌟','Nikola Tesla':'⚡','Libros Raros':'📜','Kabbalah':'🔮','Lobsang Rampa':'🏔️','Neville Goddard':'🌙','Teosofía':'🌌','Biología y comportamiento social':'🧬','Ciencias Políticas':'🏛️','Inteligencia Artificial en lo Humano':'🤖','Herramientas Prácticas para Sostener los Cambios':'🧰','Papa León XIV':'📜','Diccionario del Color':'📚'};;
   function buildCatsGrid() {
     const grid = document.getElementById('catsGrid');
     grid.innerHTML = catData.map((c, i) => {
