@@ -248,6 +248,9 @@ body::before{content:'';position:fixed;inset:0;background:url('Fondo/Tramado.png
       <span class="icon">⚙️</span> Ajustes
     </button>
     <div class="sidebar-footer">
+      <button class="btn btn-sm btn-gold" style="width:100%;justify-content:center;margin-bottom:8px;" onclick="publishToGitHub()">
+        🚀 Publicar en GitHub
+      </button>
       <button class="btn btn-sm" style="width:100%;justify-content:center;background:rgba(255,255,255,0.06);border-color:rgba(197,160,89,0.2);color:rgba(255,255,255,0.4);" onclick="doLogout()">
         🚪 Cerrar sesión
       </button>
@@ -464,9 +467,64 @@ body::before{content:'';position:fixed;inset:0;background:url('Fondo/Tramado.png
         <div class="page-title">Ajustes del sistema</div>
         <div class="page-sub">Configuración del panel de administración</div>
       </div>
+
+      <!-- ─── GITHUB ─── -->
+      <div class="card" style="border-color:rgba(197,160,89,0.5);background:linear-gradient(135deg,#fffdf7,#fef9ed);">
+        <div class="card-title">🚀 Publicación automática en GitHub</div>
+        <div class="card-sub">Conecta tu repositorio para publicar cambios con un solo clic</div>
+        <div class="grid2">
+          <div class="field">
+            <label>Usuario de GitHub</label>
+            <input type="text" id="ghUser" placeholder="Escuelaparaeldespertar" value="Escuelaparaeldespertar">
+          </div>
+          <div class="field">
+            <label>Repositorio</label>
+            <input type="text" id="ghRepo" placeholder="escuelaparaeldespertar.github.io" value="escuelaparaeldespertar.github.io">
+          </div>
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <label>Rama</label>
+            <input type="text" id="ghBranch" placeholder="main" value="main">
+          </div>
+          <div class="field">
+            <label>Archivo a actualizar</label>
+            <input type="text" id="ghFile" placeholder="libros.js" value="libros.js">
+          </div>
+        </div>
+        <div class="field">
+          <label>🔑 Personal Access Token</label>
+          <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+          <p style="font-size:10px;color:var(--light);margin-top:5px;font-style:italic;">
+            El token se guarda solo en este navegador. Nunca se envía a ningún servidor externo excepto GitHub.
+          </p>
+        </div>
+        <button class="btn btn-gold" onclick="saveGHConfig()">💾 Guardar configuración</button>
+        <div class="alert success" id="ghConfigAlert">Configuración guardada correctamente</div>
+        <div class="alert error" id="ghConfigError">Por favor completa todos los campos</div>
+
+        <!-- ESTADO DE CONEXIÓN -->
+        <div id="ghStatus" style="display:none;margin-top:16px;padding:14px 18px;border-radius:12px;background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.3);font-size:12px;color:var(--success);display:flex;align-items:center;gap:10px;">
+          <span style="font-size:18px;">✅</span>
+          <span id="ghStatusText">Repositorio conectado correctamente</span>
+        </div>
+
+        <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--border);">
+          <div style="font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;font-weight:700;margin-bottom:12px;">Publicar ahora</div>
+          <p style="font-size:12px;color:var(--mid);margin-bottom:14px;line-height:1.7;">
+            Esto genera el <code>libros.js</code> actualizado con todos los libros del panel y lo sube directamente a tu repositorio de GitHub. El sitio se actualiza en ~1 minuto.
+          </p>
+          <button class="btn btn-gold" onclick="publishToGitHub()" id="publishBtn" style="font-size:11px;padding:12px 28px;">
+            🚀 Publicar cambios en GitHub
+          </button>
+          <div class="alert success" id="publishAlert">✅ Publicado correctamente. El sitio se actualizará en ~1 minuto.</div>
+          <div class="alert error" id="publishError">❌ Error al publicar. Verifica el token y la configuración.</div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-title">Cambiar contraseña</div>
-        <div class="card-sub">La contraseña se guarda cifrada en este navegador</div>
+        <div class="card-sub">La contraseña se guarda en este navegador</div>
         <div class="grid3">
           <div class="field">
             <label>Contraseña actual</label>
@@ -771,10 +829,11 @@ function goPage(id){
     if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"))
       n.classList.add('active');
   });
-  if(id==='dashboard') { renderDash(); updateSyncCard(); }
-  if(id==='colores')   renderColors();
+  if(id==='dashboard')   { renderDash(); updateSyncCard(); }
+  if(id==='colores')     renderColors();
   if(id==='colecciones') renderCats();
-  if(id==='libros'){   populateFilterCat(); filterBooks(); }
+  if(id==='libros')      { populateFilterCat(); filterBooks(); }
+  if(id==='ajustes')     loadGHConfig();
 }
 
 function refreshAll(){
@@ -1070,6 +1129,103 @@ function importJSON(evt){
   };
   reader.readAsText(file);
   evt.target.value = '';
+}
+
+/* ══════════════════════════════════════════
+   GITHUB API
+   ══════════════════════════════════════════ */
+function loadGHConfig(){
+  const u = ls('ghUser')   || 'Escuelaparaeldespertar';
+  const r = ls('ghRepo')   || 'escuelaparaeldespertar.github.io';
+  const b = ls('ghBranch') || 'main';
+  const f = ls('ghFile')   || 'libros.js';
+  const t = ls('ghToken')  || '';
+  document.getElementById('ghUser').value   = u;
+  document.getElementById('ghRepo').value   = r;
+  document.getElementById('ghBranch').value = b;
+  document.getElementById('ghFile').value   = f;
+  document.getElementById('ghToken').value  = t;
+  const status = document.getElementById('ghStatus');
+  if(t){ status.style.display='flex'; document.getElementById('ghStatusText').textContent = `Conectado a ${u}/${r} (rama: ${b})`; }
+  else { status.style.display='none'; }
+}
+
+function saveGHConfig(){
+  const u = document.getElementById('ghUser').value.trim();
+  const r = document.getElementById('ghRepo').value.trim();
+  const b = document.getElementById('ghBranch').value.trim();
+  const f = document.getElementById('ghFile').value.trim();
+  const t = document.getElementById('ghToken').value.trim();
+  if(!u||!r||!b||!f||!t){ showAlert('ghConfigError'); return; }
+  lss('ghUser',u); lss('ghRepo',r); lss('ghBranch',b); lss('ghFile',f); lss('ghToken',t);
+  const status = document.getElementById('ghStatus');
+  status.style.display='flex';
+  document.getElementById('ghStatusText').textContent = `Conectado a ${u}/${r} (rama: ${b})`;
+  showAlert('ghConfigAlert');
+}
+
+function generateLibrosJS(){
+  const lines = books.map(b=>{
+    const parts = Object.entries(b).map(([k,v])=>{
+      if(typeof v === 'boolean') return `${k}:${v}`;
+      return `${k}:${JSON.stringify(v)}`;
+    }).join(', ');
+    return `    { ${parts} }`;
+  }).join(',\n');
+  return `// Datos de la biblioteca - libros.js\n  const libros = [\n${lines}\n  ];`;
+}
+
+async function publishToGitHub(){
+  const u = ls('ghUser'), r = ls('ghRepo'), b = ls('ghBranch'), f = ls('ghFile'), t = ls('ghToken');
+  if(!u||!r||!b||!f||!t){
+    alert('Primero guarda la configuración de GitHub en Ajustes.');
+    return;
+  }
+  const btn = document.getElementById('publishBtn');
+  btn.textContent = '⏳ Publicando...';
+  btn.disabled = true;
+
+  try {
+    const apiBase = `https://api.github.com/repos/${u}/${r}/contents/${f}`;
+    const headers = { 'Authorization': `token ${t}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' };
+
+    // 1. Obtener SHA actual del archivo
+    let sha = null;
+    const getRes = await fetch(`${apiBase}?ref=${b}`, { headers });
+    if(getRes.ok){
+      const getData = await getRes.json();
+      sha = getData.sha;
+    } else if(getRes.status !== 404){
+      throw new Error(`Error al leer archivo: ${getRes.status}`);
+    }
+
+    // 2. Generar contenido nuevo en base64
+    const content = generateLibrosJS();
+    const encoded = btoa(unescape(encodeURIComponent(content)));
+
+    // 3. Hacer commit
+    const body = {
+      message: `📚 Actualización de biblioteca — ${new Date().toLocaleString('es')}`,
+      content: encoded,
+      branch: b,
+      ...(sha ? { sha } : {})
+    };
+
+    const putRes = await fetch(apiBase, { method:'PUT', headers, body: JSON.stringify(body) });
+    if(!putRes.ok){
+      const errData = await putRes.json();
+      throw new Error(errData.message || `Error ${putRes.status}`);
+    }
+
+    showAlert('publishAlert');
+  } catch(err){
+    console.error('GitHub publish error:', err);
+    document.getElementById('publishError').textContent = `❌ Error: ${err.message}`;
+    showAlert('publishError');
+  } finally {
+    btn.textContent = '🚀 Publicar cambios en GitHub';
+    btn.disabled = false;
+  }
 }
 
 /* ══════════════════════════════════════════
