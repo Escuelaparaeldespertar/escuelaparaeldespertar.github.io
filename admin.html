@@ -248,7 +248,7 @@ body::before{content:'';position:fixed;inset:0;background:url('Fondo/Tramado.png
       <span class="icon">⚙️</span> Ajustes
     </button>
     <div class="sidebar-footer">
-      <button class="btn btn-sm btn-gold" style="width:100%;justify-content:center;margin-bottom:8px;" onclick="publishToGitHub()">
+      <button class="btn btn-sm btn-gold" style="width:100%;justify-content:center;margin-bottom:8px;" onclick="publishQuick(this)">
         🚀 Publicar en GitHub
       </button>
       <button class="btn btn-sm" style="width:100%;justify-content:center;background:rgba(255,255,255,0.06);border-color:rgba(197,160,89,0.2);color:rgba(255,255,255,0.4);" onclick="doLogout()">
@@ -1175,56 +1175,144 @@ function generateLibrosJS(){
   return `// Datos de la biblioteca - libros.js\n  const libros = [\n${lines}\n  ];`;
 }
 
+async function ghGetSHA(apiBase, branch, headers){
+  const res = await fetch(`${apiBase}?ref=${branch}`, { headers });
+  if(res.ok){ const d = await res.json(); return d.sha; }
+  if(res.status === 404) return null;
+  throw new Error(`Error leyendo archivo: ${res.status}`);
+}
+
+async function ghPutFile(apiBase, branch, headers, content, sha, message){
+  const encoded = btoa(unescape(encodeURIComponent(content)));
+  const body = { message, content: encoded, branch, ...(sha ? { sha } : {}) };
+  const res = await fetch(apiBase, { method:'PUT', headers, body: JSON.stringify(body) });
+  if(!res.ok){ const e = await res.json(); throw new Error(e.message || `Error ${res.status}`); }
+  return res.json();
+}
+
+function generateIndexHTML(originalHTML){
+  // ── Generar catData actualizado ──
+  const newCatData = cats.map(c => `    {name:'${c.nombre.replace(/'/g,"\\'")}'}` ).join(',\n');
+  const catDataBlock = `  const catData = [\n${newCatData},\n  ];`;
+
+  // ── Generar catSVGs actualizado ──
+  const svgLines = cats.map(c => {
+    const imgUrl = c.imgUrl || '';
+    const size = '90px';
+    if(imgUrl){
+      return `    '${c.nombre.replace(/'/g,"\\'")}': \`<img src="${imgUrl}" style="width:${size};height:${size};object-fit:contain;display:block;margin:0 auto;">\``;
+    } else {
+      return `    '${c.nombre.replace(/'/g,"\\'")}': \`<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>\``;
+    }
+  }).join(',\n');
+  const catSVGsBlock = `  const catSVGs = {\n${svgLines},\n  };`;
+
+  // ── Generar catIconsEmoji actualizado ──
+  const emojiLines = cats.map(c =>
+    `'${c.nombre.replace(/'/g,"\\'")}':'${c.icono}'`
+  ).join(',');
+  const catIconsBlock = `  const catIconsEmoji = {${emojiLines}};`;
+
+  // ── Reemplazar en el HTML original ──
+  let html = originalHTML;
+
+  // Reemplazar catSVGs (bloque completo entre const catSVGs = { ... };)
+  html = html.replace(
+    /const catSVGs = \{[\s\S]*?\};(\s*\n\s*const catData)/,
+    catSVGsBlock + ';\n  const catData'
+  );
+
+  // Reemplazar catData
+  html = html.replace(
+    /const catData = \[[\s\S]*?\];(\s*\n\s*const catIconsEmoji)/,
+    catDataBlock + ';\n  ' + 'const catIconsEmoji'
+  );
+
+  // Reemplazar catIconsEmoji
+  html = html.replace(
+    /const catIconsEmoji = \{[^}]*\};/,
+    catIconsBlock + ';'
+  );
+
+  return html;
+}
+
 async function publishToGitHub(){
-  const u = ls('ghUser'), r = ls('ghRepo'), b = ls('ghBranch'), f = ls('ghFile'), t = ls('ghToken');
-  if(!u||!r||!b||!f||!t){
+  const u = ls('ghUser'), r = ls('ghRepo'), b = ls('ghBranch'), t = ls('ghToken');
+  if(!u||!r||!b||!t){
     alert('Primero guarda la configuración de GitHub en Ajustes.');
     return;
   }
   const btn = document.getElementById('publishBtn');
-  btn.textContent = '⏳ Publicando...';
-  btn.disabled = true;
+  if(btn){ btn.textContent = '⏳ Publicando...'; btn.disabled = true; }
+
+  const headers = {
+    'Authorization': `token ${t}`,
+    'Content-Type': 'application/json',
+    'Accept': 'application/vnd.github.v3+json'
+  };
+  const repoBase = `https://api.github.com/repos/${u}/${r}/contents`;
+  const commitMsg = `📚 Actualización de biblioteca — ${new Date().toLocaleString('es')}`;
 
   try {
-    const apiBase = `https://api.github.com/repos/${u}/${r}/contents/${f}`;
-    const headers = { 'Authorization': `token ${t}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' };
+    // ── 1. Publicar libros.js ──
+    const librosApi = `${repoBase}/libros.js`;
+    const librosSHA = await ghGetSHA(librosApi, b, headers);
+    await ghPutFile(librosApi, b, headers, generateLibrosJS(), librosSHA, commitMsg);
 
-    // 1. Obtener SHA actual del archivo
-    let sha = null;
-    const getRes = await fetch(`${apiBase}?ref=${b}`, { headers });
-    if(getRes.ok){
-      const getData = await getRes.json();
-      sha = getData.sha;
-    } else if(getRes.status !== 404){
-      throw new Error(`Error al leer archivo: ${getRes.status}`);
+    // ── 2. Leer index.html actual de GitHub ──
+    const indexApi = `${repoBase}/index.html`;
+    const indexRes = await fetch(`${indexApi}?ref=${b}`, { headers });
+    if(!indexRes.ok) throw new Error(`No se pudo leer index.html: ${indexRes.status}`);
+    const indexData = await indexRes.json();
+    const indexSHA = indexData.sha;
+    const originalHTML = decodeURIComponent(escape(atob(indexData.content.replace(/\n/g,''))));
+
+    // ── 3. Generar index.html actualizado e publicar ──
+    const updatedHTML = generateIndexHTML(originalHTML);
+    await ghPutFile(indexApi, b, headers, updatedHTML, indexSHA, commitMsg);
+
+    // ── Éxito ──
+    if(btn){
+      btn.textContent = '✅ ¡Publicado!';
+      btn.style.background = 'var(--success)';
+      btn.style.borderColor = 'var(--success)';
+      const alert = document.getElementById('publishAlert');
+      if(alert) alert.style.display = 'block';
+      setTimeout(()=>{
+        btn.textContent = '🚀 Publicar cambios en GitHub';
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        btn.disabled = false;
+        if(alert) alert.style.display = 'none';
+      }, 4000);
     }
-
-    // 2. Generar contenido nuevo en base64
-    const content = generateLibrosJS();
-    const encoded = btoa(unescape(encodeURIComponent(content)));
-
-    // 3. Hacer commit
-    const body = {
-      message: `📚 Actualización de biblioteca — ${new Date().toLocaleString('es')}`,
-      content: encoded,
-      branch: b,
-      ...(sha ? { sha } : {})
-    };
-
-    const putRes = await fetch(apiBase, { method:'PUT', headers, body: JSON.stringify(body) });
-    if(!putRes.ok){
-      const errData = await putRes.json();
-      throw new Error(errData.message || `Error ${putRes.status}`);
-    }
-
-    showAlert('publishAlert');
   } catch(err){
     console.error('GitHub publish error:', err);
-    document.getElementById('publishError').textContent = `❌ Error: ${err.message}`;
-    showAlert('publishError');
-  } finally {
-    btn.textContent = '🚀 Publicar cambios en GitHub';
-    btn.disabled = false;
+    if(btn){ btn.textContent = '🚀 Publicar cambios en GitHub'; btn.disabled = false; }
+    const errEl = document.getElementById('publishError');
+    if(errEl){ errEl.textContent = `❌ Error: ${err.message}`; errEl.style.display = 'block'; setTimeout(()=>errEl.style.display='none', 6000); }
+  }
+}
+
+async function publishQuick(btn){
+  const orig = btn.textContent;
+  btn.textContent = '⏳ Publicando...';
+  btn.disabled = true;
+  try {
+    await publishToGitHub();
+    btn.textContent = '✅ ¡Publicado!';
+    btn.style.background = 'var(--success)';
+    btn.style.borderColor = 'var(--success)';
+    setTimeout(()=>{
+      btn.textContent = orig;
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      btn.disabled = false;
+    }, 3000);
+  } catch(e){
+    btn.textContent = '❌ Error';
+    setTimeout(()=>{ btn.textContent = orig; btn.disabled = false; }, 3000);
   }
 }
 
