@@ -380,7 +380,7 @@
 <script src="https://cdn.jsdelivr.net/npm/dearflip@2.2.4/dist/dearflip.min.js"></script>
 <script src="libros.js"></script>
 <script>
-    const catSVGs = {
+      const catSVGs = {
     'Ken Wilber': `<img src="Iconos/KenWil.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Jacobo Grinberg': `<img src="Iconos/Jacobo.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Barbara Ann Brenan': `<img src="Iconos/barbara.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
@@ -408,8 +408,9 @@
     'Herramientas Prácticas para Sostener los Cambios': `<img src="Iconos/Herramienta.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Papa León XIV': `<img src="Iconos/PapaLeon.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
     'Diccionario del Color': `<img src="Iconos/diccionario.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
-  };;
-    const catData = [
+    'Urantia': `<img src="Iconos/Urantia.png" style="width:90px;height:90px;object-fit:contain;display:block;margin:0 auto;">`,
+  };;;
+      const catData = [
     {name:'Ken Wilber'},
     {name:'Jacobo Grinberg'},
     {name:'Barbara Ann Brenan'},
@@ -437,8 +438,9 @@
     {name:'Herramientas Prácticas para Sostener los Cambios'},
     {name:'Papa León XIV'},
     {name:'Diccionario del Color'},
-  ];;
-                    const catIconsEmoji = {'Ken Wilber':'🌊','Jacobo Grinberg':'🧔🏻‍♂️','Barbara Ann Brenan':'🌺','Biodescodificación':'🧬','Medicina Ancestral':'🌿','Budismo':'🪷','Carolyne Myss':'🌸','Constelaciones Familiares':'🫧','Cristaloterapia':'💎','Filosofía y Religión':'🕊️','Meditación':'🧘','Sexualidad Sagrada':'🌹','Geometría Sagrada':'🌀','Kryon':'✨','Triguerinho':'🌟','Nikola Tesla':'⚡','Libros Raros':'📜','Kabbalah':'🔮','Lobsang Rampa':'🏔️','Neville Goddard':'🌙','Teosofía':'🌌','Biología y comportamiento social':'🧬','Ciencias Políticas':'🏛️','Inteligencia Artificial en lo Humano':'🤖','Herramientas Prácticas para Sostener los Cambios':'🧰','Papa León XIV':'📜','Diccionario del Color':'📖','Urantia':'🌎'};;;;;;;;;;
+    {name:'Urantia'},
+  ];;;
+                      const catIconsEmoji = {'Ken Wilber':'🌊','Jacobo Grinberg':'🧔🏻‍♂️','Barbara Ann Brenan':'🌺','Biodescodificación':'🧬','Medicina Ancestral':'🌿','Budismo':'🪷','Carolyne Myss':'🌸','Constelaciones Familiares':'🫧','Cristaloterapia':'💎','Filosofía y Religión':'🕊️','Meditación':'🧘','Sexualidad Sagrada':'🌹','Geometría Sagrada':'🌀','Kryon':'✨','Triguerinho':'🌟','Nikola Tesla':'⚡','Libros Raros':'📜','Kabbalah':'🔮','Lobsang Rampa':'🏔️','Neville Goddard':'🌙','Teosofía':'🌌','Biología y comportamiento social':'🧬','Ciencias Políticas':'🏛️','Inteligencia Artificial en lo Humano':'🤖','Herramientas Prácticas para Sostener los Cambios':'🧰','Papa León XIV':'📜','Diccionario del Color':'📖','Urantia':'🌎'};;;;;;;;;;;
   function buildCatsGrid() {
     const grid = document.getElementById('catsGrid');
     grid.innerHTML = catData.map((c, i) => {
