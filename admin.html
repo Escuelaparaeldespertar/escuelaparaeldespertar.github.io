@@ -1253,12 +1253,10 @@ async function publishToGitHub(){
   const commitMsg = `📚 Actualización de biblioteca — ${new Date().toLocaleString('es')}`;
 
   try {
-    // ── 1. Publicar libros.js ──
+    // ── 1. Leer ambos archivos ANTES de escribir cualquiera ──
     const librosApi = `${repoBase}/libros.js`;
     const librosSHA = await ghGetSHA(librosApi, b, headers);
-    await ghPutFile(librosApi, b, headers, generateLibrosJS(), librosSHA, commitMsg);
 
-    // ── 2. Leer index.html actual de GitHub ──
     const indexApi = `${repoBase}/index.html`;
     const indexRes = await fetch(`${indexApi}?ref=${b}`, { headers });
     if(!indexRes.ok) throw new Error(`No se pudo leer index.html: ${indexRes.status}`);
@@ -1266,9 +1264,19 @@ async function publishToGitHub(){
     const indexSHA = indexData.sha;
     const originalHTML = decodeURIComponent(escape(atob(indexData.content.replace(/\n/g,''))));
 
-    // ── 3. Generar index.html actualizado y publicar ──
+    // ── 2. Generar contenidos actualizados ──
     const updatedHTML = generateIndexHTML(originalHTML);
-    await ghPutFile(indexApi, b, headers, updatedHTML, indexSHA, commitMsg);
+
+    // ── 3. Publicar libros.js ──
+    await ghPutFile(librosApi, b, headers, generateLibrosJS(), librosSHA, commitMsg);
+
+    // ── 4. Publicar index.html con SHA fresco ──
+    // Re-leer SHA de index.html porque el commit anterior pudo cambiar el árbol
+    const indexRes2 = await fetch(`${indexApi}?ref=${b}`, { headers });
+    if(!indexRes2.ok) throw new Error(`No se pudo re-leer index.html: ${indexRes2.status}`);
+    const indexData2 = await indexRes2.json();
+    const indexSHA2 = indexData2.sha;
+    await ghPutFile(indexApi, b, headers, updatedHTML, indexSHA2, commitMsg);
 
     // ── Éxito ──
     if(btn){
