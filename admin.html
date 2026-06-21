@@ -267,7 +267,6 @@ body::before{content:'';position:fixed;inset:0;background:url('Fondo/Tramado.png
         <div class="page-sub">Resumen general de la biblioteca virtual</div>
       </div>
 
-      <!-- ✅ CAMBIO 2: Card de sincronización -->
       <div class="sync-card" id="syncCard">
         <div class="sync-card-icon" id="syncCardIcon">📥</div>
         <div class="sync-card-body">
@@ -503,7 +502,6 @@ body::before{content:'';position:fixed;inset:0;background:url('Fondo/Tramado.png
         <div class="alert success" id="ghConfigAlert">Configuración guardada correctamente</div>
         <div class="alert error" id="ghConfigError">Por favor completa todos los campos</div>
 
-        <!-- ESTADO DE CONEXIÓN -->
         <div id="ghStatus" style="display:none;margin-top:16px;padding:14px 18px;border-radius:12px;background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.3);font-size:12px;color:var(--success);display:flex;align-items:center;gap:10px;">
           <span style="font-size:18px;">✅</span>
           <span id="ghStatusText">Repositorio conectado correctamente</span>
@@ -693,7 +691,7 @@ function saveColorsLS(){ lss('colors',JSON.stringify(colors)); }
 function getPwd(){ return ls('pwd') || DEFAULT_PWD; }
 
 /* ══════════════════════════════════════════
-   ✅ CAMBIO 3: SYNC DESDE libros.js
+   SYNC DESDE libros.js
    ══════════════════════════════════════════ */
 const catIconsEmoji = {
   'Ken Wilber':'🌊','Barbara Ann Brenan':'🌺','Biodescodificación':'🧬',
@@ -744,7 +742,6 @@ function updateSyncCard() {
   const btn   = document.getElementById('syncBtn');
 
   if (cats.length > 0 && books.length > 0) {
-    // Ya tiene datos — mostrar estado OK discreto
     card.classList.add('done');
     icon.textContent  = '✓';
     title.textContent = 'Biblioteca sincronizada';
@@ -767,7 +764,6 @@ function syncFromLibrosJS() {
     return;
   }
 
-  // Extraer categorías únicas en el orden en que aparecen
   const catNames = [...new Set(libros.map(l => l.categoria))];
   cats = catNames.map(nombre => ({
     nombre,
@@ -775,7 +771,6 @@ function syncFromLibrosJS() {
     imgUrl: catImgUrls[nombre]    || ''
   }));
 
-  // Copiar libros limpiando campos undefined
   books = libros.map(l =>
     Object.fromEntries(Object.entries(l).filter(([, v]) => v !== undefined))
   );
@@ -1190,6 +1185,10 @@ async function ghPutFile(apiBase, branch, headers, content, sha, message){
   return res.json();
 }
 
+/* ══════════════════════════════════════════
+   ✅ CORRECCIÓN: generateIndexHTML con
+   reemplazos independientes por bloque
+   ══════════════════════════════════════════ */
 function generateIndexHTML(originalHTML){
   // ── Generar catData actualizado ──
   const newCatData = cats.map(c => `    {name:'${c.nombre.replace(/'/g,"\\'")}'}` ).join(',\n');
@@ -1213,22 +1212,21 @@ function generateIndexHTML(originalHTML){
   ).join(',');
   const catIconsBlock = `  const catIconsEmoji = {${emojiLines}};`;
 
-  // ── Reemplazar en el HTML original ──
   let html = originalHTML;
 
-  // Reemplazar catSVGs (bloque completo entre const catSVGs = { ... };)
+  // ── Reemplazar catSVGs — independiente ──
   html = html.replace(
-    /const catSVGs = \{[\s\S]*?\};(\s*\n\s*const catData)/,
-    catSVGsBlock + ';\n  const catData'
+    /const catSVGs = \{[\s\S]*?\};/,
+    catSVGsBlock + ';'
   );
 
-  // Reemplazar catData
+  // ── Reemplazar catData — independiente ──
   html = html.replace(
-    /const catData = \[[\s\S]*?\];(\s*\n\s*const catIconsEmoji)/,
-    catDataBlock + ';\n  ' + 'const catIconsEmoji'
+    /const catData = \[[\s\S]*?\];/,
+    catDataBlock + ';'
   );
 
-  // Reemplazar catIconsEmoji
+  // ── Reemplazar catIconsEmoji — independiente ──
   html = html.replace(
     /const catIconsEmoji = \{[^}]*\};/,
     catIconsBlock + ';'
@@ -1268,7 +1266,7 @@ async function publishToGitHub(){
     const indexSHA = indexData.sha;
     const originalHTML = decodeURIComponent(escape(atob(indexData.content.replace(/\n/g,''))));
 
-    // ── 3. Generar index.html actualizado e publicar ──
+    // ── 3. Generar index.html actualizado y publicar ──
     const updatedHTML = generateIndexHTML(originalHTML);
     await ghPutFile(indexApi, b, headers, updatedHTML, indexSHA, commitMsg);
 
@@ -1277,14 +1275,14 @@ async function publishToGitHub(){
       btn.textContent = '✅ ¡Publicado!';
       btn.style.background = 'var(--success)';
       btn.style.borderColor = 'var(--success)';
-      const alert = document.getElementById('publishAlert');
-      if(alert) alert.style.display = 'block';
+      const alertEl = document.getElementById('publishAlert');
+      if(alertEl) alertEl.style.display = 'block';
       setTimeout(()=>{
         btn.textContent = '🚀 Publicar cambios en GitHub';
         btn.style.background = '';
         btn.style.borderColor = '';
         btn.disabled = false;
-        if(alert) alert.style.display = 'none';
+        if(alertEl) alertEl.style.display = 'none';
       }, 4000);
     }
   } catch(err){
